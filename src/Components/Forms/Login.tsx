@@ -21,6 +21,7 @@ import { Formik, Form } from "formik";
 import Link from "next/link";
 import React, { useState } from "react";
 import * as Yup from "yup";
+import Logo from "../normal/Logo";
 
 const initiationValues = {
   email: "",
@@ -38,7 +39,7 @@ const validationSchema = Yup.object().shape({
     )
     .required("Password is required"),
 });
-const Login = () => {
+const Login = ({ toggleAuth }: { toggleAuth: () => void }) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -52,136 +53,147 @@ const Login = () => {
   }));
 
   // handle submit
-  const handleSubmit = () => {};
+  const handleSubmit = (values: { email: string; password: string }) => {
+    console.log(values);
+  };
   return (
-    <main className="sm:w-1/2 md:1/3 lg:w-1/4 w-1/4">
-      <div className="text-center">
-        <h1 className="text-2xl font-semibold">Login To Your Account</h1>
-      </div>
-      <Formik
-        initialValues={initiationValues}
-        validationSchema={validationSchema}
-        onSubmit={handleSubmit}
-      >
-        {({
-          values,
-          errors,
-          touched,
-          handleChange,
-          handleBlur,
-          setFieldValue,
-        }) => (
-          <Form>
-            {/* main two form */}
-            <div className="flex flex-col gap-3 mt-5">
-              <div>
-                <InputLabel>Email</InputLabel>
-                <TextField
-                  type="text"
-                  name="email"
-                  id="email"
-                  placeholder="Email"
-                  size="small"
-                  fullWidth
-                  value={values.email}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  error={touched.email && !!errors.email}
-                  helperText={
-                    Boolean(touched.email) && (errors.email as string)
-                  }
-                />
-              </div>
-              <div>
-                <InputLabel>Password</InputLabel>
-                <TextField
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  id="password"
-                  placeholder="Password"
-                  size="small"
-                  fullWidth
-                  value={values.password}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  error={touched.password && !!errors.password}
-                  helperText={
-                    Boolean(touched.password) && (errors.password as string)
-                  }
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        {"password" === "password" && (
-                          <IconButton
-                            onClick={() => setShowPassword(!showPassword)}
-                          >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        )}
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* forgot password */}
-
-            <div className="flex justify-end mt-4 cursor-pointer">
-              <Link href="/Forgot_Password">
-                <p className=" text-sm font-semibold text-blue-500">
-                  Forgot Password?
-                </p>
-              </Link>
-            </div>
-
-            {/* button submit */}
-            <div className="mt-2">
-              <Button
-                type="submit"
-                variant="contained"
-                className="w-full px-8 py-2 font-semibold rounded-md bg-blue-500 text-center"
-                disabled={loading}
-                startIcon={loading ? <CircularProgress size={20} /> : <Check />}
-              >
-                Login
-              </Button>
-            </div>
-          </Form>
-        )}
-      </Formik>
-      {/* social media  */}
-      <div className="mt-3">
-        <Root>
-          <Divider>or continue with</Divider>
-        </Root>
-
-        {/* login with social */}
-        <div className="flex items-center justify-center gap-5 mt-4">
-          <div className="bg-black p-[0.5rem] rounded-full">
-            <Google
-              style={{ fontSize: 25 }}
-              className="cursor-pointer text-white"
-            />
-          </div>
-          <div className="bg-black p-2 rounded-full text-center mt-[0.2rem]">
-            <Apple
-              style={{ fontSize: 25 }}
-              className="cursor-pointer text-white"
-            />
-          </div>
-          <div className="bg-black p-2 rounded-full text-center mt-[0.2rem]">
-            <GitHub
-              style={{ fontSize: 25 }}
-              className="cursor-pointer text-white"
-            />
-          </div>
+    <main className="w-full min-h-screen flex flex-col justify-center items-center relative">
+      {/* <Logo /> */}
+      <div className="sm:w-full md:w-1/2 lg:w-1/3 xl:w-1/4 mx-auto px-5 py-10 border-2 rounded-md">
+        <div className="text-center">
+          <h1 className="text-2xl font-semibold">Login To Your Account</h1>
         </div>
-        <div className="flex gap-1 items-center justify-center mt-5 text-sm">
-          <p>Don&apos;t have account?</p>
-          <Link href="/Register">
-            <p className="font-semibold text-blue-500">Create</p>
-          </Link>
+        <Formik
+          initialValues={initiationValues}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+        >
+          {({
+            values,
+            errors,
+            touched,
+            handleChange,
+            handleBlur,
+            setFieldValue,
+          }) => (
+            <Form>
+              {/* main two form */}
+              <div className="flex flex-col gap-3 mt-5">
+                <div>
+                  <InputLabel>Email</InputLabel>
+                  <TextField
+                    type="text"
+                    name="email"
+                    id="email"
+                    placeholder="Email"
+                    size="small"
+                    fullWidth
+                    value={values.email}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={touched.email && !!errors.email}
+                    helperText={
+                      Boolean(touched.email) && (errors.email as string)
+                    }
+                  />
+                </div>
+                <div>
+                  <InputLabel>Password</InputLabel>
+                  <TextField
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    id="password"
+                    placeholder="Password"
+                    size="small"
+                    fullWidth
+                    value={values.password}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={touched.password && !!errors.password}
+                    helperText={
+                      Boolean(touched.password) && (errors.password as string)
+                    }
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          {"password" === "password" && (
+                            <IconButton
+                              onClick={() => setShowPassword(!showPassword)}
+                            >
+                              {showPassword ? (
+                                <VisibilityOff />
+                              ) : (
+                                <Visibility />
+                              )}
+                            </IconButton>
+                          )}
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* forgot password */}
+
+              <div className="flex justify-end mt-4 cursor-pointer">
+                <Link href="/Forgot_Password">
+                  <p className="text-sm font-semibold text-blue-500">
+                    Forgot Password?
+                  </p>
+                </Link>
+              </div>
+
+              {/* button submit */}
+              <div className="mt-2">
+                <Button
+                  type="submit"
+                  variant="contained"
+                  className="w-full px-8 py-2 font-semibold rounded-md bg-blue-500 text-center"
+                  disabled={loading}
+                  startIcon={
+                    loading ? <CircularProgress size={20} /> : <Check />
+                  }
+                >
+                  Login
+                </Button>
+              </div>
+            </Form>
+          )}
+        </Formik>
+        {/* social media  */}
+        <div className="mt-3">
+          <Root>
+            <Divider>or continue with</Divider>
+          </Root>
+
+          {/* login with social */}
+          <div className="flex items-center justify-center gap-5 mt-4">
+            <div className="bg-black p-[0.5rem] rounded-full">
+              <Google
+                style={{ fontSize: 25 }}
+                className="cursor-pointer text-white"
+              />
+            </div>
+            <div className="bg-black p-2 rounded-full text-center mt-[0.2rem]">
+              <Apple
+                style={{ fontSize: 25 }}
+                className="cursor-pointer text-white"
+              />
+            </div>
+            <div className="bg-black p-2 rounded-full text-center mt-[0.2rem]">
+              <GitHub
+                style={{ fontSize: 25 }}
+                className="cursor-pointer text-white"
+              />
+            </div>
+          </div>
+          <div className="flex gap-2 items-center justify-center mt-5 text-sm">
+            <p>Don&apos;t have an account?</p>
+            <Button onClick={toggleAuth}>
+              <p className="font-semibold text-blue-500">Create</p>
+            </Button>
+          </div>
         </div>
       </div>
     </main>
