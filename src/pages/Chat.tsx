@@ -8,30 +8,13 @@ import {
   Album,
   AddBox,
 } from "@mui/icons-material";
+import Send_Message_Input from "@/Components/normal/Send_Message_Input";
 const Chat = () => {
-  const [open, setOpen] = useState(false);
-
-  const [message, setMessage] = useState("");
-  const [height, setHeight] = useState("auto"); // Initial height
-
-  const handleChange = (event: any) => {
-    setMessage(event.target.value);
-    setHeight(`${event.target.scrollHeight}px`); // Adjust the height based on scrollHeight
-  };
-
-  const handleKeyDown = (event: any) => {
-    if (event.key === "Enter" && !event.shiftKey) {
-      event.preventDefault();
-      // Handle send message logic here
-      // For demo, let's just clear the message
-      setMessage(event.target.value);
-      setHeight("auto"); // Reset height after sending message
-      console.log(message);
-    }
-  };
+  const [open, setOpen] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>("");
 
   return (
-    <main className="flex h-screen">
+    <main className="flex h-screen relative">
       <div className="w-[25rem]">
         <div>
           <div className="h-[4rem] flex items-center justify-between px-2">
@@ -109,7 +92,7 @@ const Chat = () => {
         <div className="h-[4rem] bg-pink-300">
           <h1>left navbar</h1>
         </div>
-        <div className="h-[calc(100%-8rem)] overflow-y-auto">
+        <div className="h-[calc(100%-8.5rem)] overflow-y-auto">
           {/* <h1>All Chats</h1> */}
           <p>
             Lorem ipsum dolor sit, amet consectetur adipisicing elit. Placeat
@@ -229,26 +212,7 @@ const Chat = () => {
             quasi odio labore deserunt eaque.
           </p>
         </div>
-        <div className="min-h-[4rem] bg-pink-300 sticky bottom-0 left-0 flex py-2 px-3 items-center gap-3">
-          <div className="flex gap-3 items-center">
-            <p>emo</p>
-            <p>other</p>
-          </div>
-          <div className="h-full flex-grow">
-            <textarea
-              className="text-input w-full"
-              style={{ height: height }}
-              value={message}
-              onChange={handleChange}
-              onKeyDown={handleKeyDown}
-              // onKeyUp={handleKeyUp}
-              placeholder="Type a message..."
-            />
-          </div>
-          <div>
-            <button>Send</button>
-          </div>
-        </div>
+        <Send_Message_Input message={message} setMessage={setMessage} />
       </div>
     </main>
   );
