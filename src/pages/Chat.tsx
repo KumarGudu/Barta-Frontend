@@ -92,7 +92,7 @@ const Chat = () => {
         <div className="h-[4rem] bg-pink-300">
           <h1>left navbar</h1>
         </div>
-        <div className="h-[calc(100%-8.5rem)] overflow-y-auto">
+        <div className="h-[calc(100%-8rem)] overflow-y-auto">
           {/* <h1>All Chats</h1> */}
           <p>
             Lorem ipsum dolor sit, amet consectetur adipisicing elit. Placeat
