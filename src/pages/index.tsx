@@ -1,16 +1,21 @@
 import Image from "next/image";
 import { Inter } from "next/font/google";
-import Login from "@/Components/Forms/Login";
+import Login from "@/components/Forms/Login";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
+  const isAuth: Boolean = false;
   const router = useRouter();
   const redirectToMain = () => {
-    router.push("/Auth");
+    isAuth === true ? router.push("/Chat") : router.push("/Auth");
   };
+  useEffect(() => {
+    const cookies = document.cookie;
+    console.log({ cookies });
+  }, []);
   return (
     <main className={`flex items-center justify-center h-screen`}>
       <div className="flex flex-col items-center justify-center">

@@ -1,7 +1,127 @@
-import * as React from "react";
 import { Input as BaseInput } from "@mui/base/Input";
 import { Box, styled } from "@mui/system";
-import { Dialog, DialogTitle } from "@mui/material";
+import { Button, CircularProgress, Dialog, DialogTitle } from "@mui/material";
+import { Check, Title } from "@mui/icons-material";
+// import usePostData from "../../hooks/Post_Hook";
+import { Formik, Field, Form } from "formik";
+import * as Yup from "yup";
+import { Fragment, useEffect, useRef, useState } from "react";
+import Swal from "sweetalert2";
+import Timer from "@/components/dialogs/TImer";
+import { useRouter } from "next/navigation";
+import { usePostData } from "@/hooks/Api_Hooks";
+import useAuthStore from "@/stores/Auth.store";
+
+const schema = Yup.string().matches(/^\d{4}$/, "Must be exactly 4 digits");
+
+export default function VerifyOtp() {
+  const [otp, setOtp] = useState<string>("");
+  const [err, setErr] = useState<string>("");
+  const router = useRouter();
+
+  const { setAuthUser } = useAuthStore();
+  //verify otp
+  const { data, error, isLoading, postData } = usePostData<any>();
+  const verifyOtp = async () => {
+    if (!otp || otp === "") {
+      setErr("Please enter your otp");
+      return;
+    }
+    const isValid = await schema.isValid(otp);
+    if (isValid == false) {
+      setErr("Please enter a valid otp");
+      return;
+    }
+    await postData(
+      "auth/verify-otp-and-login",
+      {
+        otp,
+      },
+      {
+        withCredentials: true,
+      }
+    );
+
+    setOtp("");
+  };
+  useEffect(() => {
+    console.log({ data });
+    let timeOutId: any;
+    if (data) {
+      setAuthUser(data);
+      timeOutId = setTimeout(() => {
+        router.push("/Chat");
+      }, 3000);
+    }
+    return () => {
+      clearTimeout(timeOutId);
+    };
+  }, [data]);
+
+  //resend otp
+  const {
+    data: resendData,
+    error: resendError,
+    isLoading: resendIsLoading,
+    postData: rendPostData,
+  } = usePostData<any>();
+  const resendOtp = async () => {
+    await rendPostData(
+      "auth/resend-otp",
+      {},
+      {
+        withCredentials: true,
+      }
+    );
+  };
+
+  return (
+    <div className="flex flex-col justify-center items-center min-h-screen">
+      <h1>VerifyOtp</h1>
+      <Box
+        width={400}
+        height={250}
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        flexDirection="column"
+        py={2}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
+        }}
+      >
+        <OTP
+          separator={<span>-</span>}
+          value={otp}
+          onChange={setOtp}
+          length={4}
+        />
+
+        <p className="text-red-500 font-medium">{err && `${err}`}</p>
+        <Timer timeInSecond={120} />
+
+        <div>
+          <Button onClick={resendOtp} disabled={resendIsLoading}>
+            Resend
+          </Button>
+        </div>
+
+        <Button
+          type="submit"
+          variant="contained"
+          className="w-fit px-3 py-2 font-semibold rounded-md bg-blue-500 text-center"
+          disabled={isLoading}
+          onClick={verifyOtp}
+          startIcon={isLoading ? <CircularProgress size={20} /> : <Check />}
+        >
+          Verify
+        </Button>
+      </Box>
+    </div>
+  );
+}
 
 function OTP({
   separator,
@@ -14,9 +134,7 @@ function OTP({
   value: string;
   onChange: React.Dispatch<React.SetStateAction<string>>;
 }) {
-  const inputRefs = React.useRef<HTMLInputElement[]>(
-    new Array(length).fill(null)
-  );
+  const inputRefs = useRef<HTMLInputElement[]>(new Array(length).fill(null));
 
   const focusInput = (targetIndex: number) => {
     const targetInput = inputRefs.current[targetIndex];
@@ -155,7 +273,7 @@ function OTP({
   return (
     <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
       {new Array(length).fill(null).map((_, index) => (
-        <React.Fragment key={index}>
+        <Fragment key={index}>
           <BaseInput
             slots={{
               input: InputElement,
@@ -175,40 +293,9 @@ function OTP({
             }}
           />
           {index === length - 1 ? null : separator}
-        </React.Fragment>
+        </Fragment>
       ))}
     </Box>
-  );
-}
-
-export interface SimpleDialogProps {
-  open: boolean;
-  onClose: (value: string) => void;
-}
-
-export default function Otp_Dialog(props: SimpleDialogProps) {
-  const [otp, setOtp] = React.useState("");
-  const { onClose, open } = props;
-
-  return (
-    <Dialog open={open}>
-      <DialogTitle>Verify Otp</DialogTitle>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 2,
-        }}
-      >
-        <OTP
-          separator={<span>-</span>}
-          value={otp}
-          onChange={setOtp}
-          length={4}
-        />
-        <span>Entered value: {otp}</span>
-      </Box>
-    </Dialog>
   );
 }
 
@@ -246,7 +333,7 @@ const InputElement = styled("input")(
   text-align: center;
   color: ${theme.palette.mode === "dark" ? grey[300] : grey[900]};
   background: ${theme.palette.mode === "dark" ? grey[900] : "#fff"};
-  border: 1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]};
+  border: 2px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]};
   box-shadow: 0px 2px 4px ${
     theme.palette.mode === "dark" ? "rgba(0,0,0, 0.5)" : "rgba(0,0,0, 0.05)"
   };

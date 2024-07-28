@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // import { GroupsIcon } from "@mui/icons-material";
 import Drawer from "@mui/material/Drawer";
 import {
@@ -8,8 +8,8 @@ import {
   Album,
   AddBox,
 } from "@mui/icons-material";
-import Send_Message_Input from "@/Components/normal/Send_Message_Input";
-import Auth_Layout from "@/Components/normal/Auth_Layout";
+import Send_Message_Input from "@/components/normal/Send_Message_Input";
+import Auth_Layout from "@/components/normal/Auth_Layout";
 const Chat = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");

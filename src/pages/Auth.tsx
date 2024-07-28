@@ -1,16 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-const AuthLogin = dynamic(() => import("../Components/Forms/Login"), {
+import { socket } from "@/hooks/Socket";
+const AuthLogin = dynamic(() => import("../components/Forms/Login"), {
   loading: () => <p>Loading...</p>,
 });
-const AuthRegister = dynamic(() => import("../Components/Forms/Register"), {
+const AuthRegister = dynamic(() => import("../components/Forms/Register"), {
   loading: () => <p>Loading...</p>,
 });
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState<boolean>(true);
   const router = useRouter();
+
   const toggleAuth = () => {
     setIsLogin(!isLogin);
   };

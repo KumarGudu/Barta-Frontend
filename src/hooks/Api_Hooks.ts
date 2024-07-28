@@ -1,0 +1,61 @@
+import { useState } from "react";
+import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import Swal from "sweetalert2";
+import { BASE_URL } from "@/utils";
+
+interface UsePostDataResult<T> {
+  data: T | null;
+  error: string | null;
+  isLoading: boolean;
+  postData: (
+    url: string,
+    payload: any,
+    config?: AxiosRequestConfig
+  ) => Promise<void>;
+}
+
+export const usePostData = <T>(): UsePostDataResult<T> => {
+  const [data, setData] = useState<T | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const postData = async (
+    url: string,
+    payload: any,
+    config?: AxiosRequestConfig
+  ) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response: AxiosResponse<{ data: T }> = await axios.post(
+        BASE_URL + url,
+        payload,
+        config
+      );
+      setData(response.data.data);
+      Swal.fire({
+        title: "Success",
+        text: `${(response.data as any).msg}`,
+        icon: "success",
+        showConfirmButton: false,
+        timer: 3000,
+      });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+
+      console.log({ err });
+      Swal.fire(
+        "Error",
+        (err as any).response.data.error.message || "Something went wrong!",
+        "error"
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return { data, error, isLoading, postData };
+};
+
+export const fetcher = (url: string) =>
+  fetch(`${BASE_URL}${url}`).then((res) => res.json());

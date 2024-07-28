@@ -21,7 +21,6 @@ import { Formik, Form } from "formik";
 import Link from "next/link";
 import React, { useState } from "react";
 import * as Yup from "yup";
-import Logo from "../normal/Logo";
 
 const initiationValues = {
   email: "",

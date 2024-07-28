@@ -21,12 +21,12 @@ import {
 } from "@mui/material";
 import { Form, Formik, FormikHelpers } from "formik";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
-import Logo from "../normal/Logo";
-import usePostData from "@/hooks/Post_Hook";
 import Swal from "sweetalert2";
-import Otp_Dialog from "../dialogs/Otp_Dialog";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { usePostData } from "@/hooks/Api_Hooks";
 
 interface FormValues {
   name: string;
@@ -63,29 +63,37 @@ const validationSchema = Yup.object().shape({
 const Register = ({ toggleAuth }: { toggleAuth: () => void }) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
+  const { data, error, isLoading, postData } = usePostData<any>();
+  const router = useRouter();
 
-  // post api call
-  const url = "auth/signup";
-  let { data, error, loading, postData } = usePostData(url);
   const handleSubmit = async (
     values: FormValues,
     { resetForm }: FormikHelpers<FormValues>
   ) => {
-    await postData({ ...values });
+    await postData(
+      "auth/signup",
+      {
+        ...values,
+      },
+      {
+        withCredentials: true,
+      }
+    );
+
     resetForm();
   };
-  if (data) {
-    Swal.fire({
-      title: "Success",
-      text: `${data.msg}`,
-      icon: "success",
-      showConfirmButton: false,
-      timer: 1500,
-    });
-  }
-  if (error) {
-    Swal.fire("Error", error.message || "Something went wrong!", "error");
-  }
+
+  useEffect(() => {
+    let timeOutId: any;
+    if (data) {
+      timeOutId = setTimeout(() => {
+        router.push("/VerifyOtp");
+      }, 3000);
+    }
+    return () => {
+      clearTimeout(timeOutId);
+    };
+  }, [data]);
 
   const Root = styled("div")(({ theme }) => ({
     width: "100%",
@@ -96,18 +104,8 @@ const Register = ({ toggleAuth }: { toggleAuth: () => void }) => {
     },
   }));
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = (value: string) => {
-    setOpen(false);
-  };
-
   return (
     <main className="w-full min-h-screen flex flex-col justify-center items-center relative">
-      <button onClick={handleClickOpen}>Open Dialog</button>
-      <Otp_Dialog open={open} onClose={handleClose} />
       {/* <Logo /> */}
       <div className="sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-[25%] px-5 py-10 border-2 rounded-md">
         <div className="text-center">
@@ -217,9 +215,9 @@ const Register = ({ toggleAuth }: { toggleAuth: () => void }) => {
                     type="submit"
                     variant="contained"
                     className="w-full px-8 py-2 font-semibold rounded-md bg-blue-500 text-center"
-                    disabled={loading}
+                    disabled={isLoading}
                     startIcon={
-                      loading ? <CircularProgress size={20} /> : <Check />
+                      isLoading ? <CircularProgress size={20} /> : <Check />
                     }
                   >
                     Register
