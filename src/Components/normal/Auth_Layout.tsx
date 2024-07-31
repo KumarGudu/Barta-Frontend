@@ -1,3 +1,4 @@
+import useAuthStore from "@/stores/Auth.store";
 import { useRouter } from "next/router";
 import React, { use, useEffect, useLayoutEffect } from "react";
 type Props = {
@@ -5,10 +6,10 @@ type Props = {
   title?: string;
 };
 const Auth_Layout = ({ children, title }: Props) => {
-  const isAuth = true;
+  const { isLogin } = useAuthStore();
   const router = useRouter();
   useLayoutEffect(() => {
-    if (!isAuth) router.push("/");
+    if (!isLogin) router.push("/");
   }, []);
 
   return <>{children}</>;

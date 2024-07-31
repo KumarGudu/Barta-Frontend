@@ -11,6 +11,7 @@ type AuthState = {
 type AuthAction = {
   updateRegister: (isRegister: boolean) => void;
   setAuthUser: (user: Partial<AuthUser>) => void;
+  validateAuthUser: () => Promise<AuthUser | undefined>;
 };
 
 const useAuthStore = create<AuthState & AuthAction>((set) => ({
@@ -26,12 +27,29 @@ const useAuthStore = create<AuthState & AuthAction>((set) => ({
     set(() => ({ isLogin: true }));
   },
 
-  validateAuthUser: async (user: Partial<AuthUser>) => {
+  validateAuthUser: async () => {
     try {
-      const res = await fetch(`${BASE_URL}/auth/self`, {
+      let res;
+      res = await fetch(`${BASE_URL}auth/self`, {
         method: "GET",
+        credentials: "include",
       });
       if (res.status !== 200) {
+        const accessRes = await fetch(`${BASE_URL}auth/refresh-access-token`, {
+          method: "GET",
+          credentials: "include",
+        });
+        console.log({ accessRes });
+        if (accessRes.status === 200) {
+          res = await fetch(`${BASE_URL}auth/self`, {
+            method: "GET",
+            credentials: "include",
+          });
+          const data = await res.json();
+          const currentUser = data?.user as AuthUser;
+          return currentUser;
+        }
+
         throw new Error("Server Side Error");
       }
       const data = await res.json();

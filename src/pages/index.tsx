@@ -3,19 +3,30 @@ import { Inter } from "next/font/google";
 import Login from "@/components/Forms/Login";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import useAuthStore from "@/stores/Auth.store";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-  const isAuth: Boolean = false;
+  const { isLogin, user, setAuthUser, validateAuthUser } = useAuthStore();
+
+  console.log({ isLogin });
   const router = useRouter();
-  const redirectToMain = () => {
-    isAuth === true ? router.push("/Chat") : router.push("/Auth");
-  };
+
   useEffect(() => {
-    const cookies = document.cookie;
-    console.log({ cookies });
+    (async () => {
+      if (!user) {
+        const currentUser = await validateAuthUser();
+        if (!currentUser) return router.push("/");
+        setAuthUser(currentUser);
+      }
+    })();
   }, []);
+
+  const redirectToMain = () => {
+    isLogin === true ? router.push("/Chat") : router.push("/Auth");
+  };
+
   return (
     <main className={`flex items-center justify-center h-screen`}>
       <div className="flex flex-col items-center justify-center">
