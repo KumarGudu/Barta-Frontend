@@ -19,6 +19,7 @@ export default function Home() {
         const currentUser = await validateAuthUser();
         if (!currentUser) return router.push("/");
         setAuthUser(currentUser);
+        // return router.push("/Chat");
       }
     })();
   }, []);

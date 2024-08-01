@@ -1,3 +1,5 @@
+import { usePostData } from "@/hooks/Api_Hooks";
+import useAuthStore from "@/stores/Auth.store";
 import {
   Check,
   Visibility,
@@ -17,11 +19,16 @@ import {
   TextField,
   styled,
 } from "@mui/material";
-import { Formik, Form } from "formik";
+import { Formik, Form, FormikValues, FormikHelpers } from "formik";
 import Link from "next/link";
-import React, { useState } from "react";
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
 
+interface FormValues {
+  email: string;
+  password: string;
+}
 const initiationValues = {
   email: "",
   password: "",
@@ -39,9 +46,6 @@ const validationSchema = Yup.object().shape({
     .required("Password is required"),
 });
 const Login = ({ toggleAuth }: { toggleAuth: () => void }) => {
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
-
   const Root = styled("div")(({ theme }) => ({
     width: "100%",
     ...theme.typography.body2,
@@ -50,11 +54,43 @@ const Login = ({ toggleAuth }: { toggleAuth: () => void }) => {
       marginTop: theme.spacing(2),
     },
   }));
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const { data, error, isLoading, postData } = usePostData<any>();
+  const router = useRouter();
+  const { setAuthUser } = useAuthStore();
 
-  // handle submit
-  const handleSubmit = (values: { email: string; password: string }) => {
-    console.log(values);
+  const handleSubmit = async (
+    values: FormValues,
+    { resetForm }: FormikHelpers<FormValues>
+  ) => {
+    await postData(
+      "auth/login",
+      {
+        ...values,
+      },
+      {
+        withCredentials: true,
+      }
+    );
+
+    resetForm();
   };
+
+  useEffect(() => {
+    let timeOutId: any;
+    if (data) {
+      console.log("USER", { data });
+      setAuthUser(data);
+      timeOutId = setTimeout(() => {
+        router.push("/Chat");
+      }, 3000);
+    }
+    return () => {
+      clearTimeout(timeOutId);
+    };
+  }, [data]);
+
   return (
     <main className="w-full min-h-screen flex flex-col justify-center items-center relative">
       {/* <Logo /> */}
@@ -149,9 +185,9 @@ const Login = ({ toggleAuth }: { toggleAuth: () => void }) => {
                   type="submit"
                   variant="contained"
                   className="w-full px-8 py-2 font-semibold rounded-md bg-blue-500 text-center"
-                  disabled={loading}
+                  disabled={isLoading}
                   startIcon={
-                    loading ? <CircularProgress size={20} /> : <Check />
+                    isLoading ? <CircularProgress size={20} /> : <Check />
                   }
                 >
                   Login
