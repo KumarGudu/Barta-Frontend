@@ -9,17 +9,13 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   const { isLogin, user, setAuthUser, validateAuthUser } = useAuthStore();
-
-  console.log({ isLogin });
   const router = useRouter();
-
   useEffect(() => {
     (async () => {
       if (!user) {
         const currentUser = await validateAuthUser();
         if (!currentUser) return router.push("/");
         setAuthUser(currentUser);
-        // return router.push("/Chat");
       }
     })();
   }, []);

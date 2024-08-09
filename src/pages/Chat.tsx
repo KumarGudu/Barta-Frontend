@@ -10,9 +10,20 @@ import {
 } from "@mui/icons-material";
 import Send_Message_Input from "@/components/normal/Send_Message_Input";
 import Auth_Layout from "@/components/normal/Auth_Layout";
+import useSocketStore from "@/stores/Socket.store";
 const Chat = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
+
+  const { connect, disConnect } = useSocketStore();
+
+  useEffect(() => {
+    console.log("Coming...");
+    connect();
+    return () => {
+      disConnect();
+    };
+  }, [connect, disConnect]);
 
   return (
     <Auth_Layout>
