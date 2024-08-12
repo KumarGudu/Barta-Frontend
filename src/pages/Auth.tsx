@@ -14,7 +14,6 @@ const Auth = () => {
   const [login, setIsLogin] = useState<boolean>(true);
   const router = useRouter();
   const { isLogin } = useAuthStore();
-  console.log("IS_LOGIN", isLogin);
   const toggleAuth = () => {
     setIsLogin(!login);
   };

@@ -32,6 +32,7 @@ export const usePostData = <T>(): UsePostDataResult<T> => {
         payload,
         config
       );
+
       setData(response.data.data);
       Swal.fire({
         title: "Success",
