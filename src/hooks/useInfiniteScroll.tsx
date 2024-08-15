@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 type InfiniteScrollType<T> = {
   query?: string;
+  isOpen?: boolean;
   pageNumber: number;
   url: string;
   data: T[];
@@ -12,6 +13,7 @@ type InfiniteScrollType<T> = {
 
 function useInfiniteScroll<T>({
   query,
+  isOpen,
   pageNumber,
   url,
   data,
@@ -28,8 +30,7 @@ function useInfiniteScroll<T>({
   }, [query]);
 
   useEffect(() => {
-    setLoading(false);
-    setIsError(false);
+    setLoading(true);
     let cancel: any;
     axios({
       method: "GET",
@@ -45,11 +46,12 @@ function useInfiniteScroll<T>({
         setLoading(false);
       })
       .catch((err) => {
+        console.log("ERROR: " + err);
         if (axios.isCancel(err)) return;
         setIsError(true);
       });
     return () => cancel();
-  }, [query, pageNumber]);
+  }, [query, pageNumber, isOpen]);
 
   return { loading, isError, data, hasMore };
 }

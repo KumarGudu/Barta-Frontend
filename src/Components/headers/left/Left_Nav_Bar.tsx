@@ -1,7 +1,15 @@
 import React, { useState } from "react";
+import dynamic from "next/dynamic";
 import { Groups, PlayCircleOutline, Album, AddBox } from "@mui/icons-material";
 import Drawer from "@mui/material/Drawer";
-import Group_And_Chat_Functionality from "./logout/Group_And_Chat_Functionality";
+import Group_And_Chat_Functionality from "./create_group_and_chat/Group_And_Chat_Functionality";
+const All_Users = dynamic(() => import("./all_users/All_Users"), {
+  loading: () => (
+    <Drawer>
+      <h1 className="text-5xl text-black">Loading....</h1>
+    </Drawer>
+  ),
+});
 
 const Left_Nav_Bar = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -23,13 +31,18 @@ const Left_Nav_Bar = () => {
           className="cursor-pointer"
           onClick={() => setOpen(!open)}
         />
-        <Drawer open={open} onClose={() => setOpen(false)}>
+        {/* <Drawer open={open} onClose={() => setOpen(false)}>
           <div className="w-[25rem]">
             <h1>Drawer</h1>
           </div>
-        </Drawer>
+        </Drawer> */}
         <Groups fontSize="large" className="cursor-pointer" />
-        <AddBox fontSize="large" className="cursor-pointer" />
+        <AddBox
+          fontSize="large"
+          className="cursor-pointer"
+          onClick={() => setOpen(true)}
+        />
+        {open && <All_Users open={open} setOpen={setOpen} />}
         <Group_And_Chat_Functionality />
       </div>
     </div>
