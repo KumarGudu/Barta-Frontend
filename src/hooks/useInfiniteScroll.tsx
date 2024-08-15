@@ -6,17 +6,21 @@ type InfiniteScrollType<T> = {
   query?: string;
   pageNumber: number;
   url: string;
+  data: T[];
+  setData: (users: Partial<T>[]) => void;
 };
 
 function useInfiniteScroll<T>({
   query,
   pageNumber,
   url,
+  data,
+  setData,
 }: InfiniteScrollType<T>) {
   const [loading, setLoading] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
   const [hasMore, setHasMore] = useState<boolean>(false);
-  const [data, setData] = useState<Partial<T>[]>([]);
+  // const [data, setData] = useState<Partial<T>[]>([]);
 
   console.log({ pageNumber, url, data, setData });
   useEffect(() => {
@@ -36,14 +40,11 @@ function useInfiniteScroll<T>({
     })
       .then((res) => {
         const newData: T[] = res?.data?.data;
-        setData((prevData) => {
-          return [...prevData, ...newData];
-        });
+        setData(newData);
         setHasMore(newData.length > 0);
         setLoading(false);
       })
       .catch((err) => {
-        console.log("ERROR:", err);
         if (axios.isCancel(err)) return;
         setIsError(true);
       });

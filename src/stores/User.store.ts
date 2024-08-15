@@ -15,7 +15,7 @@ const useUserStore = create<UserState & UserAction>()(
     users: [],
     setUsers: (users: Partial<AuthUser>[]) => {
       set((state) => {
-        state.users = users;
+        state.users = [...state.users, ...users];
       });
     },
   }))

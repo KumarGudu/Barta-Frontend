@@ -28,8 +28,10 @@ const Chat = () => {
   >({
     pageNumber: pageNumber,
     url: "users",
+    data: users,
+    setData: setUsers,
   });
-  const { observer, lastBookElementRef } = useObserver({
+  const { lastBookElementRef } = useObserver({
     loading,
     hasMore,
     setPageNumber,
