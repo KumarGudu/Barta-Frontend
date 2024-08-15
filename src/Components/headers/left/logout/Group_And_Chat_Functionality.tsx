@@ -3,8 +3,9 @@ import { Check, MoreVert } from "@mui/icons-material";
 import { usePostData } from "@/hooks/Api_Hooks";
 import { Button, CircularProgress } from "@mui/material";
 import { useRouter } from "next/router";
+import useAuthStore from "@/stores/Auth.store";
 
-const Log_Out = () => {
+const Group_And_Chat_Functionality = () => {
   const [isLogoutDropDown, setIsLogoutDropDown] = useState<boolean>(false);
   const { data, error, isLoading, postData } = usePostData<any>();
   const router = useRouter();
@@ -18,14 +19,13 @@ const Log_Out = () => {
     );
   };
 
-  console.log(data);
-
   useEffect(() => {
     let timeOutId: any;
     if (data) {
       timeOutId = setTimeout(() => {
         router.push("/");
       }, 3000);
+      window.location.reload();
     }
     return () => {
       clearTimeout(timeOutId);
@@ -40,17 +40,13 @@ const Log_Out = () => {
       />
       {isLogoutDropDown && (
         <div className="absolute w-[15rem] h-[20rem] right-5  bg-gray-200 flex flex-col items-center py-2">
-          <Button
-            onClick={handleLogOut}
-            disabled={isLoading}
-            startIcon={isLoading ? <CircularProgress size={20} /> : <Check />}
-          >
+          <button onClick={handleLogOut} disabled={isLoading}>
             logout
-          </Button>
+          </button>
         </div>
       )}
     </div>
   );
 };
 
-export default Log_Out;
+export default Group_And_Chat_Functionality;

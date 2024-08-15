@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import io, { Socket } from "socket.io-client";
-import { BASE_URL } from "@/utils";
+import { socket } from "@/hooks/Socket";
 
 type SocketState = {
   socket: Socket | null;
@@ -14,10 +14,6 @@ type SocketAction = {
 const useSocketStore = create<SocketState & SocketAction>((set) => ({
   socket: null,
   connect: () => {
-    const socket = io("http://localhost:5000", {
-      withCredentials: true,
-    });
-    console.log({ socket });
     set({ socket });
   },
 

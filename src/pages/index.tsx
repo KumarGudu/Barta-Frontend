@@ -21,7 +21,7 @@ export default function Home() {
   }, []);
 
   const redirectToMain = () => {
-    isLogin === true ? router.push("/Chat") : router.push("/Auth");
+    isLogin === true && user ? router.push("/Chat") : router.push("/Auth");
   };
 
   return (

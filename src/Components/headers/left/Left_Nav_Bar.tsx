@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { Groups, PlayCircleOutline, Album, AddBox } from "@mui/icons-material";
 import Drawer from "@mui/material/Drawer";
-import Log_Out from "./logout/Log_Out";
+import Group_And_Chat_Functionality from "./logout/Group_And_Chat_Functionality";
 
 const Left_Nav_Bar = () => {
   const [open, setOpen] = useState<boolean>(false);
-
   return (
     <div className="h-[4rem] flex items-center justify-between px-2">
       <div className="basis-[30%]">
@@ -31,7 +30,7 @@ const Left_Nav_Bar = () => {
         </Drawer>
         <Groups fontSize="large" className="cursor-pointer" />
         <AddBox fontSize="large" className="cursor-pointer" />
-        <Log_Out />
+        <Group_And_Chat_Functionality />
       </div>
     </div>
   );
