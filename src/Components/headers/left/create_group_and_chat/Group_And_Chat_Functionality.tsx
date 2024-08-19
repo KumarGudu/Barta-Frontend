@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Check, MoreVert } from "@mui/icons-material";
 import { usePostData } from "@/hooks/Api_Hooks";
 import { Button, CircularProgress } from "@mui/material";
 import { useRouter } from "next/router";
 import useAuthStore from "@/stores/Auth.store";
+import { BiDotsVertical } from "react-icons/bi";
 
 const Group_And_Chat_Functionality = () => {
   const [isLogoutDropDown, setIsLogoutDropDown] = useState<boolean>(false);
@@ -33,8 +33,8 @@ const Group_And_Chat_Functionality = () => {
   }, [data]);
   return (
     <div className="relative">
-      <MoreVert
-        fontSize="large"
+      <BiDotsVertical
+        size={24}
         className="cursor-pointer"
         onClick={() => setIsLogoutDropDown(!isLogoutDropDown)}
       />
