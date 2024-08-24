@@ -39,10 +39,10 @@ const validationSchema = Yup.object().shape({
     .email("Invalid Email Address")
     .required("Email is required"),
   password: Yup.string()
-    .matches(
-      /^(?=.*[!@#$%^&*()-_=+{};:,<.>])(?=.*\d).{8,}$/,
-      "Invalid password it must contain 8 character and a special character, a number"
-    )
+    // .matches(
+    //   /^(?=.*[!@#$%^&*()-_=+{};:,<.>])(?=.*\d).{8,}$/,
+    //   "Invalid password it must contain 8 character and a special character, a number"
+    // )
     .required("Password is required"),
 });
 const Login = ({ toggleAuth }: { toggleAuth: () => void }) => {
@@ -71,7 +71,8 @@ const Login = ({ toggleAuth }: { toggleAuth: () => void }) => {
       },
       {
         withCredentials: true,
-      }
+      },
+      true
     );
 
     resetForm();

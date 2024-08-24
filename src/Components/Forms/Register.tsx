@@ -77,7 +77,8 @@ const Register = ({ toggleAuth }: { toggleAuth: () => void }) => {
       },
       {
         withCredentials: true,
-      }
+      },
+      true
     );
 
     resetForm();

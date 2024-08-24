@@ -10,7 +10,8 @@ interface UsePostDataResult<T> {
   postData: (
     url: string,
     payload: any,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
+    isModal?: boolean
   ) => Promise<void>;
 }
 
@@ -22,7 +23,8 @@ export const usePostData = <T>(): UsePostDataResult<T> => {
   const postData = async (
     url: string,
     payload: any,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
+    isModal?: boolean
   ) => {
     setIsLoading(true);
     setError(null);
@@ -34,22 +36,25 @@ export const usePostData = <T>(): UsePostDataResult<T> => {
       );
 
       setData(response.data.data);
-      Swal.fire({
-        title: "Success",
-        text: `${(response.data as any).msg}`,
-        icon: "success",
-        showConfirmButton: false,
-        timer: 3000,
-      });
+      if (isModal) {
+        Swal.fire({
+          title: "Success",
+          text: `${(response.data as any).msg}`,
+          icon: "success",
+          showConfirmButton: false,
+          timer: 3000,
+        });
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
-
       console.log({ err });
-      Swal.fire(
-        "Error",
-        (err as any).response.data.error.message || "Something went wrong!",
-        "error"
-      );
+      if (isModal) {
+        Swal.fire(
+          "Error",
+          (err as any).response.data.error.message || "Something went wrong!",
+          "error"
+        );
+      }
     } finally {
       setIsLoading(false);
     }

@@ -9,6 +9,7 @@ type InfiniteScrollType<T> = {
   url: string;
   data: T[];
   setData: (users: Partial<T>[]) => void;
+  extParams: any;
 };
 
 function useInfiniteScroll<T>({
@@ -17,6 +18,7 @@ function useInfiniteScroll<T>({
   pageNumber,
   url,
   setData,
+  extParams,
 }: InfiniteScrollType<T>) {
   const [loading, setLoading] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
@@ -33,7 +35,12 @@ function useInfiniteScroll<T>({
     axios({
       method: "GET",
       url: `${BASE_URL}${url}`,
-      params: { pageNo: pageNumber, perPage: 15, searchStr: query },
+      params: {
+        pageNo: pageNumber,
+        perPage: 15,
+        searchStr: query,
+        ...extParams,
+      },
       withCredentials: true,
       cancelToken: new axios.CancelToken((c) => (cancel = c)),
     })

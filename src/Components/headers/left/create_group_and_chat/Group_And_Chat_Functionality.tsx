@@ -15,7 +15,8 @@ const Group_And_Chat_Functionality = () => {
       {},
       {
         withCredentials: true,
-      }
+      },
+      true
     );
   };
 

@@ -13,3 +13,11 @@ export type AuthUser = {
   isBlocked: boolean;
   fcmToken?: string;
 };
+
+export type PrivateChatRoom = {
+  userId: string;
+  profileUrl: string;
+  name: string;
+  slugName: string;
+  roomId: string;
+};

@@ -28,6 +28,7 @@ const All_Users = ({
     setData: setUsers,
     isOpen: open,
     query: searchQuery,
+    extParams: { isShomes: true },
   });
 
   useEffect(() => {
@@ -82,6 +83,8 @@ const All_Users = ({
                       name={user?.name}
                       slugName={user?.slugName}
                       profile={user?.profileUrl}
+                      id={user?._id}
+                      setOpen={setOpen}
                     />
                   </div>
                 );
@@ -92,6 +95,8 @@ const All_Users = ({
                     name={user?.name}
                     slugName={user?.slugName}
                     profile={user?.profileUrl}
+                    id={user?._id}
+                    setOpen={setOpen}
                   />
                 );
               }

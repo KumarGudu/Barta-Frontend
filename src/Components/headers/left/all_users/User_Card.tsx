@@ -1,17 +1,60 @@
+import { usePostData } from "@/hooks/Api_Hooks";
+import useAuthStore from "@/stores/Auth.store";
+import useCurrentPrivateChatRoomStore from "@/stores/CurrentPvtChat.store";
 import { generateWhatsAppMessage } from "@/utils/functions";
-import React from "react";
+import React, { useEffect } from "react";
 
 const User_Card = ({
   name,
   profile,
   slugName,
+  id,
+  setOpen,
 }: {
   name: string;
   profile: string;
   slugName: string;
+  id: string;
+  setOpen: (value: boolean) => void;
 }) => {
+  const { data, error, isLoading, postData } = usePostData<any>();
+  const { setCurrentRoom } = useCurrentPrivateChatRoomStore();
+
+  const createPrivateGroupChat = async () => {
+    await postData(
+      "chat/create-private-group-shomes",
+      {
+        receiver: id,
+      },
+      {
+        withCredentials: true,
+      },
+      false
+    );
+  };
+
+  useEffect(() => {
+    if (data && !error) {
+      setCurrentRoom({
+        name: name,
+        slugName: slugName,
+        profileUrl: profile,
+        roomId: data?._id,
+        userId: id,
+      });
+      setOpen(false);
+    }
+
+    if (data === null) {
+      return () => {};
+    }
+  }, [data]);
+
   return (
-    <div className="flex items-center bg-gray-400 gap-3 px-2 py-2 rounded-md">
+    <div
+      className="flex items-center bg-gray-400 gap-3 px-2 py-2 rounded-md cursor-pointer"
+      onClick={createPrivateGroupChat}
+    >
       <div>
         <img
           src={
