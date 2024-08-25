@@ -1,6 +1,7 @@
 import { usePostData } from "@/hooks/Api_Hooks";
 import useAuthStore from "@/stores/Auth.store";
 import useCurrentPrivateChatRoomStore from "@/stores/CurrentPvtChat.store";
+import useSocketStore from "@/stores/Socket.store";
 import { generateWhatsAppMessage } from "@/utils/functions";
 import React, { useEffect } from "react";
 
@@ -19,6 +20,7 @@ const User_Card = ({
 }) => {
   const { data, error, isLoading, postData } = usePostData<any>();
   const { setCurrentRoom } = useCurrentPrivateChatRoomStore();
+  const { socket } = useSocketStore();
 
   const createPrivateGroupChat = async () => {
     await postData(
@@ -35,6 +37,16 @@ const User_Card = ({
 
   useEffect(() => {
     if (data && !error) {
+      // if (data?.isGroupChat) {
+      socket.emit("JOIN_ROOM", {
+        groupId: data?._id,
+        groupName: data?.name,
+        isPrivateGroup: data?.isGroupChat,
+      });
+      socket.on("ALERT", (message) => {
+        console.log(message);
+      });
+      // }
       setCurrentRoom({
         name: name,
         slugName: slugName,

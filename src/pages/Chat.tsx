@@ -4,6 +4,7 @@ import Auth_Layout from "@/components/normal/Auth_Layout";
 import useSocketStore from "@/stores/Socket.store";
 import Left_Nav_Bar from "@/components/headers/left/Left_Nav_Bar";
 import Right__Nav_Bar from "@/components/headers/right/Right__Nav_Bar";
+import { useSocket } from "@/hooks/Socket";
 
 type messageType = {
   id: string;
@@ -44,7 +45,7 @@ const messages: messageType[] = [
     message: "I am in bhubeneswar right now",
   },
   {
-    id: "2",
+    id: "6",
     sender: "p",
     receiver: "s",
     message: "Where are you now ??",
@@ -54,8 +55,10 @@ const messages: messageType[] = [
 const Chat = () => {
   const [message, setMessage] = useState<string>("");
   const { connect, disConnect } = useSocketStore();
+  const socketToConnect = useSocket();
+  const { socket } = useSocketStore();
   useEffect(() => {
-    connect();
+    connect(socketToConnect);
     return () => {
       disConnect();
     };

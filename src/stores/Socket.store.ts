@@ -1,19 +1,21 @@
 import { create } from "zustand";
-import io, { Socket } from "socket.io-client";
-import { socket } from "@/hooks/Socket";
+import { Socket } from "socket.io-client";
+import { ClientToServerEvents, ServerToClientEvents } from "@/types";
 
 type SocketState = {
-  socket: Socket | null;
+  socket: Socket<ServerToClientEvents, ClientToServerEvents> | null;
 };
 
 type SocketAction = {
-  connect: () => void;
+  connect: (
+    socket: Socket<ServerToClientEvents, ClientToServerEvents> | null
+  ) => void;
   disConnect: () => void;
 };
 
 const useSocketStore = create<SocketState & SocketAction>((set) => ({
   socket: null,
-  connect: () => {
+  connect: (socket) => {
     set({ socket });
   },
 
