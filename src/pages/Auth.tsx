@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { socket } from "@/hooks/Socket";
 import useAuthStore from "@/stores/Auth.store";
 const AuthLogin = dynamic(() => import("../components/Forms/Login"), {
   loading: () => <p>Loading...</p>,

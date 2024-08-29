@@ -21,3 +21,15 @@ export type PrivateChatRoom = {
   slugName: string;
   roomId: string;
 };
+
+export type LiveMsg = {
+  _id: string;
+  chatGroup: string;
+  content: string;
+  sender: {
+    name: string;
+    _id: string;
+  };
+  type: string;
+  createdAt: string;
+};

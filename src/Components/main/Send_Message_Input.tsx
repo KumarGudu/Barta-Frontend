@@ -1,4 +1,5 @@
 import useCurrentPrivateChatRoomStore from "@/stores/CurrentPvtChat.store";
+import useLiveMessageStore from "@/stores/LiveMassageStore";
 import useSocketStore from "@/stores/Socket.store";
 import React, {
   ChangeEvent,
@@ -9,17 +10,13 @@ import React, {
   useState,
 } from "react";
 
-const Send_Message_Input = ({
-  message,
-  setMessage,
-}: {
-  message: string;
-  setMessage: Dispatch<SetStateAction<string>>;
-}) => {
+const Send_Message_Input = () => {
   const [height, setHeight] = useState("auto");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [message, setMessage] = useState<string>("");
   const { currentRoom } = useCurrentPrivateChatRoomStore();
   const { socket } = useSocketStore();
+  const { setLiveMessage } = useLiveMessageStore();
 
   const adjustHeight = () => {
     if (textareaRef.current) {
@@ -52,7 +49,7 @@ const Send_Message_Input = ({
     if (socket) {
       socket.on("NEW_MESSAGE", async ({ groupId, message }) => {
         console.log("Message received");
-        console.log(groupId, message);
+        setLiveMessage(message);
       });
       return () => {
         socket.off("NEW_MESSAGE");
