@@ -1,14 +1,7 @@
 import useCurrentPrivateChatRoomStore from "@/stores/CurrentPvtChat.store";
 import useLiveMessageStore from "@/stores/LiveMassageStore";
 import useSocketStore from "@/stores/Socket.store";
-import React, {
-  ChangeEvent,
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 
 const Send_Message_Input = () => {
   const [height, setHeight] = useState("auto");
@@ -26,13 +19,16 @@ const Send_Message_Input = () => {
   };
 
   const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    setMessage(event.target.value);
+    const inComingText = event.target.value;
+    if (inComingText) {
+      setMessage(inComingText.trim());
+    }
   };
 
   const handleKeyDown = async (
     event: React.KeyboardEvent<HTMLTextAreaElement>
   ) => {
-    if (event.key === "Enter" && !event.shiftKey) {
+    if (event.key === "Enter" && !event.shiftKey && message) {
       event.preventDefault();
       const messageToSend = {
         groupId: currentRoom?.roomId,
@@ -55,7 +51,7 @@ const Send_Message_Input = () => {
         socket.off("NEW_MESSAGE");
       };
     }
-  }, [socket]);
+  }, [socket, setLiveMessage]);
 
   useEffect(() => {
     adjustHeight();

@@ -35,7 +35,7 @@ const Chat = () => {
           <div className="h-[4rem] bg-pink-300">
             <Right__Nav_Bar />
           </div>
-          <div className="h-[calc(100%-8rem)] overflow-y-auto">
+          <div className="h-[calc(100%-8rem)]">
             <Message_Cont />
           </div>
           <Send_Message_Input />

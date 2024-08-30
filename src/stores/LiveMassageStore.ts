@@ -13,7 +13,7 @@ const useLiveMessageStore = create<LiveMsgType & LiveMsgAction>((set) => ({
   messages: [],
   setLiveMessage: (msg: LiveMsg) => {
     set((state) => ({
-      messages: [...state.messages, msg],
+      messages: [msg, ...state.messages],
     }));
   },
 }));
