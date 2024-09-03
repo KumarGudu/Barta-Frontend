@@ -7,9 +7,9 @@ type InfiniteScrollType<T> = {
   isOpen?: boolean;
   pageNumber: number;
   url: string;
-  data: T[];
-  setData: (users: Partial<T>[]) => void;
-  extParams: any;
+  data?: T[];
+  setData?: (users: Partial<T>[]) => void;
+  extParams?: any;
 };
 
 function useInfiniteScroll<T>({
@@ -46,7 +46,7 @@ function useInfiniteScroll<T>({
     })
       .then((res) => {
         const newData: T[] = res?.data?.data;
-        setData(newData);
+        if (setData) setData(newData);
         setResData((prevData) => [...prevData, ...newData]);
         setHasMore(newData.length > 0);
         setLoading(false);

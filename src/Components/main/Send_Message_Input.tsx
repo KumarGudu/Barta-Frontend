@@ -19,16 +19,13 @@ const Send_Message_Input = () => {
   };
 
   const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    const inComingText = event.target.value;
-    if (inComingText) {
-      setMessage(inComingText.trim());
-    }
+    setMessage(event.target.value);
   };
 
   const handleKeyDown = async (
     event: React.KeyboardEvent<HTMLTextAreaElement>
   ) => {
-    if (event.key === "Enter" && !event.shiftKey && message) {
+    if (event.key === "Enter" && !event.shiftKey && message.trim()) {
       event.preventDefault();
       const messageToSend = {
         groupId: currentRoom?.roomId,
