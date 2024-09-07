@@ -1,6 +1,8 @@
+import useInfiniteScroll from "@/hooks/useInfiniteScroll";
 import useCurrentPrivateChatRoomStore from "@/stores/CurrentPvtChat.store";
 import useLiveMessageStore from "@/stores/LiveMassageStore";
 import useSocketStore from "@/stores/Socket.store";
+import { ConnectedChat } from "@/types";
 import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 
 const Send_Message_Input = () => {
@@ -10,6 +12,7 @@ const Send_Message_Input = () => {
   const { currentRoom } = useCurrentPrivateChatRoomStore();
   const { socket } = useSocketStore();
   const { setLiveMessage } = useLiveMessageStore();
+  const [isFirstMessage, setIsFirstMessage] = useState<boolean>(false);
 
   const adjustHeight = () => {
     if (textareaRef.current) {
@@ -37,7 +40,6 @@ const Send_Message_Input = () => {
     }
   };
 
-  // receive message
   useEffect(() => {
     if (socket) {
       socket.on("NEW_MESSAGE", async ({ groupId, message }) => {

@@ -52,6 +52,7 @@ const User_Card = ({
         slugName: slugName,
         profileUrl: profile,
         roomId: data?._id,
+        isMessaged: data?.isMessaged,
         userId: id,
       });
       setOpen(false);

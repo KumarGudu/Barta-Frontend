@@ -10,6 +10,7 @@ type InfiniteScrollType<T> = {
   data?: T[];
   setData?: (users: Partial<T>[]) => void;
   extParams?: any;
+  reset?: boolean;
 };
 
 function useInfiniteScroll<T>({
@@ -19,7 +20,9 @@ function useInfiniteScroll<T>({
   url,
   setData,
   extParams,
+  reset,
 }: InfiniteScrollType<T>) {
+  console.log("Coming... reset", reset);
   const [loading, setLoading] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
   const [hasMore, setHasMore] = useState<boolean>(false);
@@ -29,9 +32,7 @@ function useInfiniteScroll<T>({
     setResData([]);
   }, [query]);
 
-  useEffect(() => {
-    setLoading(true);
-    let cancel: any;
+  const fetchData = () => {
     axios({
       method: "GET",
       url: `${BASE_URL}${url}`,
@@ -42,7 +43,6 @@ function useInfiniteScroll<T>({
         ...extParams,
       },
       withCredentials: true,
-      cancelToken: new axios.CancelToken((c) => (cancel = c)),
     })
       .then((res) => {
         const newData: T[] = res?.data?.data;
@@ -56,7 +56,15 @@ function useInfiniteScroll<T>({
         if (axios.isCancel(err)) return;
         setIsError(true);
       });
-    return () => cancel();
+  };
+
+  useEffect(() => {
+    if (reset) fetchData();
+  }, [reset]);
+
+  useEffect(() => {
+    setLoading(true);
+    fetchData();
   }, [query, pageNumber, isOpen]);
 
   return { loading, isError, resData, hasMore };

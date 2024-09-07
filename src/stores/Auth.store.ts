@@ -39,7 +39,6 @@ const useAuthStore = create<AuthState & AuthAction>((set) => ({
           method: "GET",
           credentials: "include",
         });
-        console.log({ accessRes });
         if (accessRes.status === 200) {
           res = await fetch(`${BASE_URL}auth/self`, {
             method: "GET",
