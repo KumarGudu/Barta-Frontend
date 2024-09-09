@@ -1,4 +1,6 @@
 import useInfiniteScroll from "@/hooks/useInfiniteScroll";
+import { useSwrInfiniteScroll } from "@/hooks/useSwrInfiniteScroll";
+import useConnectedChatStore from "@/stores/AllConnectedChat.store";
 import useCurrentPrivateChatRoomStore from "@/stores/CurrentPvtChat.store";
 import useLiveMessageStore from "@/stores/LiveMassageStore";
 import useSocketStore from "@/stores/Socket.store";
@@ -12,7 +14,7 @@ const Send_Message_Input = () => {
   const { currentRoom } = useCurrentPrivateChatRoomStore();
   const { socket } = useSocketStore();
   const { setLiveMessage } = useLiveMessageStore();
-  const [isFirstMessage, setIsFirstMessage] = useState<boolean>(false);
+  const { connectedChatMutate } = useConnectedChatStore();
 
   const adjustHeight = () => {
     if (textareaRef.current) {
@@ -35,6 +37,7 @@ const Send_Message_Input = () => {
         type: "TEXT",
         message: message,
       };
+      if (currentRoom?.isMessaged === false) connectedChatMutate();
       socket.emit("NEW_MESSAGE", messageToSend);
       setMessage("");
     }

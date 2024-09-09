@@ -45,13 +45,14 @@ type Admin_Type = {
   email: string;
 };
 
-type Member_Type = {
+export type Member_Type = {
   _id: string;
   role: string;
   name: string;
   email: string;
   isVerified: boolean;
   slugName: string;
+  profileUrl: string;
 };
 
 type Lst_Message_Type = {

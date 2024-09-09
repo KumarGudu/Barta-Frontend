@@ -28,9 +28,9 @@ const Chat = () => {
               <h1>Search bar</h1>
             </div>
           </div>
-          <div className="h-[calc(100%-6.5rem)] bg-red-500  overflow-y-auto p-4 flex flex-col gap-4">
-            <All_Connected_Chat />
-          </div>
+          <All_Connected_Chat />
+          {/* <div className="h-[calc(100%-6.5rem)] bg-red-500  overflow-y-auto p-4 flex flex-col gap-4">
+          </div> */}
         </div>
         <div className="bg-yellow-300 w-[calc(100%-25rem)] relative">
           <div className="h-[4rem] bg-pink-300">
