@@ -3,18 +3,21 @@ import { useSwrInfiniteScroll } from "@/hooks/useSwrInfiniteScroll";
 import useConnectedChatStore from "@/stores/AllConnectedChat.store";
 import useCurrentPrivateChatRoomStore from "@/stores/CurrentPvtChat.store";
 import useLiveMessageStore from "@/stores/LiveMassageStore";
+import useNotificationStore from "@/stores/Notification.store";
 import useSocketStore from "@/stores/Socket.store";
-import { ConnectedChat } from "@/types";
+import { ConnectedChat, LiveMsg } from "@/types";
 import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 
 const Send_Message_Input = () => {
   const [height, setHeight] = useState("auto");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [message, setMessage] = useState<string>("");
+  const [liveMsg, setLiveMsg] = useState<LiveMsg | null>(null);
   const { currentRoom } = useCurrentPrivateChatRoomStore();
   const { socket } = useSocketStore();
   const { setLiveMessage } = useLiveMessageStore();
   const { connectedChatMutate } = useConnectedChatStore();
+  const { setNotification } = useNotificationStore();
 
   const adjustHeight = () => {
     if (textareaRef.current) {
@@ -37,23 +40,41 @@ const Send_Message_Input = () => {
         type: "TEXT",
         message: message,
       };
-      if (currentRoom?.isMessaged === false) connectedChatMutate();
+
       socket.emit("NEW_MESSAGE", messageToSend);
+      connectedChatMutate();
       setMessage("");
     }
   };
 
   useEffect(() => {
     if (socket) {
+      console.log("STATUS", currentRoom?.isMessaged);
       socket.on("NEW_MESSAGE", async ({ groupId, message }) => {
-        console.log("Message received");
         setLiveMessage(message);
+        setLiveMsg(message);
       });
+
+      if (currentRoom?.isMessaged === false) {
+        connectedChatMutate();
+      }
       return () => {
         socket.off("NEW_MESSAGE");
       };
     }
   }, [socket, setLiveMessage]);
+
+  useEffect(() => {
+    console.log("Coming...LLLL");
+    if (socket) {
+      socket.on("NEW_MESSAGE_ALERT", async ({ groupId }) => {
+        console.log("A New Message Coming..................LLLLLLLLLLL");
+
+        if (groupId === currentRoom?.roomId) return;
+        console.log("A New Message Coming..................>>>>>>>>>");
+      });
+    }
+  }, [socket]);
 
   useEffect(() => {
     adjustHeight();

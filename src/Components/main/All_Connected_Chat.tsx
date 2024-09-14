@@ -1,6 +1,8 @@
 import { useSwrInfiniteScroll } from "@/hooks/useSwrInfiniteScroll";
 import useConnectedChatStore from "@/stores/AllConnectedChat.store";
 import useAuthStore from "@/stores/Auth.store";
+import useCurrentPrivateChatRoomStore from "@/stores/CurrentPvtChat.store";
+import useSocketStore from "@/stores/Socket.store";
 import { ConnectedChat, Member_Type } from "@/types";
 import React, { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -8,6 +10,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 const All_Connected_Chat = () => {
   const { SetConnectedChatMutate } = useConnectedChatStore();
   const { user } = useAuthStore();
+  const { socket } = useSocketStore();
 
   const {
     convertedData: connectedChats,
@@ -26,6 +29,33 @@ const All_Connected_Chat = () => {
   useEffect(() => {
     SetConnectedChatMutate(mutate);
   }, [isReachedEnd, mutate]);
+
+  // set current private room chat for a normal user
+
+  const { setCurrentRoom } = useCurrentPrivateChatRoomStore();
+  const setCurrentPrivateRoomInfoForNormalUser = ({
+    chat,
+    receiver,
+  }: {
+    chat: ConnectedChat;
+    receiver: Member_Type;
+  }) => {
+    if (socket) {
+      socket.emit("JOIN_ROOM", {
+        groupId: chat?._id,
+        groupName: chat?.name,
+        isPrivateGroup: chat?.isGroupChat,
+      });
+    }
+    setCurrentRoom({
+      name: receiver?.name,
+      slugName: receiver?.slugName,
+      profileUrl: receiver?.profileUrl,
+      roomId: chat?._id,
+      isMessaged: chat?.isMessaged,
+      userId: receiver?._id,
+    });
+  };
 
   return (
     <div
@@ -74,6 +104,9 @@ const All_Connected_Chat = () => {
             <div
               key={chat?._id}
               className="w-full bg-white px-3 flex items-center gap-2 py-2 rounded-md cursor-pointer"
+              onClick={() =>
+                setCurrentPrivateRoomInfoForNormalUser({ chat, receiver })
+              }
             >
               <img
                 src={receiver?.profileUrl}

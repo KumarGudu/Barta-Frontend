@@ -16,6 +16,13 @@ export type AuthUser = {
   fcmToken?: string;
 };
 
+export type NotificationType = {
+  name?: string;
+  groupName?: string;
+  message?: string;
+  time?: Date;
+};
+
 export type PrivateChatRoom = {
   userId: string;
   profileUrl: string;
@@ -65,6 +72,7 @@ export type ConnectedChat = {
   _id: string;
   name: string;
   isGroupChat: boolean;
+  isMessaged: boolean;
   admin: Admin_Type;
   profile: 1;
   memberDetails?: Member_Type[];

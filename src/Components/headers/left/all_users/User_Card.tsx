@@ -37,16 +37,13 @@ const User_Card = ({
 
   useEffect(() => {
     if (data && !error) {
-      // if (data?.isGroupChat) {
       socket.emit("JOIN_ROOM", {
         groupId: data?._id,
         groupName: data?.name,
         isPrivateGroup: data?.isGroupChat,
+        members: data?.members,
       });
-      socket.on("ALERT", (message) => {
-        console.log(message);
-      });
-      // }
+
       setCurrentRoom({
         name: name,
         slugName: slugName,
