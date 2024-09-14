@@ -35,13 +35,27 @@ const Send_Message_Input = () => {
   ) => {
     if (event.key === "Enter" && !event.shiftKey && message.trim()) {
       event.preventDefault();
-      const messageToSend = {
-        groupId: currentRoom?.roomId,
-        type: "TEXT",
-        message: message,
-      };
 
-      socket.emit("NEW_MESSAGE", messageToSend);
+      if (currentRoom?.isMessaged === false) {
+        console.log("COming..............IS_MESSAGED");
+        const messageToSend = {
+          groupId: currentRoom?.roomId,
+          type: "TEXT",
+          message: message,
+          isFirstTime: true,
+          members: currentRoom?.members,
+        };
+
+        socket.emit("NEW_MESSAGE", messageToSend);
+      } else {
+        const messageToSend = {
+          groupId: currentRoom?.roomId,
+          type: "TEXT",
+          message: message,
+        };
+        socket.emit("NEW_MESSAGE", messageToSend);
+      }
+
       connectedChatMutate();
       setMessage("");
     }
@@ -55,26 +69,11 @@ const Send_Message_Input = () => {
         setLiveMsg(message);
       });
 
-      if (currentRoom?.isMessaged === false) {
-        connectedChatMutate();
-      }
       return () => {
         socket.off("NEW_MESSAGE");
       };
     }
   }, [socket, setLiveMessage]);
-
-  useEffect(() => {
-    console.log("Coming...LLLL");
-    if (socket) {
-      socket.on("NEW_MESSAGE_ALERT", async ({ groupId }) => {
-        console.log("A New Message Coming..................LLLLLLLLLLL");
-
-        if (groupId === currentRoom?.roomId) return;
-        console.log("A New Message Coming..................>>>>>>>>>");
-      });
-    }
-  }, [socket]);
 
   useEffect(() => {
     adjustHeight();

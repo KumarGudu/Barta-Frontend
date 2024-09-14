@@ -15,8 +15,8 @@ const Message_Cont = () => {
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
   }, [messages]);
+
   useEffect(() => {
-    console.log("Coming77777777777777777777777777");
     if (socket) {
       socket.on("ALERT", (message) => {
         console.log("Message=============>", message);

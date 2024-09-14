@@ -29,6 +29,14 @@ export interface ServerToClientEvents {
     groupId: string;
     message: any;
   }) => void;
+
+  FIRST_TIME_MESSAGE: ({
+    groupId,
+    message,
+  }: {
+    groupId: string;
+    message: any;
+  }) => void;
   NEW_MESSAGE_ALERT: ({ groupId }: { groupId: string }) => void;
 }
 
@@ -43,15 +51,19 @@ export interface ClientToServerEvents {
     groupId: string;
     isPrivateGroup: boolean;
     groupName: string;
-    members?: string[];
+    members: string[];
   }) => void;
   NEW_MESSAGE: ({
     groupId,
     type,
     message,
+    isFirstTime,
+    members,
   }: {
     groupId: string;
     type: string;
     message: string;
+    isFirstTime?: boolean;
+    members?: string[];
   }) => void;
 }

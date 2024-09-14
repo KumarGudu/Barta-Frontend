@@ -11,6 +11,7 @@ const All_Connected_Chat = () => {
   const { SetConnectedChatMutate } = useConnectedChatStore();
   const { user } = useAuthStore();
   const { socket } = useSocketStore();
+  const { connectedChatMutate } = useConnectedChatStore();
 
   const {
     convertedData: connectedChats,
@@ -45,6 +46,7 @@ const All_Connected_Chat = () => {
         groupId: chat?._id,
         groupName: chat?.name,
         isPrivateGroup: chat?.isGroupChat,
+        members: chat?.memberDetails?.map((member: Member_Type) => member._id),
       });
     }
     setCurrentRoom({
@@ -54,8 +56,18 @@ const All_Connected_Chat = () => {
       roomId: chat?._id,
       isMessaged: chat?.isMessaged,
       userId: receiver?._id,
+      members: chat?.memberDetails?.map((member: Member_Type) => member._id),
     });
   };
+
+  useEffect(() => {
+    if (socket) {
+      console.log("Coming.....FIRST_TIME");
+      socket.on("FIRST_TIME_MESSAGE", async ({ groupId, message }) => {
+        connectedChatMutate();
+      });
+    }
+  }, [socket]);
 
   return (
     <div
@@ -96,7 +108,13 @@ const All_Connected_Chat = () => {
           }
 
           return user?.role === "ADMIN" ? (
-            <div key={chat?._id} className="w-full bg-white px-3">
+            <div
+              key={chat?._id}
+              className="w-full bg-white px-3 cursor-pointer"
+              onClick={() =>
+                setCurrentPrivateRoomInfoForNormalUser({ chat, receiver })
+              }
+            >
               <p className="text-gray-700">{chat?.name}</p>
               <p className="text-gray-900">{chat?._id}</p>
             </div>

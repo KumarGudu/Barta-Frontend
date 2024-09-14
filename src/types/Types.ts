@@ -30,6 +30,7 @@ export type PrivateChatRoom = {
   slugName: string;
   roomId: string;
   isMessaged: boolean;
+  members?: string[];
 };
 
 export type LiveMsg = {

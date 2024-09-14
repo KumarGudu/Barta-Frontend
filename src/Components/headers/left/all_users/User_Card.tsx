@@ -51,6 +51,7 @@ const User_Card = ({
         roomId: data?._id,
         isMessaged: data?.isMessaged,
         userId: id,
+        members: data?.members,
       });
       setOpen(false);
     }
