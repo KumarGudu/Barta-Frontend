@@ -7,14 +7,23 @@ type CurrentPvtChatRoomState = {
 
 type CurrentPvtChatRoomAction = {
   setCurrentRoom: (chatRoom: PrivateChatRoom) => void;
+  refreshCurrentRoom: () => void;
 };
 
 const useCurrentPrivateChatRoomStore = create<
   CurrentPvtChatRoomState & CurrentPvtChatRoomAction
->((set) => ({
+>((set, get) => ({
+  currentRoom: undefined,
   setCurrentRoom: (chatRoom: PrivateChatRoom) => {
     set({
       currentRoom: { ...chatRoom },
+    });
+  },
+  refreshCurrentRoom: () => {
+    console.log("COMING.........");
+    const currentRoom = get().currentRoom;
+    set({
+      currentRoom: { ...currentRoom },
     });
   },
 }));

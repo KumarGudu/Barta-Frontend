@@ -13,7 +13,7 @@ const Send_Message_Input = () => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [message, setMessage] = useState<string>("");
   const [liveMsg, setLiveMsg] = useState<LiveMsg | null>(null);
-  const { currentRoom } = useCurrentPrivateChatRoomStore();
+  const { currentRoom, setCurrentRoom } = useCurrentPrivateChatRoomStore();
   const { socket } = useSocketStore();
   const { setLiveMessage } = useLiveMessageStore();
   const { connectedChatMutate } = useConnectedChatStore();
@@ -47,6 +47,13 @@ const Send_Message_Input = () => {
         };
 
         socket.emit("NEW_MESSAGE", messageToSend);
+        // update the current chat room that is messaged is become true
+        setCurrentRoom({
+          ...currentRoom,
+          isMessaged: true,
+        });
+
+        console.log("ROOM", { currentRoom });
       } else {
         const messageToSend = {
           groupId: currentRoom?.roomId,
