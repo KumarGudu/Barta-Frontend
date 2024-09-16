@@ -7,9 +7,12 @@ import Right__Nav_Bar from "@/components/headers/right/Right__Nav_Bar";
 import { useSocket } from "@/hooks/Socket";
 import Message_Cont from "@/components/main/Message_Cont";
 import All_Connected_Chat from "@/components/main/All_Connected_Chat";
+import useCurrentPrivateChatRoomStore from "@/stores/CurrentPvtChat.store";
+import DefaultLeftSide from "@/components/main/DefaultLeftSide";
 
 const Chat = () => {
   const { connect, disConnect } = useSocketStore();
+  const { currentRoom } = useCurrentPrivateChatRoomStore();
   const socketToConnect = useSocket();
   useEffect(() => {
     connect(socketToConnect);
@@ -30,15 +33,22 @@ const Chat = () => {
           </div>
           <All_Connected_Chat />
         </div>
-        <div className="bg-yellow-300 w-[calc(100%-25rem)] relative">
-          <div className="h-[4rem] bg-pink-300">
-            <Right__Nav_Bar />
+
+        {currentRoom ? (
+          <div className="bg-yellow-300 w-[calc(100%-25rem)] relative">
+            <div className="h-[4rem] bg-pink-300">
+              <Right__Nav_Bar />
+            </div>
+            <div className="h-[calc(100%-8rem)]">
+              <Message_Cont />
+            </div>
+            <Send_Message_Input />
           </div>
-          <div className="h-[calc(100%-8rem)]">
-            <Message_Cont />
+        ) : (
+          <div className="bg-yellow-300 w-[calc(100%-25rem)] relative">
+            <DefaultLeftSide />
           </div>
-          <Send_Message_Input />
-        </div>
+        )}
       </main>
     </Auth_Layout>
   );

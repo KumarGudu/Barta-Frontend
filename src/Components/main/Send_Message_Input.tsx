@@ -37,7 +37,6 @@ const Send_Message_Input = () => {
       event.preventDefault();
 
       if (currentRoom?.isMessaged === false) {
-        console.log("COming..............IS_MESSAGED");
         const messageToSend = {
           groupId: currentRoom?.roomId,
           type: "TEXT",
@@ -52,8 +51,6 @@ const Send_Message_Input = () => {
           ...currentRoom,
           isMessaged: true,
         });
-
-        console.log("ROOM", { currentRoom });
       } else {
         const messageToSend = {
           groupId: currentRoom?.roomId,
@@ -70,7 +67,6 @@ const Send_Message_Input = () => {
 
   useEffect(() => {
     if (socket) {
-      console.log("STATUS", currentRoom?.isMessaged);
       socket.on("NEW_MESSAGE", async ({ groupId, message }) => {
         setLiveMessage(message);
         setLiveMsg(message);

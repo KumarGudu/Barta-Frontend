@@ -62,11 +62,14 @@ const All_Connected_Chat = () => {
 
   useEffect(() => {
     if (socket) {
-      console.log("Coming.....FIRST_TIME");
       socket.on("FIRST_TIME_MESSAGE", async ({ groupId, message }) => {
         connectedChatMutate();
       });
     }
+
+    return () => {
+      if (socket) socket.off("FIRST_TIME_MESSAGE");
+    };
   }, [socket]);
 
   return (

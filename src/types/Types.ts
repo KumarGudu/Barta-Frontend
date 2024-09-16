@@ -37,12 +37,15 @@ export type LiveMsg = {
   _id: string;
   chatGroup: string;
   content: string;
-  sender: {
-    name: string;
-    _id: string;
-  };
+  attachments?: any[];
   type: string;
+  sender: {
+    _id: string;
+    name: string;
+    email: string;
+  };
   createdAt: string;
+  updatedAt: string;
 };
 
 // connected type
