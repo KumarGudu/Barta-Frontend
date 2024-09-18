@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import Swal from "sweetalert2";
 import { BASE_URL } from "@/utils";
+import { headers } from "next/headers";
 
 interface UsePostDataResult<T> {
   data: T | null;
@@ -32,7 +33,13 @@ export const usePostData = <T>(): UsePostDataResult<T> => {
       const response: AxiosResponse<{ data: T }> = await axios.post(
         BASE_URL + url,
         payload,
-        config
+        {
+          ...config,
+          headers: {
+            "Content-Type": "multipart/form-data",
+            ...config?.headers,
+          },
+        }
       );
 
       setData(response.data.data);

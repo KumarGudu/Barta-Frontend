@@ -7,6 +7,8 @@ import useLiveMessageStore from "@/stores/LiveMassageStore";
 import useSocketStore from "@/stores/Socket.store";
 import { LiveMsg } from "@/types";
 import React, { useEffect, useRef, useState } from "react";
+import homeImg from "../../../public/home.jpg";
+import Image from "next/image";
 
 const Message_Cont = () => {
   const { messages } = useLiveMessageStore();
@@ -21,19 +23,6 @@ const Message_Cont = () => {
     pageNumber: pageNumber,
     url: `chat/get-all-chats/${currentRoom?.roomId}`,
   });
-  // const {
-  //   convertedData: dataMsgs,
-  //   size,
-  //   setSize,
-  //   isValidating,
-  //   error,
-  //   mutate,
-  //   isReachedEnd,
-  //   loadingMore,
-  // } = useSwrInfiniteScroll<LiveMsg>({
-  //   url: `chat/get-all-chats/${currentRoom?.roomId}`,
-  //   perPage: 20,
-  // });
 
   useEffect(() => {
     if (socket) {
@@ -50,6 +39,11 @@ const Message_Cont = () => {
   const allMessages =
     resData && resData?.length > 0 ? [...messages, ...resData] : [...messages];
 
+  const { setCurrentRoom } = useCurrentPrivateChatRoomStore();
+  useEffect(() => {
+    setPageNumber(1);
+  }, [setCurrentRoom]);
+
   const getMsgContCls = (userId: string, senderId: string) => {
     const className =
       userId !== senderId
@@ -65,11 +59,11 @@ const Message_Cont = () => {
   });
 
   return (
-    <div className="flex flex-col-reverse overflow-y-auto h-full p-4 overflow-x-hidden gap-3">
+    <div className="flex flex-col-reverse overflow-y-auto h-full px-14 py-4 overflow-x-hidden gap-3">
       {allMessages &&
         allMessages.map((msg: Partial<LiveMsg>, index: number) => {
           if (resData?.length === index + 1) {
-            return (
+            return msg?.type === "TEXT" ? (
               <div ref={lastBookElementRef} key={msg._id}>
                 <div
                   key={msg?._id}
@@ -78,14 +72,41 @@ const Message_Cont = () => {
                   <p>{msg?.content}</p>
                 </div>
               </div>
+            ) : (
+              <div
+                ref={lastBookElementRef}
+                key={msg._id}
+                className={getMsgContCls(user?._id, msg?.sender?._id)}
+              >
+                <img
+                  src={msg?.attachments[0]?.mediaUrl}
+                  alt="home"
+                  width={200}
+                  height={100}
+                  className="object-contain"
+                />
+              </div>
             );
           } else {
-            return (
+            return msg?.type === "TEXT" ? (
               <div
                 key={msg?._id}
                 className={getMsgContCls(user?._id, msg?.sender?._id)}
               >
                 <p>{msg?.content}</p>
+              </div>
+            ) : (
+              <div
+                key={msg._id}
+                className={getMsgContCls(user?._id, msg?.sender?._id)}
+              >
+                <img
+                  src={msg?.attachments[0]?.mediaUrl}
+                  alt="home"
+                  width={200}
+                  height={100}
+                  className="object-contain"
+                />
               </div>
             );
           }
@@ -102,15 +123,6 @@ const Message_Cont = () => {
           <p>Error</p>
         </div>
       )}
-
-      {/* {allMessages.map((msg: LiveMsg, index: number) => (
-        <div
-          key={msg?._id}
-          className={getMsgContCls(user?._id, msg?.sender?._id)}
-        >
-          <p>{msg?.content}</p>
-        </div>
-      ))} */}
     </div>
   );
 };

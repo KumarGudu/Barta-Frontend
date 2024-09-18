@@ -50,7 +50,7 @@ const All_Connected_Chat = () => {
       });
     }
     setCurrentRoom({
-      name: receiver?.name,
+      name: chat?.name,
       slugName: receiver?.slugName,
       profileUrl: receiver?.profileUrl,
       roomId: chat?._id,

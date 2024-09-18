@@ -33,16 +33,21 @@ export type PrivateChatRoom = {
   members?: string[];
 };
 
+export type MediaType = {
+  mediaUrl: string;
+  mediaPath: string;
+};
+
 export type LiveMsg = {
   _id: string;
   chatGroup: string;
-  content: string;
-  attachments?: any[];
+  content?: string;
+  attachments?: MediaType[];
   type: string;
   sender: {
     _id: string;
     name: string;
-    email: string;
+    email?: string;
   };
   createdAt: string;
   updatedAt: string;
