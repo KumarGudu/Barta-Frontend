@@ -29,6 +29,7 @@ export type PrivateChatRoom = {
   name: string;
   slugName: string;
   roomId: string;
+  isGroupChat?: boolean;
   isMessaged: boolean;
   members?: string[];
 };

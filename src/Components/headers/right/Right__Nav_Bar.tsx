@@ -1,8 +1,19 @@
 import useCurrentPrivateChatRoomStore from "@/stores/CurrentPvtChat.store";
-import React, { useEffect } from "react";
+import useSocketStore from "@/stores/Socket.store";
+import React, { useEffect, useState } from "react";
 
 const Right__Nav_Bar = () => {
   const { currentRoom } = useCurrentPrivateChatRoomStore();
+  const [isOnline, setIsOnline] = useState<boolean>(false);
+  const { socket } = useSocketStore();
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("USER_ONLINE", ({ groupId, userId }) => {
+        setIsOnline(true);
+      });
+    }
+  }, [socket]);
 
   return (
     <div className="flex items-center gap-4 h-full px-7">

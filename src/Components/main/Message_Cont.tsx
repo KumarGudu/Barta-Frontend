@@ -7,27 +7,39 @@ import useLiveMessageStore from "@/stores/LiveMassageStore";
 import useSocketStore from "@/stores/Socket.store";
 import { LiveMsg } from "@/types";
 import React, { useEffect, useRef, useState } from "react";
-import homeImg from "../../../public/home.jpg";
-import Image from "next/image";
 
 const Message_Cont = () => {
-  const { messages } = useLiveMessageStore();
+  let { messages, setLiveMessages } = useLiveMessageStore();
   const { user } = useAuthStore();
   const { currentRoom } = useCurrentPrivateChatRoomStore();
   const { socket } = useSocketStore();
   const [pageNumber, setPageNumber] = useState<number>(1);
+  const [reset, setReset] = useState<boolean>(false);
+
+  useEffect(() => {
+    setPageNumber(1);
+    setLiveMessages([]);
+    setReset(true);
+  }, [currentRoom]);
 
   const { loading, resData, hasMore, isError } = useInfiniteScroll<
     Partial<LiveMsg>
   >({
     pageNumber: pageNumber,
     url: `chat/get-all-chats/${currentRoom?.roomId}`,
+    reset,
   });
+
+  useEffect(() => {
+    if (reset) {
+      setReset(false);
+    }
+  }, [resData]);
 
   useEffect(() => {
     if (socket) {
       socket.on("ALERT", (message) => {
-        console.log("Message=============>", message);
+        console.log("Message===========", message);
       });
     }
 
@@ -35,6 +47,26 @@ const Message_Cont = () => {
       if (socket) socket.off("ALERT");
     };
   }, [socket]);
+
+  useEffect(() => {
+    if (socket) {
+      socket.emit("JOIN_ROOM", {
+        groupId: currentRoom?.roomId,
+        groupName: currentRoom?.name,
+        isPrivateGroup: currentRoom?.isGroupChat,
+        members: currentRoom?.members,
+      });
+    }
+
+    return () => {
+      if (socket)
+        socket.emit("LEAVE_ROOM", {
+          groupId: currentRoom?.roomId,
+          groupName: currentRoom?.name,
+          isPrivateGroup: currentRoom?.isGroupChat,
+        });
+    };
+  }, [socket, currentRoom]);
 
   const allMessages =
     resData && resData?.length > 0 ? [...messages, ...resData] : [...messages];
@@ -62,7 +94,7 @@ const Message_Cont = () => {
     <div className="flex flex-col-reverse overflow-y-auto h-full px-14 py-4 overflow-x-hidden gap-3">
       {allMessages &&
         allMessages.map((msg: Partial<LiveMsg>, index: number) => {
-          if (resData?.length === index + 1) {
+          if (allMessages?.length === index) {
             return msg?.type === "TEXT" ? (
               <div ref={lastBookElementRef} key={msg._id}>
                 <div

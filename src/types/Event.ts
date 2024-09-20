@@ -10,9 +10,33 @@ export type MSG_TYPE =
 
 export interface ServerToClientEvents {
   ALERT: (message: string) => void;
-  DEMO: (message: string) => void;
+  USER_ONLINE: ({
+    groupId,
+    userId,
+  }: {
+    groupId: string;
+    userId: string;
+  }) => void;
+
+  USER_OFFLINE: ({
+    groupId,
+    userId,
+  }: {
+    groupId: string;
+    userId: string;
+  }) => void;
 
   JOIN_ROOM: ({
+    groupId,
+    isPrivateGroup,
+    groupName,
+  }: {
+    groupId: string;
+    isPrivateGroup: boolean;
+    groupName: string;
+  }) => void;
+
+  LEAVE_ROOM: ({
     groupId,
     isPrivateGroup,
     groupName,
@@ -52,6 +76,16 @@ export interface ClientToServerEvents {
     isPrivateGroup: boolean;
     groupName: string;
     members: string[];
+  }) => void;
+
+  LEAVE_ROOM: ({
+    groupId,
+    isPrivateGroup,
+    groupName,
+  }: {
+    groupId: string;
+    isPrivateGroup: boolean;
+    groupName: string;
   }) => void;
   NEW_MESSAGE: ({
     groupId,

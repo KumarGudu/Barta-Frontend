@@ -20,7 +20,6 @@ const User_Card = ({
 }) => {
   const { data, error, isLoading, postData } = usePostData<any>();
   const { setCurrentRoom } = useCurrentPrivateChatRoomStore();
-  const { socket } = useSocketStore();
 
   const createPrivateGroupChat = async () => {
     await postData(
@@ -37,13 +36,6 @@ const User_Card = ({
 
   useEffect(() => {
     if (data && !error) {
-      socket.emit("JOIN_ROOM", {
-        groupId: data?._id,
-        groupName: data?.name,
-        isPrivateGroup: data?.isGroupChat,
-        members: data?.members,
-      });
-
       setCurrentRoom({
         name: name,
         slugName: slugName,
