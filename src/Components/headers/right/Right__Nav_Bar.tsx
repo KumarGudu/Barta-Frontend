@@ -12,12 +12,18 @@ type MEMBER = {
   email: string;
   role: string;
 };
+
+type TYPE_USER = {
+  userId: string;
+  name: string;
+};
 const Right__Nav_Bar = () => {
   const { currentRoom } = useCurrentPrivateChatRoomStore();
   const { socket } = useSocketStore();
   const { user } = useAuthStore();
   const [groupMembers, setGroupMembers] = useState<MEMBER[]>([]);
   const { onlineUsers, setOnlineUsers } = useOnlineUsersStore();
+  const [typeUsers, setTypeUsers] = useState<string[]>([]);
 
   //get member info of a group
   const options = {
@@ -41,9 +47,35 @@ const Right__Nav_Bar = () => {
       socket.on("ONLINE_USERS", (users) => {
         setOnlineUsers(users);
       });
+
+      socket.on("START_TYPING", ({ groupId, userId, name }) => {
+        setTypeUsers((prevUsers) => {
+          if (!prevUsers.includes(userId)) {
+            return [...prevUsers, userId];
+          }
+          return prevUsers;
+        });
+      });
+
+      socket.on("STOP_TYPING", ({ groupId, userId, name }) => {
+        setTypeUsers((prevUsers) => {
+          if (prevUsers.includes(userId)) {
+            const filteredTypeUsers = prevUsers.filter(
+              (user) => user !== userId
+            );
+            return filteredTypeUsers;
+          }
+          return prevUsers;
+        });
+      });
     }
+
     return () => {
-      if (socket) socket.off("ONLINE_USERS");
+      if (socket) {
+        socket.off("ONLINE_USERS");
+        socket.off("STOP_TYPING");
+        socket.off("START_TYPING");
+      }
     };
   }, [socket]);
 
@@ -68,7 +100,15 @@ const Right__Nav_Bar = () => {
             <div>
               {groupMembers?.map((member: MEMBER) => {
                 if (user?._id !== member._id) {
-                  if (onlineUsers.includes(member._id)) {
+                  if (
+                    onlineUsers.includes(member._id) &&
+                    typeUsers.includes(member._id)
+                  ) {
+                    return <p key={member?._id}>{member?.name} typing...</p>;
+                  } else if (
+                    onlineUsers.includes(member._id) &&
+                    (!typeUsers.includes(member._id) || typeUsers.length === 0)
+                  ) {
                     return <p key={member?._id}>{member?.name}*</p>;
                   } else {
                     return <p key={member?._id}>{member?.name}</p>;
@@ -81,8 +121,15 @@ const Right__Nav_Bar = () => {
           <div>
             {groupMembers?.map((member: MEMBER) => {
               if (member?.role !== "ADMIN" && user?._id !== member?._id) {
-                if (onlineUsers.includes(member._id)) {
-                  console.log("coming.....", member._id, onlineUsers);
+                if (
+                  onlineUsers.includes(member._id) &&
+                  typeUsers.includes(member._id)
+                ) {
+                  return <p key={member?._id}>{member?.name} typing...</p>;
+                } else if (
+                  onlineUsers.includes(member._id) &&
+                  (!typeUsers.includes(member._id) || typeUsers.length === 0)
+                ) {
                   return <p key={member?._id}>{member?.name}*</p>;
                 } else {
                   return <p key={member?._id}>{member?.name}</p>;

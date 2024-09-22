@@ -11,6 +11,7 @@ import { FiPlus } from "react-icons/fi";
 import { BsEmojiSmile } from "react-icons/bs";
 import { LuSendHorizonal } from "react-icons/lu";
 import ChooseMedia from "../MessageInput/ChooseMedia";
+import useAuthStore from "@/stores/Auth.store";
 
 const Send_Message_Input = () => {
   const [height, setHeight] = useState("auto");
@@ -21,7 +22,8 @@ const Send_Message_Input = () => {
   const { socket } = useSocketStore();
   const { setLiveMessage } = useLiveMessageStore();
   const { connectedChatMutate } = useConnectedChatStore();
-  const { setNotification } = useNotificationStore();
+  const { user } = useAuthStore();
+  const typingTimeout = useRef(null);
 
   const adjustHeight = () => {
     if (textareaRef.current) {
@@ -32,6 +34,26 @@ const Send_Message_Input = () => {
 
   const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setMessage(event.target.value);
+
+    if (socket) {
+      socket.emit("START_TYPING", {
+        groupId: currentRoom?.roomId,
+        name: user?.name,
+        userId: user?._id,
+      });
+
+      if (typingTimeout.current) {
+        clearTimeout(typingTimeout.current);
+      }
+
+      typingTimeout.current = setTimeout(() => {
+        socket.emit("STOP_TYPING", {
+          groupId: currentRoom?.roomId,
+          name: user?.name,
+          userId: user?._id,
+        });
+      }, 2000);
+    }
   };
 
   const handleKeyDown = async (

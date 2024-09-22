@@ -11,28 +11,24 @@ export type MSG_TYPE =
 export interface ServerToClientEvents {
   ALERT: (message: string) => void;
   ONLINE_USERS: (users: string[]) => void;
-  USER_ONLINE: ({
+  START_TYPING: ({
     groupId,
     userId,
     name,
-    role,
   }: {
     groupId: string;
     userId: string;
-    name?: string;
-    role?: string;
+    name: string;
   }) => void;
 
-  USER_OFFLINE: ({
+  STOP_TYPING: ({
     groupId,
     userId,
     name,
-    role,
   }: {
     groupId: string;
     userId: string;
-    name?: string;
-    role?: string;
+    name: string;
   }) => void;
 
   JOIN_ROOM: ({
@@ -75,6 +71,26 @@ export interface ServerToClientEvents {
 
 export interface ClientToServerEvents {
   ALERT: (message: string) => void;
+
+  START_TYPING: ({
+    groupId,
+    userId,
+    name,
+  }: {
+    groupId: string;
+    userId: string;
+    name: string;
+  }) => void;
+
+  STOP_TYPING: ({
+    groupId,
+    userId,
+    name,
+  }: {
+    groupId: string;
+    userId: string;
+    name: string;
+  }) => void;
   JOIN_ROOM: ({
     groupId,
     isPrivateGroup,
