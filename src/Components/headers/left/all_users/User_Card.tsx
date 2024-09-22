@@ -2,7 +2,6 @@ import { usePostData } from "@/hooks/Api_Hooks";
 import useAuthStore from "@/stores/Auth.store";
 import useCurrentPrivateChatRoomStore from "@/stores/CurrentPvtChat.store";
 import useSocketStore from "@/stores/Socket.store";
-import { generateWhatsAppMessage } from "@/utils/functions";
 import React, { useEffect } from "react";
 
 const User_Card = ({
@@ -19,7 +18,7 @@ const User_Card = ({
   setOpen: (value: boolean) => void;
 }) => {
   const { data, error, isLoading, postData } = usePostData<any>();
-  const { setCurrentRoom } = useCurrentPrivateChatRoomStore();
+  const { setCurrentRoom, currentRoom } = useCurrentPrivateChatRoomStore();
 
   const createPrivateGroupChat = async () => {
     await postData(
@@ -35,7 +34,7 @@ const User_Card = ({
   };
 
   useEffect(() => {
-    if (data && !error) {
+    if (data && !error && currentRoom?.roomId !== data?._id) {
       setCurrentRoom({
         name: name,
         slugName: slugName,
@@ -73,11 +72,6 @@ const User_Card = ({
       </div>
       <div>
         <p>{name}</p>
-        <p className="text-sm">
-          {generateWhatsAppMessage().length > 20
-            ? `${generateWhatsAppMessage().slice(0, 20)}.....`
-            : `${generateWhatsAppMessage()}`}
-        </p>
       </div>
     </div>
   );

@@ -10,20 +10,29 @@ export type MSG_TYPE =
 
 export interface ServerToClientEvents {
   ALERT: (message: string) => void;
+  ONLINE_USERS: (users: string[]) => void;
   USER_ONLINE: ({
     groupId,
     userId,
+    name,
+    role,
   }: {
     groupId: string;
     userId: string;
+    name?: string;
+    role?: string;
   }) => void;
 
   USER_OFFLINE: ({
     groupId,
     userId,
+    name,
+    role,
   }: {
     groupId: string;
     userId: string;
+    name?: string;
+    role?: string;
   }) => void;
 
   JOIN_ROOM: ({
@@ -100,4 +109,6 @@ export interface ClientToServerEvents {
     isFirstTime?: boolean;
     members?: string[];
   }) => void;
+
+  OFFLINE_USER: (userId: string) => void;
 }

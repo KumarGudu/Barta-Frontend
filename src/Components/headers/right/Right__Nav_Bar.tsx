@@ -1,18 +1,50 @@
+import { usePostData } from "@/hooks/Api_Hooks";
+import { useFetchData } from "@/hooks/fetchData";
+import useAuthStore from "@/stores/Auth.store";
 import useCurrentPrivateChatRoomStore from "@/stores/CurrentPvtChat.store";
+import useOnlineUsersStore from "@/stores/onlineUsers.store";
 import useSocketStore from "@/stores/Socket.store";
 import React, { useEffect, useState } from "react";
 
+type MEMBER = {
+  _id: string;
+  name: string;
+  email: string;
+  role: string;
+};
 const Right__Nav_Bar = () => {
   const { currentRoom } = useCurrentPrivateChatRoomStore();
-  const [isOnline, setIsOnline] = useState<boolean>(false);
   const { socket } = useSocketStore();
+  const { user } = useAuthStore();
+  const [groupMembers, setGroupMembers] = useState<MEMBER[]>([]);
+  const { onlineUsers, setOnlineUsers } = useOnlineUsersStore();
+
+  //get member info of a group
+  const options = {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    shouldRetryOnError: false,
+  };
+  const { data, error, isLoading, mutate } = useFetchData(
+    `chat/get-private-group-info/${currentRoom?.roomId}`,
+    options
+  );
+
+  useEffect(() => {
+    if (data) {
+      setGroupMembers((data as any).members);
+    }
+  }, [currentRoom, data]);
 
   useEffect(() => {
     if (socket) {
-      socket.on("USER_ONLINE", ({ groupId, userId }) => {
-        setIsOnline(true);
+      socket.on("ONLINE_USERS", (users) => {
+        setOnlineUsers(users);
       });
     }
+    return () => {
+      if (socket) socket.off("ONLINE_USERS");
+    };
   }, [socket]);
 
   return (
@@ -31,7 +63,34 @@ const Right__Nav_Bar = () => {
         />
       </div>
       <div>
-        <p>{currentRoom?.name ? currentRoom?.name : "NA"}</p>
+        {user?.role === "ADMIN" ? (
+          <>
+            <div>
+              {groupMembers?.map((member: MEMBER) => {
+                if (user?._id !== member._id) {
+                  if (onlineUsers.includes(member._id)) {
+                    return <p key={member?._id}>{member?.name}*</p>;
+                  } else {
+                    return <p key={member?._id}>{member?.name}</p>;
+                  }
+                }
+              })}
+            </div>
+          </>
+        ) : (
+          <div>
+            {groupMembers?.map((member: MEMBER) => {
+              if (member?.role !== "ADMIN" && user?._id !== member?._id) {
+                if (onlineUsers.includes(member._id)) {
+                  console.log("coming.....", member._id, onlineUsers);
+                  return <p key={member?._id}>{member?.name}*</p>;
+                } else {
+                  return <p key={member?._id}>{member?.name}</p>;
+                }
+              }
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

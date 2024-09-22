@@ -2,6 +2,7 @@ import { useSwrInfiniteScroll } from "@/hooks/useSwrInfiniteScroll";
 import useConnectedChatStore from "@/stores/AllConnectedChat.store";
 import useAuthStore from "@/stores/Auth.store";
 import useCurrentPrivateChatRoomStore from "@/stores/CurrentPvtChat.store";
+import useOnlineUsersStore from "@/stores/onlineUsers.store";
 import useSocketStore from "@/stores/Socket.store";
 import { ConnectedChat, Member_Type } from "@/types";
 import React, { useEffect, useState } from "react";
@@ -12,6 +13,7 @@ const All_Connected_Chat = () => {
   const { user } = useAuthStore();
   const { socket } = useSocketStore();
   const { connectedChatMutate } = useConnectedChatStore();
+  const { setOnlineUsers } = useOnlineUsersStore();
 
   const {
     convertedData: connectedChats,
@@ -29,11 +31,11 @@ const All_Connected_Chat = () => {
 
   useEffect(() => {
     SetConnectedChatMutate(mutate);
-  }, [isReachedEnd, mutate]);
+  }, [isReachedEnd, mutate, socket]);
 
   // set current private room chat for a normal user
 
-  const { setCurrentRoom } = useCurrentPrivateChatRoomStore();
+  const { setCurrentRoom, currentRoom } = useCurrentPrivateChatRoomStore();
   const setCurrentPrivateRoomInfoForNormalUser = ({
     chat,
     receiver,
@@ -41,14 +43,7 @@ const All_Connected_Chat = () => {
     chat: ConnectedChat;
     receiver: Member_Type;
   }) => {
-    if (socket) {
-      socket.emit("JOIN_ROOM", {
-        groupId: chat?._id,
-        groupName: chat?.name,
-        isPrivateGroup: chat?.isGroupChat,
-        members: chat?.memberDetails?.map((member: Member_Type) => member._id),
-      });
-    }
+    if (currentRoom?.roomId === chat?._id) return;
     setCurrentRoom({
       name: chat?.name,
       slugName: receiver?.slugName,
@@ -62,15 +57,22 @@ const All_Connected_Chat = () => {
 
   useEffect(() => {
     if (socket) {
+      // socket.on("ONLINE_USERS", (users) => {
+      //   console.log("COMING.............>>>>>>>>>>>>>>>>");
+      //   setOnlineUsers(users);
+      // });
       socket.on("FIRST_TIME_MESSAGE", async ({ groupId, message }) => {
         connectedChatMutate();
       });
     }
 
     return () => {
-      if (socket) socket.off("FIRST_TIME_MESSAGE");
+      if (socket) {
+        socket.off("FIRST_TIME_MESSAGE");
+        // socket.off("ONLINE_USERS");
+      }
     };
-  }, [socket]);
+  }, [socket, currentRoom]);
 
   return (
     <div

@@ -72,7 +72,6 @@ const Send_Message_Input = () => {
   useEffect(() => {
     if (socket) {
       socket.on("NEW_MESSAGE", async ({ groupId, message }) => {
-        console.log("COMING ,,,,,,,,,,,,,,,,,,,,EVENT");
         setLiveMessage(message);
         setLiveMsg(message);
       });

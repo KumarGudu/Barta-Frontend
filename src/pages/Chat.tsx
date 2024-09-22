@@ -9,13 +9,25 @@ import Message_Cont from "@/components/main/Message_Cont";
 import All_Connected_Chat from "@/components/main/All_Connected_Chat";
 import useCurrentPrivateChatRoomStore from "@/stores/CurrentPvtChat.store";
 import DefaultLeftSide from "@/components/main/DefaultLeftSide";
+import useOnlineUsersStore from "@/stores/onlineUsers.store";
+import { useRouter } from "next/router";
+import { disconnect } from "process";
+import useAuthStore from "@/stores/Auth.store";
 
 const Chat = () => {
   const { connect, disConnect } = useSocketStore();
   const { currentRoom } = useCurrentPrivateChatRoomStore();
   const socketToConnect = useSocket();
+  const { setOnlineUsers, onlineUsers } = useOnlineUsersStore();
+  const { user } = useAuthStore();
+  const router = useRouter();
+  let { socket } = useSocketStore();
+
+ 
+
   useEffect(() => {
     connect(socketToConnect);
+
     return () => {
       disConnect();
     };

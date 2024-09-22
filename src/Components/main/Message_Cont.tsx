@@ -6,6 +6,8 @@ import useCurrentPrivateChatRoomStore from "@/stores/CurrentPvtChat.store";
 import useLiveMessageStore from "@/stores/LiveMassageStore";
 import useSocketStore from "@/stores/Socket.store";
 import { LiveMsg } from "@/types";
+import useOnlineUsersStore from "@/stores/onlineUsers.store";
+import { useRouter } from "next/router";
 
 const getMsgContCls = (userId: string, senderId: string) => {
   return userId !== senderId
@@ -18,6 +20,8 @@ const Message_Cont = () => {
   const { user } = useAuthStore();
   const { currentRoom } = useCurrentPrivateChatRoomStore();
   const { socket } = useSocketStore();
+  const { onlineUsers, setOnlineUsers } = useOnlineUsersStore();
+  const router = useRouter();
 
   const [pageNumber, setPageNumber] = useState(1);
   const [reset, setReset] = useState(false);
@@ -44,7 +48,7 @@ const Message_Cont = () => {
   useEffect(() => {
     if (!socket) return;
 
-    const handleAlert = (message) => {
+    const handleAlert = (message: any) => {
       console.log("Message===========", message);
     };
 
@@ -57,6 +61,19 @@ const Message_Cont = () => {
     });
 
     socket.on("ALERT", handleAlert);
+    const leaveRoom = () => {
+      socket.emit("LEAVE_ROOM", {
+        groupId: currentRoom?.roomId,
+        groupName: currentRoom?.name,
+        isPrivateGroup: currentRoom?.isGroupChat,
+      });
+    };
+
+    const handleRouteChange = () => {
+      leaveRoom();
+    };
+
+    router.events.on("routeChangeStart", handleRouteChange);
 
     return () => {
       socket.emit("LEAVE_ROOM", {
@@ -64,6 +81,12 @@ const Message_Cont = () => {
         groupName: currentRoom?.name,
         isPrivateGroup: currentRoom?.isGroupChat,
       });
+
+      socket.on("ONLINE_USERS", (users) => {
+        setOnlineUsers(users);
+      });
+
+      router.events.off("routeChangeStart", handleRouteChange);
 
       socket.off("ALERT", handleAlert);
     };
