@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
-import Send_Message_Input from "@/components/main/Send_Message_Input";
-import Auth_Layout from "@/components/main/Auth_Layout";
 import useSocketStore from "@/stores/Socket.store";
-import Left_Nav_Bar from "@/components/headers/left/Left_Nav_Bar";
-import Right__Nav_Bar from "@/components/headers/right/Right__Nav_Bar";
 import { useSocket } from "@/hooks/Socket";
-import Message_Cont from "@/components/main/Message_Cont";
-import All_Connected_Chat from "@/components/main/All_Connected_Chat";
 import useCurrentPrivateChatRoomStore from "@/stores/CurrentPvtChat.store";
-import DefaultLeftSide from "@/components/main/DefaultLeftSide";
 import useOnlineUsersStore from "@/stores/onlineUsers.store";
 import { useRouter } from "next/router";
 import { disconnect } from "process";
 import useAuthStore from "@/stores/Auth.store";
+import Auth_Layout from "@/Components/main/Auth_Layout";
+import Left_Nav_Bar from "@/Components/headers/left/Left_Nav_Bar";
+import All_Connected_Chat from "@/Components/main/All_Connected_Chat";
+import Right__Nav_Bar from "@/Components/headers/right/Right__Nav_Bar";
+import Message_Cont from "@/Components/main/Message_Cont";
+import Send_Message_Input from "@/Components/main/Send_Message_Input";
+import DefaultLeftSide from "@/Components/main/DefaultLeftSide";
 
 const Chat = () => {
   const { connect, disConnect } = useSocketStore();
@@ -22,8 +22,6 @@ const Chat = () => {
   const { user } = useAuthStore();
   const router = useRouter();
   let { socket } = useSocketStore();
-
- 
 
   useEffect(() => {
     connect(socketToConnect);

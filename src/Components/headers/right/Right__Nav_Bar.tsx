@@ -81,12 +81,12 @@ const Right__Nav_Bar = () => {
 
   return (
     <div className="flex items-center gap-4 h-full px-7">
+      {/* Profile Image */}
       <div>
         <img
           src={
-            currentRoom?.profileUrl
-              ? currentRoom?.profileUrl
-              : "https://cdn.pixabay.com/photo/2017/06/09/23/22/avatar-2388584_640.png"
+            currentRoom?.profileUrl ||
+            "https://cdn.pixabay.com/photo/2017/06/09/23/22/avatar-2388584_640.png"
           }
           alt="profilePic"
           width={40}
@@ -94,50 +94,26 @@ const Right__Nav_Bar = () => {
           className="rounded-full mt-1"
         />
       </div>
+
+      {/* Group Members */}
       <div>
-        {user?.role === "ADMIN" ? (
-          <>
-            <div>
-              {groupMembers?.map((member: MEMBER) => {
-                if (user?._id !== member._id) {
-                  if (
-                    onlineUsers.includes(member._id) &&
-                    typeUsers.includes(member._id)
-                  ) {
-                    return <p key={member?._id}>{member?.name} typing...</p>;
-                  } else if (
-                    onlineUsers.includes(member._id) &&
-                    (!typeUsers.includes(member._id) || typeUsers.length === 0)
-                  ) {
-                    return <p key={member?._id}>{member?.name}*</p>;
-                  } else {
-                    return <p key={member?._id}>{member?.name}</p>;
-                  }
-                }
-              })}
-            </div>
-          </>
-        ) : (
-          <div>
-            {groupMembers?.map((member: MEMBER) => {
-              if (member?.role !== "ADMIN" && user?._id !== member?._id) {
-                if (
-                  onlineUsers.includes(member._id) &&
-                  typeUsers.includes(member._id)
-                ) {
-                  return <p key={member?._id}>{member?.name} typing...</p>;
-                } else if (
-                  onlineUsers.includes(member._id) &&
-                  (!typeUsers.includes(member._id) || typeUsers.length === 0)
-                ) {
-                  return <p key={member?._id}>{member?.name}*</p>;
-                } else {
-                  return <p key={member?._id}>{member?.name}</p>;
-                }
-              }
-            })}
-          </div>
-        )}
+        {groupMembers
+          ?.filter((member: MEMBER) => member?._id !== user?._id)
+          .map((member: MEMBER) => {
+            // Check if member should be rendered for ADMIN role or not
+            if (user?.role !== "ADMIN" && member?.role === "ADMIN") return null;
+
+            // Determine member status (typing, online, or offline)
+            const isTyping = typeUsers.includes(member._id);
+            const isOnline = onlineUsers.includes(member._id);
+
+            return (
+              <p key={member?._id}>
+                {member?.name}
+                {isTyping ? " typing..." : isOnline ? " *" : ""}
+              </p>
+            );
+          })}
       </div>
     </div>
   );

@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { Inter } from "next/font/google";
-import Login from "@/components/Forms/Login";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import useAuthStore from "@/stores/Auth.store";
