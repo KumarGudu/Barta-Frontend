@@ -16,6 +16,12 @@ export type AuthUser = {
   fcmToken?: string;
 };
 
+export type ReplyMsgType = {
+  groupId: string;
+  parentMsgContent: string;
+  parentMsgId: string;
+};
+
 export type NotificationType = {
   name?: string;
   groupName?: string;
@@ -50,6 +56,9 @@ export type LiveMsg = {
     name: string;
     email?: string;
   };
+  isReplyMsg?: string;
+  parentMessage?: string;
+  parentMsgContent?: string;
   createdAt: string;
   updatedAt: string;
 };

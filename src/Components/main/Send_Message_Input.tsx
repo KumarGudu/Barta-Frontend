@@ -12,6 +12,9 @@ import { BsEmojiSmile } from "react-icons/bs";
 import { LuSendHorizonal } from "react-icons/lu";
 import ChooseMedia from "../MessageInput/ChooseMedia";
 import useAuthStore from "@/stores/Auth.store";
+import useReplyMessageStore from "@/stores/ReplyMessage.store";
+import { FiX } from "react-icons/fi";
+import { usePostData } from "@/hooks/Api_Hooks";
 
 const Send_Message_Input = () => {
   const [height, setHeight] = useState("auto");
@@ -24,6 +27,7 @@ const Send_Message_Input = () => {
   const { connectedChatMutate } = useConnectedChatStore();
   const { user } = useAuthStore();
   const typingTimeout = useRef(null);
+  const { message: replyMessage, setReplyMessage } = useReplyMessageStore();
 
   const adjustHeight = () => {
     if (textareaRef.current) {
@@ -56,11 +60,37 @@ const Send_Message_Input = () => {
     }
   };
 
+  const { data, error, isLoading, postData } = usePostData();
+  const { chatMutate } = useCurrentPrivateChatRoomStore();
+
+  console.log("CHAT_NUMATE", chatMutate);
+
   const handleKeyDown = async (
     event: React.KeyboardEvent<HTMLTextAreaElement>
   ) => {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
+
+      if (replyMessage && replyMessage !== null) {
+        await postData(
+          "chat/reply-to-message",
+          {
+            parentMsgId: replyMessage?.parentMsgId,
+            groupId: replyMessage?.groupId,
+            content: message,
+            parentMsgContent: replyMessage?.parentMsgContent,
+          },
+          {
+            withCredentials: true,
+          },
+          false
+        );
+
+        setReplyMessage(null);
+        setMessage("");
+
+        return;
+      }
 
       if (currentRoom?.isMessaged === false) {
         const messageToSend = {
@@ -91,6 +121,10 @@ const Send_Message_Input = () => {
     }
   };
 
+  if (error) {
+    console.log({ error });
+  }
+
   useEffect(() => {
     if (socket) {
       socket.on("NEW_MESSAGE", async ({ groupId, message }) => {
@@ -108,31 +142,50 @@ const Send_Message_Input = () => {
     adjustHeight();
   }, [message]);
 
+  const handleDeleteReplyMessage = () => {
+    setReplyMessage(null);
+  };
+
   return (
-    <div className="min-h-[4rem]  max-h-[10rem] bg-pink-300 flex items-end gap-3 w-full absolute left-0 bottom-0 py-2 px-2">
-      <div className="h-[3.5rem] w-[6rem]  flex items-center justify-center">
-        <div className="flex gap-4 items-center  px-1 py-1">
-          <div className="cursor-pointer">
-            <BsEmojiSmile size={22} />
+    <div className="bg-pink-300 w-full absolute left-0 bottom-0">
+      {replyMessage && (
+        <div className="w-full flex items-center justify-center px-2 mt-2">
+          <div className="bg-green-400 py-3 px-3 w-[calc(100%-11rem)] relative">
+            <div
+              className="absolute top-1 right-3 cursor-pointer p-1"
+              onClick={handleDeleteReplyMessage}
+            >
+              <FiX />
+            </div>
+            <p>{replyMessage?.parentMsgContent}</p>
           </div>
-          <ChooseMedia position="top" />
         </div>
-      </div>
-      <div className="flex-grow">
-        <textarea
-          className="text-sm font-semibold text-input w-full max-h-[9rem] overflow-y-auto resize-none place-content-center px-5 py-1 outline-none rounded-lg"
-          ref={textareaRef}
-          style={{ height: height }}
-          value={message}
-          onChange={handleChange}
-          onKeyDown={handleKeyDown}
-          // onKeyUp={handleKeyUp}
-          placeholder="Type a message..."
-        />
-      </div>
-      <div className="h-[3.5rem] w-[5rem] flex items-center">
-        <div className="cursor-pointer ml-3 px-2 py-1">
-          <LuSendHorizonal size={25} />
+      )}
+      <div className="flex items-end min-h-[4rem]  max-h-[10rem] py-2 px-2 gap-3">
+        <div className="h-[3.5rem] w-[6rem]  flex items-center justify-center">
+          <div className="flex gap-4 items-center  px-1 py-1">
+            <div className="cursor-pointer">
+              <BsEmojiSmile size={22} />
+            </div>
+            <ChooseMedia position="top" />
+          </div>
+        </div>
+        <div className="flex-grow">
+          <textarea
+            className="text-sm font-semibold text-input w-full max-h-[9rem] overflow-y-auto resize-none place-content-center px-5 py-1 outline-none rounded-lg"
+            ref={textareaRef}
+            style={{ height: height }}
+            value={message}
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
+            // onKeyUp={handleKeyUp}
+            placeholder="Type a message..."
+          />
+        </div>
+        <div className="h-[3.5rem] w-[5rem] flex items-center">
+          <div className="cursor-pointer ml-3 px-2 py-1">
+            <LuSendHorizonal size={25} />
+          </div>
         </div>
       </div>
     </div>

@@ -5,9 +5,10 @@ import useAuthStore from "@/stores/Auth.store";
 import useCurrentPrivateChatRoomStore from "@/stores/CurrentPvtChat.store";
 import useLiveMessageStore from "@/stores/LiveMassageStore";
 import useSocketStore from "@/stores/Socket.store";
-import { LiveMsg } from "@/types";
+import { LiveMsg, ReplyMsgType } from "@/types";
 import useOnlineUsersStore from "@/stores/onlineUsers.store";
 import { useRouter } from "next/router";
+import useReplyMessageStore from "@/stores/ReplyMessage.store";
 
 const getMsgContCls = (userId: string, senderId: string) => {
   return userId !== senderId
@@ -21,10 +22,9 @@ const Message_Cont = () => {
   const { currentRoom } = useCurrentPrivateChatRoomStore();
   const { socket } = useSocketStore();
   const { onlineUsers, setOnlineUsers } = useOnlineUsersStore();
-  const router = useRouter();
-
   const [pageNumber, setPageNumber] = useState(1);
   const [reset, setReset] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     setPageNumber(1);
@@ -32,7 +32,7 @@ const Message_Cont = () => {
     setReset(true);
   }, [currentRoom]);
 
-  const { loading, resData, hasMore, isError } = useInfiniteScroll<
+  const { loading, resData, hasMore, isError, mutate } = useInfiniteScroll<
     Partial<LiveMsg>
   >({
     pageNumber,
@@ -45,9 +45,11 @@ const Message_Cont = () => {
   }, [resData]);
 
   // Merged socket event handlers into a single useEffect
+  const { setChatMutate } = useCurrentPrivateChatRoomStore();
   useEffect(() => {
     if (!socket) return;
 
+    setChatMutate(mutate);
     const handleAlert = (message: any) => {
       console.log("Message===========", message);
     };
@@ -103,6 +105,20 @@ const Message_Cont = () => {
     setPageNumber,
   });
 
+  const { setReplyMessage } = useReplyMessageStore();
+
+  const handleReplyMessage = ({
+    groupId,
+    parentMsgContent,
+    parentMsgId,
+  }: ReplyMsgType) => {
+    setReplyMessage({
+      groupId,
+      parentMsgContent,
+      parentMsgId,
+    });
+  };
+
   return (
     <div className="flex flex-col-reverse overflow-y-auto h-full px-14 py-4 overflow-x-hidden gap-3">
       {allMessages.map((msg: Partial<LiveMsg>, index: number) => {
@@ -126,7 +142,28 @@ const Message_Cont = () => {
             className={getMsgContCls(user?._id, msg?.sender?._id)}
             ref={isLastMessage ? lastBookElementRef : null}
           >
+            {msg?.isReplyMsg && (
+              <div>
+                <p>{msg?.parentMsgContent}</p>
+              </div>
+            )}
             {msgContent}
+            <div>
+              <button
+                onClick={() => {
+                  return handleReplyMessage({
+                    groupId: currentRoom?.roomId,
+                    parentMsgContent:
+                      msg.type === "IMAGE"
+                        ? msg?.attachments[0]?.mediaUrl
+                        : msg?.content,
+                    parentMsgId: msg?._id,
+                  });
+                }}
+              >
+                reply
+              </button>
+            </div>
           </div>
         );
       })}

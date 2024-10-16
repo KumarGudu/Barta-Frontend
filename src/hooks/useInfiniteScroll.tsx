@@ -1,6 +1,6 @@
 import { BASE_URL } from "@/utils";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 type InfiniteScrollType<T> = {
   query?: string;
@@ -27,20 +27,19 @@ function useInfiniteScroll<T>({
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [resData, setResData] = useState<T[]>([]);
 
-  // Clear the data whenever reset is true or query changes
   useEffect(() => {
     if (reset) {
-      setResData([]); // Clear previous data when reset
+      setResData([]);
     }
   }, [reset, query]);
 
-  const fetchData = () => {
+  const fetchData = (page: number = pageNumber) => {
     setLoading(true);
     axios({
       method: "GET",
       url: `${BASE_URL}${url}`,
       params: {
-        pageNo: pageNumber,
+        pageNo: page,
         perPage: 15,
         searchStr: query,
         ...extParams,
@@ -50,7 +49,10 @@ function useInfiniteScroll<T>({
       .then((res) => {
         const newData: T[] = res?.data?.data;
         if (setData) setData(newData);
-        setResData((prevData) => [...(reset ? [] : prevData), ...newData]); // Handle reset
+        setResData((prevData) => [
+          ...(reset || page === 1 ? [] : prevData),
+          ...newData,
+        ]);
         setHasMore(newData.length > 0);
         setLoading(false);
       })
@@ -62,11 +64,16 @@ function useInfiniteScroll<T>({
       });
   };
 
+  const mutate = useCallback(() => {
+    setResData([]);
+    fetchData(1);
+  }, [url, query, extParams]);
+
   useEffect(() => {
     fetchData();
-  }, [query, pageNumber, url]); // Ensure refetch happens on these dependencies
+  }, [query, pageNumber, url]);
 
-  return { loading, isError, resData, hasMore };
+  return { loading, isError, resData, hasMore, mutate };
 }
 
 export default useInfiniteScroll;
