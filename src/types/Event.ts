@@ -59,6 +59,14 @@ export interface ServerToClientEvents {
     message: any;
   }) => void;
 
+  ON_SAVE_MESSAGE: ({
+    groupId,
+    message,
+  }: {
+    groupId: string;
+    message: any;
+  }) => void;
+
   FIRST_TIME_MESSAGE: ({
     groupId,
     message,
@@ -91,6 +99,7 @@ export interface ClientToServerEvents {
     userId: string;
     name: string;
   }) => void;
+
   JOIN_ROOM: ({
     groupId,
     isPrivateGroup,
@@ -112,6 +121,7 @@ export interface ClientToServerEvents {
     isPrivateGroup: boolean;
     groupName: string;
   }) => void;
+
   NEW_MESSAGE: ({
     groupId,
     type,
@@ -125,6 +135,8 @@ export interface ClientToServerEvents {
     isFirstTime?: boolean;
     members?: string[];
   }) => void;
+
+  REPLY_MSG: ({ groupId }: { groupId: string }) => void;
 
   OFFLINE_USER: (userId: string) => void;
 }

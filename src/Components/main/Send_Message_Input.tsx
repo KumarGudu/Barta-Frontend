@@ -61,9 +61,6 @@ const Send_Message_Input = () => {
   };
 
   const { data, error, isLoading, postData } = usePostData();
-  const { chatMutate } = useCurrentPrivateChatRoomStore();
-
-  console.log("CHAT_NUMATE", chatMutate);
 
   const handleKeyDown = async (
     event: React.KeyboardEvent<HTMLTextAreaElement>
@@ -142,6 +139,7 @@ const Send_Message_Input = () => {
     adjustHeight();
   }, [message]);
 
+  //delete reply message
   const handleDeleteReplyMessage = () => {
     setReplyMessage(null);
   };

@@ -94,7 +94,7 @@ const Message_Cont = () => {
     };
   }, [socket, currentRoom]);
 
-  const allMessages = useMemo(
+  let allMessages = useMemo(
     () => (resData?.length ? [...messages, ...resData] : [...messages]),
     [messages, resData]
   );

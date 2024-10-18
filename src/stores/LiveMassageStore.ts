@@ -8,6 +8,7 @@ type LiveMsgType = {
 type LiveMsgAction = {
   setLiveMessage: (message: LiveMsg) => void;
   setLiveMessages: (newMessages: LiveMsg[]) => void;
+  updateMessage: (tempId: string, dbMessage: LiveMsg) => void;
 };
 
 const useLiveMessageStore = create<LiveMsgType & LiveMsgAction>((set) => ({
@@ -22,6 +23,12 @@ const useLiveMessageStore = create<LiveMsgType & LiveMsgAction>((set) => ({
     set((state) => ({
       ...state,
       myFunction: newFunction,
+    })),
+  updateMessage: (tempId, dbMessage) =>
+    set((state) => ({
+      messages: state.messages.map((msg) =>
+        msg._id === tempId ? { ...msg, ...dbMessage } : msg
+      ),
     })),
 }));
 
