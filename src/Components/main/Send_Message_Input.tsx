@@ -15,6 +15,7 @@ import useAuthStore from "@/stores/Auth.store";
 import useReplyMessageStore from "@/stores/ReplyMessage.store";
 import { FiX } from "react-icons/fi";
 import { usePostData } from "@/hooks/Api_Hooks";
+import EmojiPickerModel from "../dialogs/EmojiPicker";
 
 const Send_Message_Input = () => {
   const [height, setHeight] = useState("auto");
@@ -145,7 +146,7 @@ const Send_Message_Input = () => {
   };
 
   return (
-    <div className="bg-pink-300 w-full absolute left-0 bottom-0">
+    <div className="bg-[#dcf8c6] w-full absolute left-0 bottom-0">
       {replyMessage && (
         <div className="w-full flex items-center justify-center px-2 mt-2">
           <div className="bg-green-400 py-3 px-3 w-[calc(100%-11rem)] relative">

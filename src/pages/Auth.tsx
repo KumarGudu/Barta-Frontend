@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import useAuthStore from "@/stores/Auth.store";
-const AuthLogin = dynamic(() => import("../components/Forms/Login"), {
+const AuthLogin = dynamic(() => import("../Components/Forms/Login"), {
   loading: () => <p>Loading...</p>,
 });
-const AuthRegister = dynamic(() => import("../components/Forms/Register"), {
+const AuthRegister = dynamic(() => import("../Components/Forms/Register"), {
   loading: () => <p>Loading...</p>,
 });
 

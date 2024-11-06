@@ -80,7 +80,7 @@ const Right__Nav_Bar = () => {
   }, [socket]);
 
   return (
-    <div className="flex items-center gap-4 h-full px-7">
+    <div className="flex items-center gap-4 h-full px-7 bg-[#075E54]">
       {/* Profile Image */}
       <div>
         <img
@@ -108,10 +108,15 @@ const Right__Nav_Bar = () => {
             const isOnline = onlineUsers.includes(member._id);
 
             return (
-              <p key={member?._id}>
-                {member?.name}
-                {isTyping ? " typing..." : isOnline ? " *" : ""}
-              </p>
+              <div
+                key={member?._id}
+                className="flex flex-col justify-center mt-1"
+              >
+                <p className="text-gray-300 text-sm">{member?.name}</p>
+                <p className="text-[0.7rem] text-green-200">
+                  {isTyping ? " typing..." : isOnline ? "online" : ""}
+                </p>
+              </div>
             );
           })}
       </div>

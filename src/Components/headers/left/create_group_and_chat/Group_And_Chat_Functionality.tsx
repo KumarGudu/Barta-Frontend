@@ -35,8 +35,8 @@ const Group_And_Chat_Functionality = () => {
   return (
     <div className="relative">
       <BiDotsVertical
-        size={24}
-        className="cursor-pointer"
+        size={22}
+        className="cursor-pointer text-gray-300"
         onClick={() => setIsLogoutDropDown(!isLogoutDropDown)}
       />
       {isLogoutDropDown && (

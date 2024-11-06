@@ -15,8 +15,8 @@ const All_Users = dynamic(() => import("./all_users/All_Users"), {
 const Left_Nav_Bar = () => {
   const [open, setOpen] = useState<boolean>(false);
   return (
-    <div className="h-[3.5rem] flex items-center justify-between px-2">
-      <div className="basis-[30%] ">
+    <div className="h-[4rem] flex items-center justify-between px-2 bg-[#075E54] border-r-2 border-gray-300">
+      <div className="basis-[30%]">
         <img
           src="https://cdn.pixabay.com/photo/2017/06/09/23/22/avatar-2388584_640.png"
           alt="profilePic"
@@ -26,17 +26,17 @@ const Left_Nav_Bar = () => {
         />
       </div>
 
-      <div className="flex justify-evenly basis-[70%] text-gray-600">
+      <div className="flex justify-evenly basis-[70%]">
         <div className="p-2 flex justify-center items-center">
-          <BiDisc size={25} className="cursor-pointer" />
+          <BiDisc size={22} className="cursor-pointer text-gray-300" />
         </div>
         <div className="p-2 flex justify-center items-center">
-          <BiGroup size={24} className="cursor-pointer" />
+          <BiGroup size={22} className="cursor-pointer text-gray-300" />
         </div>
         <div className="p-2 flex justify-center items-center">
           <BiMessageSquareAdd
-            size={24}
-            className="cursor-pointer text-center"
+            size={22}
+            className="cursor-pointer text-center text-gray-300"
             onClick={() => setOpen(true)}
           />
           {open && <All_Users open={open} setOpen={setOpen} />}

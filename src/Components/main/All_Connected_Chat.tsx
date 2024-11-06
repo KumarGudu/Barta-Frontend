@@ -5,6 +5,7 @@ import useCurrentPrivateChatRoomStore from "@/stores/CurrentPvtChat.store";
 import useOnlineUsersStore from "@/stores/onlineUsers.store";
 import useSocketStore from "@/stores/Socket.store";
 import { ConnectedChat, Member_Type } from "@/types";
+import { formatLastMessageTime } from "@/utils/functions";
 import React, { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 
@@ -57,10 +58,6 @@ const All_Connected_Chat = () => {
 
   useEffect(() => {
     if (socket) {
-      // socket.on("ONLINE_USERS", (users) => {
-      //   console.log("COMING.............>>>>>>>>>>>>>>>>");
-      //   setOnlineUsers(users);
-      // });
       socket.on("FIRST_TIME_MESSAGE", async ({ groupId, message }) => {
         connectedChatMutate();
       });
@@ -69,18 +66,23 @@ const All_Connected_Chat = () => {
     return () => {
       if (socket) {
         socket.off("FIRST_TIME_MESSAGE");
-        // socket.off("ONLINE_USERS");
       }
     };
   }, [socket, currentRoom]);
 
+  // bg - [#dcf8c6];
+  //   #075e54	(7,94,84)
+  // #128c7e	(18,140,126)
+  // #25d366	(37,211,102)
+  // #dcf8c6	(220,248,198)
+  // #ece5dd	(236,229,221)
   return (
     <div
       id="scrollableDiv"
-      className="h-[calc(100%-6.5rem)] bg-red-600 overflow-y-auto"
+      className="h-[calc(100%-7rem)] overflow-y-auto border-r-2 border-[#25d366]"
     >
       <InfiniteScroll
-        className="space-y-5 px-2 py-4"
+        className="space-y-2 py-4 px-[0.4rem]"
         next={() => setSize(size + 1)}
         hasMore={!isReachedEnd}
         loader={
@@ -88,11 +90,7 @@ const All_Connected_Chat = () => {
             <h1>Loading.....</h1>
           </>
         }
-        endMessage={
-          <>
-            <p>No more data..</p>
-          </>
-        }
+        endMessage={<></>}
         dataLength={connectedChats?.length ?? 0}
         scrollableTarget="scrollableDiv"
       >
@@ -126,7 +124,7 @@ const All_Connected_Chat = () => {
           ) : (
             <div
               key={chat?._id}
-              className="w-full bg-white px-3 flex items-center gap-2 py-2 rounded-md cursor-pointer"
+              className="w-full px-3 flex items-center gap-4 py-[0.6rem] cursor-pointer border-b-[1px]  border-[#075e54] rounded-sm"
               onClick={() =>
                 setCurrentPrivateRoomInfoForNormalUser({ chat, receiver })
               }
@@ -134,13 +132,22 @@ const All_Connected_Chat = () => {
               <img
                 src={receiver?.profileUrl}
                 alt="receiver_img"
-                width={45}
-                height={45}
+                width={50}
+                height={50}
                 className="rounded-full"
               />
-              <div>
-                <p>{receiver?.name}</p>
-                <p className="text-sm">
+              <div className="w-full">
+                <div className="w-full flex justify-between items-center">
+                  <p className="text-[0.9rem] font-normal tracking-wide">
+                    {receiver?.name && receiver?.name?.length > 30
+                      ? receiver?.name.slice(0, 30) + "..."
+                      : receiver?.name}
+                  </p>
+                  <p className="text-[0.7rem] font-medium text-gray-600">
+                    {formatLastMessageTime(chat?.lastMessage?.createdAt)}
+                  </p>
+                </div>
+                <p className="text-[0.75rem]">
                   {chat?.lastMessage?.content &&
                   chat?.lastMessage?.content?.length > 50
                     ? chat.lastMessage.content.slice(0, 50) + "..."
