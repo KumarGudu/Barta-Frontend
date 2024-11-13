@@ -95,7 +95,7 @@ const All_Connected_Chat = () => {
         scrollableTarget="scrollableDiv"
       >
         {connectedChats?.map((chat: ConnectedChat, index: number) => {
-          console.log("Chat", chat);
+          console.log("Chat----------->", chat?.lastMessage);
 
           let receiver: Member_Type = chat?.memberDetails?.find((member) => {
             return member?.role !== "ADMIN" && member?._id !== user?._id;

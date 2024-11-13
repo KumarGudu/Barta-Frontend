@@ -8,10 +8,11 @@ import {
 } from "date-fns";
 
 export function formatLastMessageTime(dateString: any): string {
+  if (!dateString || dateString == null) return "";
   const date = new Date(dateString);
 
   if (isToday(date)) {
-    return formatDistanceToNow(date, { addSuffix: true }); // e.g., "2 hours ago"
+    return format(date, "h:mm a");
   }
   if (isYesterday(date)) {
     return "Yesterday";

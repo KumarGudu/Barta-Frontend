@@ -1,9 +1,6 @@
-import useInfiniteScroll from "@/hooks/useInfiniteScroll";
-import { useSwrInfiniteScroll } from "@/hooks/useSwrInfiniteScroll";
 import useConnectedChatStore from "@/stores/AllConnectedChat.store";
 import useCurrentPrivateChatRoomStore from "@/stores/CurrentPvtChat.store";
 import useLiveMessageStore from "@/stores/LiveMassageStore";
-import useNotificationStore from "@/stores/Notification.store";
 import useSocketStore from "@/stores/Socket.store";
 import { ConnectedChat, LiveMsg } from "@/types";
 import React, { ChangeEvent, useEffect, useRef, useState } from "react";
@@ -62,6 +59,7 @@ const Send_Message_Input = () => {
   };
 
   const { data, error, isLoading, postData } = usePostData();
+  const { setIsLiveMessageAdded } = useLiveMessageStore();
 
   const handleKeyDown = async (
     event: React.KeyboardEvent<HTMLTextAreaElement>
@@ -114,8 +112,8 @@ const Send_Message_Input = () => {
         socket.emit("NEW_MESSAGE", messageToSend);
       }
 
-      connectedChatMutate();
       setMessage("");
+      setIsLiveMessageAdded(true);
     }
   };
 
@@ -128,7 +126,10 @@ const Send_Message_Input = () => {
       socket.on("NEW_MESSAGE", async ({ groupId, message }) => {
         setLiveMessage(message);
         setLiveMsg(message);
+        connectedChatMutate();
       });
+
+      setIsLiveMessageAdded(true);
 
       return () => {
         socket.off("NEW_MESSAGE");
