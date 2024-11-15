@@ -73,7 +73,7 @@ const All_Users = ({
             </div>
           </div>
         </div>
-        <div className="w-[24.9rem] max-h-[calc(100%-4rem)] overflow-y-auto px-4 flex flex-col gap-4 ">
+        <div className="w-[27.9rem] max-h-[calc(100%-4rem)] overflow-y-auto px-1 flex flex-col gap-2">
           {resData &&
             resData.map((user: Partial<AuthUser>, index: number) => {
               if (resData?.length === index + 1) {

@@ -54,7 +54,7 @@ const User_Card = ({
 
   return (
     <div
-      className="flex items-center bg-gray-400 gap-3 px-2 py-2 rounded-md cursor-pointer"
+      className="w-full px-3 flex items-center gap-4 py-[0.6rem] cursor-pointer border-b-[1px]  border-[#075e54] rounded-sm"
       onClick={createPrivateGroupChat}
     >
       <div>
@@ -67,11 +67,11 @@ const User_Card = ({
           alt="profilePic"
           width={50}
           height={50}
-          className="rounded-full mt-1"
+          className="rounded-full"
         />
       </div>
       <div>
-        <p>{name}</p>
+        <p className="text-gray-800">{name}</p>
       </div>
     </div>
   );
