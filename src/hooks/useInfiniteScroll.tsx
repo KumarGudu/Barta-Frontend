@@ -64,16 +64,11 @@ function useInfiniteScroll<T>({
       });
   };
 
-  const mutate = useCallback(() => {
-    setResData([]);
-    fetchData(1);
-  }, [url, query, extParams]);
-
   useEffect(() => {
     fetchData();
   }, [query, pageNumber, url]);
 
-  return { loading, isError, resData, hasMore, mutate };
+  return { loading, isError, resData, hasMore };
 }
 
 export default useInfiniteScroll;

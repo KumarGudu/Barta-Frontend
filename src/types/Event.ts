@@ -128,12 +128,14 @@ export interface ClientToServerEvents {
     message,
     isFirstTime,
     members,
+    isFirstMessageOfTheDay,
   }: {
     groupId: string;
     type: string;
     message: string;
     isFirstTime?: boolean;
     members?: string[];
+    isFirstMessageOfTheDay?: boolean;
   }) => void;
 
   REPLY_MSG: ({ groupId }: { groupId: string }) => void;

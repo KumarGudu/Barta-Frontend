@@ -13,6 +13,7 @@ import useReplyMessageStore from "@/stores/ReplyMessage.store";
 import { FiX } from "react-icons/fi";
 import { usePostData } from "@/hooks/Api_Hooks";
 import EmojiPickerModel from "../dialogs/EmojiPicker";
+import { isToday } from "date-fns";
 
 const Send_Message_Input = () => {
   const [height, setHeight] = useState("auto");
@@ -67,6 +68,23 @@ const Send_Message_Input = () => {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
 
+      // check is it first message of the day or not;
+      const isCreatedAtToday = isToday(
+        new Date(currentRoom?.lastMessage?.createdAt)
+      );
+
+      let isFirstMessageOfTheDay = false;
+      if (currentRoom?.lastMessage?.createdAt && isCreatedAtToday === false) {
+        setCurrentRoom(currentRoom);
+        isFirstMessageOfTheDay = true;
+      }
+
+      console.log({
+        DATE: currentRoom?.lastMessage,
+        isCreatedAtToday,
+        isFirstMessageOfTheDay,
+      });
+
       if (replyMessage && replyMessage !== null) {
         await postData(
           "chat/reply-to-message",
@@ -75,6 +93,7 @@ const Send_Message_Input = () => {
             groupId: replyMessage?.groupId,
             content: message,
             parentMsgContent: replyMessage?.parentMsgContent,
+            isFirstMessageOfTheDay,
           },
           {
             withCredentials: true,
@@ -95,6 +114,7 @@ const Send_Message_Input = () => {
           message: message,
           isFirstTime: true,
           members: currentRoom?.members,
+          isFirstMessageOfTheDay: true,
         };
 
         socket.emit("NEW_MESSAGE", messageToSend);
@@ -108,6 +128,7 @@ const Send_Message_Input = () => {
           groupId: currentRoom?.roomId,
           type: "TEXT",
           message: message,
+          isFirstMessageOfTheDay,
         };
         socket.emit("NEW_MESSAGE", messageToSend);
       }
@@ -150,12 +171,12 @@ const Send_Message_Input = () => {
     <div className="bg-[#dcf8c6] w-full absolute left-0 bottom-0">
       {replyMessage && (
         <div className="w-full flex items-center justify-center px-2 mt-2">
-          <div className="bg-green-400 py-3 px-3 w-[calc(100%-11rem)] relative">
+          <div className="bg-slate-300 py-4 px-4 w-[calc(100%-11rem)] relative rounded-md">
             <div
               className="absolute top-1 right-3 cursor-pointer p-1"
               onClick={handleDeleteReplyMessage}
             >
-              <FiX />
+              <FiX size={20} />
             </div>
             <p>{replyMessage?.parentMsgContent}</p>
           </div>

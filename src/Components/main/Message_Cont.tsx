@@ -9,11 +9,15 @@ import { LiveMsg, ReplyMsgType } from "@/types";
 import useOnlineUsersStore from "@/stores/onlineUsers.store";
 import { useRouter } from "next/router";
 import useReplyMessageStore from "@/stores/ReplyMessage.store";
+import { IoIosArrowDown } from "react-icons/io";
+import { format } from "date-fns";
+import { formatTimeOfFirstMessage } from "@/utils/functions";
+import MessageAction from "../MessageInput/MessageAction";
 
 const getMsgContCls = (userId: string, senderId: string) => {
   return userId !== senderId
-    ? "w-fit py-3 px-4 rounded-md bg-green-500 self-start max-w-[32vw] break-words"
-    : "w-fit py-3 px-4 rounded-md bg-gray-400 self-end max-w-[32vw] break-words";
+    ? "w-fit self-start max-w-[32vw] break-words rounded-lg rounded-tl-none"
+    : "w-fit self-end max-w-[32vw] break-words rounded-lg rounded-tr-none";
 };
 
 const Message_Cont = () => {
@@ -26,13 +30,7 @@ const Message_Cont = () => {
   const [reset, setReset] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    setPageNumber(1);
-    setLiveMessages([]);
-    setReset(true);
-  }, [currentRoom]);
-
-  const { loading, resData, hasMore, isError, mutate } = useInfiniteScroll<
+  const { loading, resData, hasMore, isError } = useInfiniteScroll<
     Partial<LiveMsg>
   >({
     pageNumber,
@@ -45,15 +43,8 @@ const Message_Cont = () => {
   }, [resData]);
 
   // Merged socket event handlers into a single useEffect
-  const { setChatMutate } = useCurrentPrivateChatRoomStore();
   useEffect(() => {
     if (!socket) return;
-
-    setChatMutate(mutate);
-    const handleAlert = (message: any) => {
-      console.log("Message===========", message);
-    };
-
     // Join room when socket and currentRoom exist
     socket.emit("JOIN_ROOM", {
       groupId: currentRoom?.roomId,
@@ -62,7 +53,6 @@ const Message_Cont = () => {
       members: currentRoom?.members,
     });
 
-    socket.on("ALERT", handleAlert);
     const leaveRoom = () => {
       socket.emit("LEAVE_ROOM", {
         groupId: currentRoom?.roomId,
@@ -70,13 +60,10 @@ const Message_Cont = () => {
         isPrivateGroup: currentRoom?.isGroupChat,
       });
     };
-
     const handleRouteChange = () => {
       leaveRoom();
     };
-
     router.events.on("routeChangeStart", handleRouteChange);
-
     return () => {
       socket.emit("LEAVE_ROOM", {
         groupId: currentRoom?.roomId,
@@ -89,8 +76,6 @@ const Message_Cont = () => {
       });
 
       router.events.off("routeChangeStart", handleRouteChange);
-
-      socket.off("ALERT", handleAlert);
     };
   }, [socket, currentRoom]);
 
@@ -105,6 +90,7 @@ const Message_Cont = () => {
     setPageNumber,
   });
 
+  //message reply logic
   const { setReplyMessage } = useReplyMessageStore();
 
   const handleReplyMessage = ({
@@ -119,13 +105,16 @@ const Message_Cont = () => {
     });
   };
 
+  //hover logic added
+  const [hoverIdx, setHoverIdx] = useState<any>(null);
+
   return (
-    <div className="flex flex-col-reverse overflow-y-auto h-full px-14 py-4 overflow-x-hidden gap-3">
+    <div className="flex flex-col-reverse overflow-y-auto h-full px-16 py-7 overflow-x-hidden gap-3">
       {allMessages.map((msg: Partial<LiveMsg>, index: number) => {
         const isLastMessage = allMessages.length === index + 1;
         const msgContent =
           msg?.type === "TEXT" ? (
-            <p>{msg?.content}</p>
+            <p className="text-[0.9rem]">{msg?.content}</p>
           ) : (
             <img
               src={msg?.attachments[0]?.mediaUrl}
@@ -136,33 +125,112 @@ const Message_Cont = () => {
             />
           );
 
+        // if (msg?.isFirstMessageOfTheDay) {
+        //   return (
+        //     <div key={msg._id} className="flex flex-col">
+        //       <div className="w-full flex items-center justify-center text-center mb-9 mt-5">
+        //         <p className="px-4 text-[0.7rem] font-medium bg-gray-400 text-white w-fit py-[0.1rem] rounded-md">
+        //           {formatTimeOfFirstMessage(msg?.createdAt)}
+        //         </p>
+        //       </div>
+        //       <div
+        //         className={`${getMsgContCls(
+        //           user?._id,
+        //           msg?.sender?._id
+        //         )} shadow-md bg-gray-200 flex relative flex-col cursor-pointer gap-[0.16rem] ${
+        //           msg?.type === "IMAGE" ? "px-2 py-1" : "py-1 px-4"
+        //         }`}
+        //         onMouseEnter={() => setHoverIdx(index)}
+        //         onMouseLeave={() => setHoverIdx(null)}
+        //         ref={isLastMessage ? lastBookElementRef : null}
+        //       >
+        //         {hoverIdx === index && (
+        //           <MessageAction
+        //             handleReplyMsg={() =>
+        //               handleReplyMessage({
+        //                 groupId: currentRoom?.roomId,
+        //                 parentMsgContent:
+        //                   msg.type === "IMAGE"
+        //                     ? msg?.attachments[0]?.mediaUrl
+        //                     : msg?.content,
+        //                 parentMsgId: msg?._id,
+        //               })
+        //             }
+        //           />
+        //         )}
+        //         <div className="place-items-start">
+        //           <p className="text-[0.7rem] font-medium">
+        //             {msg?.sender?.name}
+        //           </p>
+        //         </div>
+
+        //         <div className="flex relative">
+        //           {msg?.isReplyMsg && (
+        //             <div>
+        //               <p className="text-[0.8rem]">{msg?.parentMsgContent}</p>
+        //             </div>
+        //           )}
+        //           {msgContent}
+        //         </div>
+
+        //         <div className="place-items-end">
+        //           <p className="text-[0.7rem]">
+        //             {msg?.createdAt
+        //               ? format(new Date(msg.createdAt), "hh:mm a")
+        //               : ""}
+        //           </p>
+        //         </div>
+        //       </div>
+        //     </div>
+        //   );
+        // }
+
         return (
           <div
             key={msg._id}
-            className={getMsgContCls(user?._id, msg?.sender?._id)}
+            className={`${getMsgContCls(
+              user?._id,
+              msg?.sender?._id
+            )} shadow-md bg-gray-200 flex flex-col relative cursor-pointer gap-[0.16rem] ${
+              msg?.type === "IMAGE" ? "px-2 py-1" : "py-1 px-3"
+            }`}
             ref={isLastMessage ? lastBookElementRef : null}
+            onMouseEnter={() => setHoverIdx(index)}
+            onMouseLeave={() => setHoverIdx(null)}
           >
-            {msg?.isReplyMsg && (
-              <div>
-                <p>{msg?.parentMsgContent}</p>
-              </div>
-            )}
-            {msgContent}
-            <div>
-              <button
-                onClick={() => {
-                  return handleReplyMessage({
+            {hoverIdx === index && (
+              <MessageAction
+                handleReplyMsg={() =>
+                  handleReplyMessage({
                     groupId: currentRoom?.roomId,
                     parentMsgContent:
                       msg.type === "IMAGE"
                         ? msg?.attachments[0]?.mediaUrl
                         : msg?.content,
                     parentMsgId: msg?._id,
-                  });
-                }}
-              >
-                reply
-              </button>
+                  })
+                }
+              />
+            )}
+            <div className="place-items-start">
+              <p className="text-[0.7rem] font-medium">{msg?.sender?.name}</p>
+            </div>
+
+            <div className="flex flex-col">
+              {msg?.isReplyMsg && (
+                <div className="w-full px-3 py-2 bg-white rounded-sm">
+                  <p className="text-[0.8rem]">{msg?.parentMsgContent}</p>
+                </div>
+              )}
+              <div className={msg?.isReplyMsg && `mt-2 pl-1`}>{msgContent}</div>
+            </div>
+
+            <div className="place-items-end">
+              <p className="text-[0.7rem]">
+                {msg?.createdAt
+                  ? format(new Date(msg.createdAt), "hh:mm a")
+                  : ""}
+              </p>
             </div>
           </div>
         );

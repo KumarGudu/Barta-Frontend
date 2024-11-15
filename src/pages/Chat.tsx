@@ -28,7 +28,7 @@ const Chat = () => {
   return (
     <Auth_Layout>
       <main className="flex h-screen relative">
-        <div className="w-[25rem]">
+        <div className="w-[28rem]">
           <div>
             <Left_Nav_Bar />
             <div className="h-[3rem] flex items-center justify-center  p-1 border-r-2 border-[#25d366] ">
@@ -49,7 +49,7 @@ const Chat = () => {
         </div>
         {/* bg-[#dcf8c6] */}
         {currentRoom ? (
-          <div className="w-[calc(100%-25rem)] relative">
+          <div className="w-[calc(100%-28rem)] relative">
             <div className="h-[4rem] bg-pink-300">
               <Right__Nav_Bar />
             </div>

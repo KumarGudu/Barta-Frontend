@@ -53,6 +53,7 @@ const All_Connected_Chat = () => {
       isMessaged: chat?.isMessaged,
       userId: receiver?._id,
       members: chat?.memberDetails?.map((member: Member_Type) => member._id),
+      lastMessage: chat?.lastMessage,
     });
   };
 
@@ -130,12 +131,15 @@ const All_Connected_Chat = () => {
               }
             >
               <img
-                src={receiver?.profileUrl}
+                src={
+                  receiver?.profileUrl ? receiver?.profileUrl : `/profile.png`
+                }
                 alt="receiver_img"
                 width={50}
                 height={50}
                 className="rounded-full"
               />
+
               <div className="w-full">
                 <div className="w-full flex justify-between items-center">
                   <p className="text-[0.9rem] font-normal tracking-wide">

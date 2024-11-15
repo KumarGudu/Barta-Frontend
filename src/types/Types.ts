@@ -38,6 +38,7 @@ export type PrivateChatRoom = {
   isGroupChat?: boolean;
   isMessaged: boolean;
   members?: string[];
+  lastMessage?: Lst_Message_Type;
 };
 
 export type MediaType = {
@@ -61,6 +62,7 @@ export type LiveMsg = {
   parentMsgContent?: string;
   createdAt: string;
   updatedAt: string;
+  isFirstMessageOfTheDay?: boolean;
 };
 
 // connected type
