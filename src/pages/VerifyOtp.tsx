@@ -1,16 +1,13 @@
 import { Input as BaseInput } from "@mui/base/Input";
+import { Check } from "@mui/icons-material";
+import { Button, CircularProgress } from "@mui/material";
 import { Box, styled } from "@mui/system";
-import { Button, CircularProgress, Dialog, DialogTitle } from "@mui/material";
-import { Check, Title } from "@mui/icons-material";
 // import usePostData from "../../hooks/Post_Hook";
-import { Formik, Field, Form } from "formik";
-import * as Yup from "yup";
-import { Fragment, useEffect, useRef, useState } from "react";
-import Swal from "sweetalert2";
-import Timer from "@/components/dialogs/TImer";
-import { useRouter } from "next/navigation";
 import { usePostData } from "@/hooks/Api_Hooks";
 import useAuthStore from "@/stores/Auth.store";
+import { useRouter } from "next/navigation";
+import { Fragment, useEffect, useRef, useState } from "react";
+import * as Yup from "yup";
 
 const schema = Yup.string().matches(/^\d{4}$/, "Must be exactly 4 digits");
 
@@ -99,8 +96,8 @@ export default function VerifyOtp() {
           length={4}
         />
 
-        <p className="text-red-500 font-medium">{err && `${err}`}</p>
-        <Timer timeInSecond={120} />
+        {/* <p className="text-red-500 font-medium">{err && `${err}`}</p>
+        <Timer timeInSecond={120} /> */}
 
         <div>
           <Button onClick={resendOtp} disabled={resendIsLoading}>
