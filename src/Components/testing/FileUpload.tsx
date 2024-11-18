@@ -3,7 +3,7 @@ import axios from "axios";
 import useCurrentPrivateChatRoomStore from "@/stores/CurrentPvtChat.store";
 import { usePostData } from "@/hooks/Api_Hooks";
 
-const FileUpload = ({ handleClose, setIsOpen }: any) => {
+const FileUpload = ({ handleClose, setAnchorEl }: any) => {
   const [files, setFiles] = useState([]);
 
   const handleFileChange = (e) => {
@@ -35,7 +35,7 @@ const FileUpload = ({ handleClose, setIsOpen }: any) => {
     );
 
     handleClose();
-    setIsOpen(false);
+    setAnchorEl(null);
   };
 
   return (

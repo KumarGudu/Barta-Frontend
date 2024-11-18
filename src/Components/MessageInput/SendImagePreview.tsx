@@ -20,7 +20,7 @@ import FileUpload from "../testing/FileUpload";
 interface Props {
   open: boolean;
   handleClose: any;
-  setIsOpen: (value: boolean) => void;
+  setAnchorEl: (value: any) => void;
 }
 type IMAGE_TYPE = {
   file: File;
@@ -31,7 +31,7 @@ const initialValues = {
   files: [] as any,
   // title: "",
 };
-const SendImagePreview = ({ open, handleClose, setIsOpen }: Props) => {
+const SendImagePreview = ({ open, handleClose, setAnchorEl }: Props) => {
   const [loading, setLoading] = useState(false);
   const { currentRoom } = useCurrentPrivateChatRoomStore();
   const imageRef = useRef<HTMLInputElement | null>(null);
@@ -61,7 +61,7 @@ const SendImagePreview = ({ open, handleClose, setIsOpen }: Props) => {
       );
 
       handleClose();
-      setIsOpen(false);
+      setAnchorEl(null);
       return;
     } catch (error) {
       if (error instanceof Error) {
@@ -208,7 +208,7 @@ const SendImagePreview = ({ open, handleClose, setIsOpen }: Props) => {
             )}
           </Formik>
         </div> */}
-        <FileUpload handleClose={handleClose} setIsOpen={setIsOpen} />
+        <FileUpload handleClose={handleClose} setAnchorEl={setAnchorEl} />
       </DialogContent>
     </Dialog>
   );

@@ -14,6 +14,7 @@ import { FiX } from "react-icons/fi";
 import { usePostData } from "@/hooks/Api_Hooks";
 import EmojiPickerModel from "../dialogs/EmojiPicker";
 import { isToday } from "date-fns";
+import ChooseMedia_01 from "../MessageInput/ChooseMedia_01";
 
 const Send_Message_Input = () => {
   const [height, setHeight] = useState("auto");
@@ -188,7 +189,7 @@ const Send_Message_Input = () => {
             <div className="cursor-pointer">
               <BsEmojiSmile size={22} />
             </div>
-            <ChooseMedia position="top" />
+            <ChooseMedia_01 />
           </div>
         </div>
         <div className="flex-grow">

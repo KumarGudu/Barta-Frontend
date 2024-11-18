@@ -16,6 +16,24 @@ export type AuthUser = {
   fcmToken?: string;
 };
 
+export type ProductType = {
+  _id: string;
+  title: string;
+  status: string;
+  description: string;
+  ownerName: string;
+  ownerMobileNumber: string;
+  floorNumber: number;
+  price: number;
+  productImages: [
+    {
+      imagePath: string;
+      imageUrl: string;
+    }
+  ];
+  createdAt: string;
+};
+
 export type ReplyMsgType = {
   groupId: string;
   parentMsgContent: string;

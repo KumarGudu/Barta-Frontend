@@ -5,18 +5,26 @@ import { IoDocument } from "react-icons/io5";
 import { FaVideo } from "react-icons/fa6";
 import { MdAudioFile } from "react-icons/md";
 import SendImagePreview from "./SendImagePreview";
+import { MdOutlineProductionQuantityLimits } from "react-icons/md";
 
 const ChooseMedia = ({ position = "bottom" }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [modalStyles, setModalStyles] = useState({});
   const triggerButtonRef = useRef(null);
   const [isImageModalOpen, setIsImageModalOpen] = useState<boolean>(false);
+  const [isSendProductModalOpen, setIsSendProductModalOpen] =
+    useState<boolean>(false);
 
   const mediaContent = [
     {
       id: 1,
       title: "Image",
       icon: <FaImage />,
+    },
+    {
+      id: 2,
+      title: "Send Product",
+      icon: <MdOutlineProductionQuantityLimits />,
     },
     {
       id: 2,
@@ -118,11 +126,11 @@ const ChooseMedia = ({ position = "bottom" }) => {
             </div>
 
             {/* image preview modal */}
-            <SendImagePreview
+            {/* <SendImagePreview
               open={isImageModalOpen}
               handleClose={() => setIsImageModalOpen(false)}
               setIsOpen={setIsOpen}
-            />
+            /> */}
           </div>
         </div>
       )}
