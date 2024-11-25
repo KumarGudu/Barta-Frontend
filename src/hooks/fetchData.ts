@@ -1,6 +1,7 @@
 import useSWR from "swr";
 import axios from "axios";
 import { BASE_URL } from "@/utils";
+import { useEffect, useState } from "react";
 
 type FetchDataOptions = {
   revalidateOnFocus?: boolean;
@@ -8,8 +9,7 @@ type FetchDataOptions = {
   shouldRetryOnError?: boolean;
 };
 
-const token = JSON.parse(localStorage.getItem("token"));
-const fetcher = (url: string) =>
+const fetcher = (url: string, token: string) =>
   axios
     .get(url, {
       withCredentials: true,
@@ -21,11 +21,20 @@ const fetcher = (url: string) =>
 
 export const useFetchData = <T>(url: string, options?: FetchDataOptions) => {
   const mainUrl = `${BASE_URL}${url}`;
-  const { data, error, isLoading, mutate } = useSWR<T>(mainUrl, fetcher, {
-    revalidateOnFocus: options?.revalidateOnFocus ?? true,
-    revalidateOnReconnect: options?.revalidateOnReconnect ?? true,
-    shouldRetryOnError: options?.shouldRetryOnError ?? true,
-  });
+  const [token, setToken] = useState<string | null>(null);
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    setToken(storedToken ? JSON.parse(storedToken) : null);
+  }, []);
+  const { data, error, isLoading, mutate } = useSWR<T>(
+    mainUrl,
+    ([url, token]) => fetcher(url, token),
+    {
+      revalidateOnFocus: options?.revalidateOnFocus ?? true,
+      revalidateOnReconnect: options?.revalidateOnReconnect ?? true,
+      shouldRetryOnError: options?.shouldRetryOnError ?? true,
+    }
+  );
 
   return {
     data,

@@ -1,5 +1,6 @@
 import { BASE_URL } from "@/utils";
 import axios from "axios";
+import { useEffect, useState } from "react";
 import useSWRInfinite from "swr/infinite";
 
 interface UseSwrInfiniteScrollProps<T> {
@@ -17,12 +18,19 @@ export const useSwrInfiniteScroll = <T,>({
     withCredentials: true,
   });
 
-  const token = JSON.parse(localStorage.getItem("token"));
+  const [token, setToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedToken = localStorage.getItem("token");
+      setToken(storedToken ? JSON.parse(storedToken) : null);
+    }
+  }, []);
   const fetcher = (url: string) =>
     axiosInstance
       .get(url, {
         headers: {
-          "x-access-token": token,
+          "x-access-token": token || "",
         },
       })
       .then((res) => res?.data?.data);

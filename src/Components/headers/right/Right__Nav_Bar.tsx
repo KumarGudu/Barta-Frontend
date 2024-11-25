@@ -112,7 +112,10 @@ const Right__Nav_Bar = () => {
                 key={member?._id}
                 className="flex flex-col justify-center mt-1"
               >
-                <p className="text-gray-300 text-sm">{member?.name}</p>
+                {member?.role !== "ADMIN" && (
+                  <p className="text-gray-300 text-sm">{member?.name}</p>
+                )}
+
                 <p className="text-[0.7rem] text-green-200">
                   {isTyping ? " typing..." : isOnline ? "online" : ""}
                 </p>

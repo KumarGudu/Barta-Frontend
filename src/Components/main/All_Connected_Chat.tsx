@@ -114,13 +114,39 @@ const All_Connected_Chat = () => {
           return user?.role === "ADMIN" ? (
             <div
               key={chat?._id}
-              className="w-full bg-white px-3 cursor-pointer"
+              className="w-full px-3 flex items-center gap-4 py-[0.6rem] cursor-pointer border-b-[1px]  border-[#075e54] rounded-sm"
               onClick={() =>
                 setCurrentPrivateRoomInfoForNormalUser({ chat, receiver })
               }
             >
-              <p className="text-gray-700">{chat?.name}</p>
-              <p className="text-gray-900">{chat?._id}</p>
+              <img
+                src={
+                  receiver?.profileUrl ? receiver?.profileUrl : `/profile.png`
+                }
+                alt="receiver_img"
+                width={50}
+                height={50}
+                className="rounded-full"
+              />
+
+              <div className="w-full">
+                <div className="w-full flex justify-between items-center">
+                  <p className="text-[0.9rem] font-normal tracking-wide">
+                    {receiver?.name && receiver?.name?.length > 30
+                      ? receiver?.name.slice(0, 30) + "..."
+                      : receiver?.name}
+                  </p>
+                  <p className="text-[0.7rem] font-medium text-gray-600">
+                    {formatLastMessageTime(chat?.lastMessage?.createdAt)}
+                  </p>
+                </div>
+                <p className="text-[0.75rem]">
+                  {chat?.lastMessage?.content &&
+                  chat?.lastMessage?.content?.length > 50
+                    ? chat.lastMessage.content.slice(0, 50) + "..."
+                    : chat?.lastMessage?.content}
+                </p>
+              </div>
             </div>
           ) : (
             <div

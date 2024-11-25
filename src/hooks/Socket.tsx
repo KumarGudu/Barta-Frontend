@@ -1,14 +1,33 @@
 import { useMemo } from "react";
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 
-// const BASE_SOCKET_URL = "http://localhost:5000";
 const BASE_SOCKET_URL = "http://localhost:3300";
 
 export const useSocket = () => {
-  const socket = useMemo(() => {
-    const newSocket = io(BASE_SOCKET_URL, { withCredentials: true });
+  const socket = useMemo<Socket | null>(() => {
+    if (typeof window === "undefined") {
+      // Prevent execution during server-side rendering
+      return null;
+    }
+
+    const token = localStorage.getItem("token")
+      ? JSON.parse(localStorage.getItem("token")!)
+      : null;
+
+    if (!token) {
+      console.warn("Token not found in localStorage");
+      return null;
+    }
+
+    const newSocket = io(BASE_SOCKET_URL, {
+      withCredentials: true,
+      extraHeaders: {
+        "x-access-token": token,
+      },
+    });
+
     return newSocket;
-  }, [BASE_SOCKET_URL]);
+  }, []); // BASE_SOCKET_URL does not need to be in the dependency array since it is a constant
 
   return socket;
 };

@@ -13,7 +13,6 @@ export default function Home() {
     (async () => {
       const params = new URLSearchParams(window.location.search);
       const token = params.get("token");
-      console.log("TOKENNNN-->", token);
       if (token) {
         localStorage.setItem("token", token);
         const currentUser = await validateAuthUser(token);
