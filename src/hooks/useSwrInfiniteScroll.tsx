@@ -17,8 +17,15 @@ export const useSwrInfiniteScroll = <T,>({
     withCredentials: true,
   });
 
+  const token = JSON.parse(localStorage.getItem("token"));
   const fetcher = (url: string) =>
-    axiosInstance.get(url).then((res) => res?.data?.data);
+    axiosInstance
+      .get(url, {
+        headers: {
+          "x-access-token": token,
+        },
+      })
+      .then((res) => res?.data?.data);
 
   const getKey = (pageIndex: number, previousPageData: T[] | null) => {
     if (pageIndex === 0) return `${BASE_URL}${url}?pageNo=1&perPage=${perPage}`;

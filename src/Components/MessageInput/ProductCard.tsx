@@ -2,7 +2,13 @@ import { ProductType } from "@/types";
 import React from "react";
 import { FiSend } from "react-icons/fi";
 
-const ProductCard = ({ product }: { product: ProductType }) => {
+const ProductCard = ({
+  product,
+  setIsSendProductModalOpen,
+}: {
+  product: ProductType;
+  setIsSendProductModalOpen: (val: boolean) => void;
+}) => {
   return (
     <div className="flex items-center p-3 bg-white shadow-md rounded-md border border-gray-200">
       {/* Checkbox */}
@@ -38,11 +44,11 @@ const ProductCard = ({ product }: { product: ProductType }) => {
       </div>
 
       {/* Send Button */}
-      <div className="ml-3">
+      {/* <div className="ml-3">
         <button className="p-2 bg-indigo-500 text-white text-xs rounded-md hover:bg-indigo-600 transition">
           <FiSend size={16} />
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };

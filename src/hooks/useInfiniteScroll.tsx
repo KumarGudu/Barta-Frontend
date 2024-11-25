@@ -35,6 +35,7 @@ function useInfiniteScroll<T>({
 
   const fetchData = (page: number = pageNumber) => {
     setLoading(true);
+    const token = JSON.parse(localStorage.getItem("token"));
     axios({
       method: "GET",
       url: `${BASE_URL}${url}`,
@@ -45,6 +46,9 @@ function useInfiniteScroll<T>({
         ...extParams,
       },
       withCredentials: true,
+      headers: {
+        "x-access-token": token,
+      },
     })
       .then((res) => {
         const newData: T[] = res?.data?.data;

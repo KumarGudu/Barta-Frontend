@@ -8,8 +8,16 @@ type FetchDataOptions = {
   shouldRetryOnError?: boolean;
 };
 
+const token = JSON.parse(localStorage.getItem("token"));
 const fetcher = (url: string) =>
-  axios.get(url, { withCredentials: true }).then((res) => res?.data?.data);
+  axios
+    .get(url, {
+      withCredentials: true,
+      headers: {
+        "x-access-token": token,
+      },
+    })
+    .then((res) => res?.data?.data);
 
 export const useFetchData = <T>(url: string, options?: FetchDataOptions) => {
   const mainUrl = `${BASE_URL}${url}`;

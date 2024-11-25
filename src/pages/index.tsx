@@ -11,17 +11,51 @@ export default function Home() {
   const router = useRouter();
   useEffect(() => {
     (async () => {
-      if (!user) {
-        const currentUser = await validateAuthUser();
-        if (!currentUser) return router.push("/");
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get("token");
+      console.log("TOKENNNN-->", token);
+      if (token) {
+        localStorage.setItem("token", token);
+        const currentUser = await validateAuthUser(token);
         setAuthUser(currentUser);
+        window.history.replaceState(
+          {},
+          document.title,
+          window.location.pathname
+        );
+        if (!currentUser) return router.push("/");
       }
     })();
   }, []);
 
+  // useEffect(() => {
+  //   localStorage.setItem("token", JSON.stringify(token));
+  //   (async () => {
+  //     if (!user) {
+  //       const currentUser = await validateAuthUser(token);
+  //       if (!currentUser) return router.push("/");
+  //       setAuthUser(currentUser);
+  //     }
+  //   })();
+  // }, [token]);
+
   const redirectToMain = () => {
     isLogin === true && user ? router.push("/Chat") : router.push("/Auth");
   };
+
+  // const validateUser = async () => {
+  //   if (token) {
+  //     const currentUser = await validateAuthUser(token);
+  //     setAuthUser(currentUser);
+  //     if (currentUser && isLogin === true) {
+  //       router.push("/");
+  //     } else {
+  //       router.push("/Chat");
+  //     }
+  //   } else {
+  //     console.log("Token not found");
+  //   }
+  // };
 
   return (
     <main className={`flex items-center justify-center h-screen`}>

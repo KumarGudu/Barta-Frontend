@@ -30,6 +30,7 @@ export const usePostData = <T>(): UsePostDataResult<T> => {
     setIsLoading(true);
     setError(null);
     try {
+      const token = JSON.parse(localStorage.getItem("token"));
       const response: AxiosResponse<{ data: T }> = await axios.post(
         BASE_URL + url,
         payload,
@@ -37,6 +38,7 @@ export const usePostData = <T>(): UsePostDataResult<T> => {
           ...config,
           headers: {
             "Content-Type": "multipart/form-data",
+            "x-access-token": token,
             ...config?.headers,
           },
         }

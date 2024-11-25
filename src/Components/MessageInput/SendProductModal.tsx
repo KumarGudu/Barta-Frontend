@@ -12,6 +12,11 @@ interface Props {
   isSendProductModalOpen: boolean;
   setIsSendProductModalOpen: (value: boolean) => void;
 }
+type SelectProductType = {
+  _id: string;
+  link: string;
+  image: string;
+};
 export default function SendProductModal({
   isSendProductModalOpen,
   setIsSendProductModalOpen,
@@ -19,6 +24,9 @@ export default function SendProductModal({
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [searchQuery, setSearchQuery] = useState<any>(null);
   const [text, setText] = useState<string>("");
+  const [selectedProducts, setSelectedProducts] = useState<SelectProductType[]>(
+    []
+  );
 
   const { loading, resData, hasMore, isError } = useInfiniteScroll<
     Partial<ProductType>
@@ -46,21 +54,30 @@ export default function SendProductModal({
         anchor="right"
       >
         <div className="relative h-full">
-          <div className="sticky top-0 h-[4rem] z-10 flex items-center justify-center">
+          <div className="sticky top-0 h-[3.5rem] z-10 flex items-center justify-center">
             <p className="text-lg font-medium">Product List</p>
           </div>
-          <div className="w-[27.9rem] max-h-[calc(100%-4rem)] overflow-y-auto p-3 flex flex-col gap-2 ">
+          <div className="w-[27.9rem] max-h-[calc(100%-7rem)] overflow-y-auto p-3 flex flex-col gap-2 ">
             {resData &&
               resData.map((product: ProductType, index: number) => {
                 console.log("Product", product);
                 if (resData?.length === index + 1) {
                   return (
                     <div ref={lastBookElementRef} key={product._id}>
-                      <ProductCard product={product} />
+                      <ProductCard
+                        product={product}
+                        setIsSendProductModalOpen={setIsSendProductModalOpen}
+                      />
                     </div>
                   );
                 } else {
-                  return <ProductCard product={product} key={product?._id} />;
+                  return (
+                    <ProductCard
+                      product={product}
+                      key={product?._id}
+                      setIsSendProductModalOpen={setIsSendProductModalOpen}
+                    />
+                  );
                 }
               })}
 
@@ -75,6 +92,11 @@ export default function SendProductModal({
                 <p>Error</p>
               </div>
             )}
+          </div>
+          <div className="sticky bottom-0 h-[3.5rem] z-10 flex items-center justify-end mr-10">
+            <button className="p-2 bg-indigo-500 text-white text-xs rounded-md hover:bg-indigo-600 transition">
+              <FiSend size={16} />
+            </button>
           </div>
         </div>
       </Drawer>
