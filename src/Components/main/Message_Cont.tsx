@@ -23,20 +23,27 @@ const getMsgContCls = (userId: string, senderId: string) => {
 const Message_Cont = () => {
   const { messages, setLiveMessages } = useLiveMessageStore();
   const { user } = useAuthStore();
-  const { currentRoom } = useCurrentPrivateChatRoomStore();
+  const { currentRoom, setCurrentRoom } = useCurrentPrivateChatRoomStore();
   const { socket } = useSocketStore();
   const { onlineUsers, setOnlineUsers } = useOnlineUsersStore();
   const [pageNumber, setPageNumber] = useState(1);
   const [reset, setReset] = useState(false);
   const router = useRouter();
 
+  const token = JSON.parse(localStorage.getItem("token")) || "";
   const { loading, resData, hasMore, isError } = useInfiniteScroll<
     Partial<LiveMsg>
   >({
     pageNumber,
     url: `chat/get-all-chats/${currentRoom?.roomId}`,
     reset,
+    token,
   });
+
+  useEffect(() => {
+    setReset(true);
+    setPageNumber(1);
+  }, [currentRoom, setCurrentRoom]);
 
   useEffect(() => {
     if (reset) setReset(false);

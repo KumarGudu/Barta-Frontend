@@ -23,7 +23,6 @@ const useCurrentPrivateChatRoomStore = create<
     });
   },
   refreshCurrentRoom: () => {
-    console.log("COMING.........");
     const currentRoom = get().currentRoom;
     set({
       currentRoom: { ...currentRoom },

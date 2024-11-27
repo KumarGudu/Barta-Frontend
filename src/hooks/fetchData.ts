@@ -9,8 +9,9 @@ type FetchDataOptions = {
   shouldRetryOnError?: boolean;
 };
 
-const fetcher = (url: string, token: string) =>
-  axios
+const fetcher = (url: string, token: string | null) => {
+  if (!token) return Promise.reject(new Error("No token available"));
+  return axios
     .get(url, {
       withCredentials: true,
       headers: {
@@ -18,17 +19,22 @@ const fetcher = (url: string, token: string) =>
       },
     })
     .then((res) => res?.data?.data);
+};
 
 export const useFetchData = <T>(url: string, options?: FetchDataOptions) => {
   const mainUrl = `${BASE_URL}${url}`;
   const [token, setToken] = useState<string | null>(null);
+
+  // Fetch token from localStorage
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     setToken(storedToken ? JSON.parse(storedToken) : null);
   }, []);
+
+  // SWR key includes both URL and token
   const { data, error, isLoading, mutate } = useSWR<T>(
-    mainUrl,
-    ([url, token]) => fetcher(url, token),
+    token ? [mainUrl, token] : null, // If token is null, no request is made
+    ([url, token]) => fetcher(url, token as any), // Pass both arguments to the fetcher
     {
       revalidateOnFocus: options?.revalidateOnFocus ?? true,
       revalidateOnReconnect: options?.revalidateOnReconnect ?? true,
@@ -39,7 +45,7 @@ export const useFetchData = <T>(url: string, options?: FetchDataOptions) => {
   return {
     data,
     error,
-    isLoading: !error && !data,
-    mutate, // This allows you to manually trigger a re-fetch or update the cache
+    isLoading: !data && !error,
+    mutate,
   };
 };

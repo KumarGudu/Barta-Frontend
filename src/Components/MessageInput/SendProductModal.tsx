@@ -28,6 +28,7 @@ export default function SendProductModal({
     []
   );
 
+  const token = JSON.stringify("token") || "";
   const { loading, resData, hasMore, isError } = useInfiniteScroll<
     Partial<ProductType>
   >({
@@ -35,6 +36,7 @@ export default function SendProductModal({
     url: "products",
     isOpen: isSendProductModalOpen,
     query: searchQuery,
+    token: token,
   });
   const toggleDrawer = (newOpen: boolean) => () => {
     setIsSendProductModalOpen(newOpen);
@@ -60,7 +62,6 @@ export default function SendProductModal({
           <div className="w-[27.9rem] max-h-[calc(100%-7rem)] overflow-y-auto p-3 flex flex-col gap-2 ">
             {resData &&
               resData.map((product: ProductType, index: number) => {
-                console.log("Product", product);
                 if (resData?.length === index + 1) {
                   return (
                     <div ref={lastBookElementRef} key={product._id}>

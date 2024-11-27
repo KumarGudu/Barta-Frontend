@@ -78,12 +78,9 @@ const Login = ({ toggleAuth }: { toggleAuth: () => void }) => {
     resetForm();
   };
 
-  console.log("DATA---->", data);
-
   useEffect(() => {
     let timeOutId: any;
     if (data) {
-      console.log("USER", { data });
       setAuthUser(data);
       timeOutId = setTimeout(() => {
         router.push("/Chat");

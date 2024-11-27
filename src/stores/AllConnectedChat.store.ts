@@ -12,7 +12,6 @@ const useConnectedChatStore = create<ConnectedChatState & ConnectedChatAction>(
   (set) => ({
     connectedChatMutate: null,
     SetConnectedChatMutate: (fn) => {
-      console.log("FN", fn);
       set(() => ({ connectedChatMutate: fn }));
     },
   })

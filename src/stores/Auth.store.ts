@@ -56,7 +56,6 @@ const useAuthStore = create<AuthState & AuthAction>((set) => ({
       }
       const data = await res.json();
       const currentUser = data?.user as AuthUser;
-      console.log("CURRENt_USER", currentUser);
       return currentUser;
     } catch (error) {
       set({ user: undefined });

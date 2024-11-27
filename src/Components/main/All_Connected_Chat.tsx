@@ -44,7 +44,9 @@ const All_Connected_Chat = () => {
     chat: ConnectedChat;
     receiver: Member_Type;
   }) => {
-    if (currentRoom?.roomId === chat?._id) return;
+    if (currentRoom?.roomId === chat?._id) {
+      return;
+    }
     setCurrentRoom({
       name: chat?.name,
       slugName: receiver?.slugName,
@@ -96,8 +98,6 @@ const All_Connected_Chat = () => {
         scrollableTarget="scrollableDiv"
       >
         {connectedChats?.map((chat: ConnectedChat, index: number) => {
-          console.log("Chat----------->", chat?.lastMessage);
-
           let receiver: Member_Type = chat?.memberDetails?.find((member) => {
             return member?.role !== "ADMIN" && member?._id !== user?._id;
           });

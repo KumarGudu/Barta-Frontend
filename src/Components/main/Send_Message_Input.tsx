@@ -80,12 +80,6 @@ const Send_Message_Input = () => {
         isFirstMessageOfTheDay = true;
       }
 
-      console.log({
-        DATE: currentRoom?.lastMessage,
-        isCreatedAtToday,
-        isFirstMessageOfTheDay,
-      });
-
       if (replyMessage && replyMessage !== null) {
         await postData(
           "chat/reply-to-message",

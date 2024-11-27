@@ -36,6 +36,8 @@ const Right__Nav_Bar = () => {
     options
   );
 
+  console.log("DATA", data);
+
   useEffect(() => {
     if (data) {
       setGroupMembers((data as any).members);

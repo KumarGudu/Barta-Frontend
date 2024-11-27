@@ -42,7 +42,6 @@ export default function VerifyOtp() {
     setOtp("");
   };
   useEffect(() => {
-    console.log({ data });
     let timeOutId: any;
     if (data) {
       setAuthUser(data);

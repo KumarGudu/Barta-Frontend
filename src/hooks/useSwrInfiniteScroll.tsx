@@ -18,22 +18,16 @@ export const useSwrInfiniteScroll = <T,>({
     withCredentials: true,
   });
 
-  const [token, setToken] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedToken = localStorage.getItem("token");
-      setToken(storedToken ? JSON.parse(storedToken) : null);
-    }
-  }, []);
-  const fetcher = (url: string) =>
-    axiosInstance
+  const fetcher = (url: string): any => {
+    const token = JSON.parse(localStorage.getItem("token"));
+    return axiosInstance
       .get(url, {
         headers: {
           "x-access-token": token || "",
         },
       })
       .then((res) => res?.data?.data);
+  };
 
   const getKey = (pageIndex: number, previousPageData: T[] | null) => {
     if (pageIndex === 0) return `${BASE_URL}${url}?pageNo=1&perPage=${perPage}`;

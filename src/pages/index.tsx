@@ -38,8 +38,12 @@ export default function Home() {
   //   })();
   // }, [token]);
 
-  const redirectToMain = () => {
-    isLogin === true && user ? router.push("/Chat") : router.push("/Auth");
+  const redirectToMain = async () => {
+    const token = localStorage.getItem("token");
+    const currentUser = await validateAuthUser(token);
+    setAuthUser(currentUser);
+    console.log("CURRENT_USER", currentUser);
+    currentUser ? router.push("/Chat") : router.push("/Auth");
   };
 
   // const validateUser = async () => {
@@ -59,12 +63,12 @@ export default function Home() {
   return (
     <main className={`flex items-center justify-center h-screen`}>
       <div className="flex flex-col items-center justify-center">
-        <h1 className="text-[3rem] font-bold">BARTA</h1>
+        <h1 className="text-[3rem] font-bold">S-Homes</h1>
         <button
           className="px-8 py-4 bg-green-900 text-xl font-medium rounded-full text-gray-200 mt-8 hover:bg-green-950"
           onClick={redirectToMain}
         >
-          Start Connect With People
+          Connect With Us
         </button>
       </div>
     </main>
