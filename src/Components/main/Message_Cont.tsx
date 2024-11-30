@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import useInfiniteScroll from "@/hooks/useInfiniteScroll";
 import useObserver from "@/hooks/useObserver";
 import useAuthStore from "@/stores/Auth.store";
@@ -30,14 +30,12 @@ const Message_Cont = () => {
   const [reset, setReset] = useState(false);
   const router = useRouter();
 
-  const token = JSON.parse(localStorage.getItem("token")) || "";
   const { loading, resData, hasMore, isError } = useInfiniteScroll<
     Partial<LiveMsg>
   >({
     pageNumber,
     url: `chat/get-all-chats/${currentRoom?.roomId}`,
     reset,
-    token,
   });
 
   useEffect(() => {
@@ -114,9 +112,19 @@ const Message_Cont = () => {
 
   //hover logic added
   const [hoverIdx, setHoverIdx] = useState<any>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   return (
-    <div className="flex flex-col-reverse overflow-y-auto h-full px-16 py-7 overflow-x-hidden gap-3">
+    <div
+      className="flex flex-col-reverse overflow-y-auto h-full px-16 py-7 overflow-x-hidden gap-3"
+      ref={containerRef}
+    >
       {allMessages.map((msg: Partial<LiveMsg>, index: number) => {
         const isLastMessage = allMessages.length === index + 1;
         const msgContent =
@@ -132,73 +140,13 @@ const Message_Cont = () => {
             />
           );
 
-        // if (msg?.isFirstMessageOfTheDay) {
-        //   return (
-        //     <div key={msg._id} className="flex flex-col">
-        //       <div className="w-full flex items-center justify-center text-center mb-9 mt-5">
-        //         <p className="px-4 text-[0.7rem] font-medium bg-gray-400 text-white w-fit py-[0.1rem] rounded-md">
-        //           {formatTimeOfFirstMessage(msg?.createdAt)}
-        //         </p>
-        //       </div>
-        //       <div
-        //         className={`${getMsgContCls(
-        //           user?._id,
-        //           msg?.sender?._id
-        //         )} shadow-md bg-gray-200 flex relative flex-col cursor-pointer gap-[0.16rem] ${
-        //           msg?.type === "IMAGE" ? "px-2 py-1" : "py-1 px-4"
-        //         }`}
-        //         onMouseEnter={() => setHoverIdx(index)}
-        //         onMouseLeave={() => setHoverIdx(null)}
-        //         ref={isLastMessage ? lastBookElementRef : null}
-        //       >
-        //         {hoverIdx === index && (
-        //           <MessageAction
-        //             handleReplyMsg={() =>
-        //               handleReplyMessage({
-        //                 groupId: currentRoom?.roomId,
-        //                 parentMsgContent:
-        //                   msg.type === "IMAGE"
-        //                     ? msg?.attachments[0]?.mediaUrl
-        //                     : msg?.content,
-        //                 parentMsgId: msg?._id,
-        //               })
-        //             }
-        //           />
-        //         )}
-        //         <div className="place-items-start">
-        //           <p className="text-[0.7rem] font-medium">
-        //             {msg?.sender?.name}
-        //           </p>
-        //         </div>
-
-        //         <div className="flex relative">
-        //           {msg?.isReplyMsg && (
-        //             <div>
-        //               <p className="text-[0.8rem]">{msg?.parentMsgContent}</p>
-        //             </div>
-        //           )}
-        //           {msgContent}
-        //         </div>
-
-        //         <div className="place-items-end">
-        //           <p className="text-[0.7rem]">
-        //             {msg?.createdAt
-        //               ? format(new Date(msg.createdAt), "hh:mm a")
-        //               : ""}
-        //           </p>
-        //         </div>
-        //       </div>
-        //     </div>
-        //   );
-        // }
-
         return (
           <div
             key={msg._id}
             className={`${getMsgContCls(
               user?._id,
               msg?.sender?._id
-            )} shadow-md bg-gray-200 flex flex-col relative cursor-pointer gap-[0.16rem] ${
+            )} shadow-md bg-gray-200 flex flex-col relative cursor-pointer gap-[0.12rem] ${
               msg?.type === "IMAGE" ? "px-2 py-1" : "py-1 px-3"
             }`}
             ref={isLastMessage ? lastBookElementRef : null}
@@ -225,7 +173,7 @@ const Message_Cont = () => {
 
             <div className="flex flex-col">
               {msg?.isReplyMsg && (
-                <div className="w-full px-3 py-2 bg-white rounded-sm">
+                <div className="w-full px-3 py-1 bg-white rounded-sm">
                   <p className="text-[0.8rem]">{msg?.parentMsgContent}</p>
                 </div>
               )}
@@ -242,13 +190,11 @@ const Message_Cont = () => {
           </div>
         );
       })}
-
       {loading && (
         <div className="h-[3rem]">
           <p>Loading..</p>
         </div>
       )}
-
       {isError && (
         <div className="h-[3rem]">
           <p>Error</p>

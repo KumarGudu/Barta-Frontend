@@ -112,15 +112,30 @@ const Right__Nav_Bar = () => {
             return (
               <div
                 key={member?._id}
-                className="flex flex-col justify-center mt-1"
+                className={`flex ${
+                  user?.role === "ADMIN" ? "flex" : "flex-col"
+                } justify-center mt-1`}
               >
-                {member?.role !== "ADMIN" && (
+                {member?.role !== "ADMIN" && user?.role !== "ADMIN" && (
                   <p className="text-gray-300 text-sm">{member?.name}</p>
                 )}
 
-                <p className="text-[0.7rem] text-green-200">
-                  {isTyping ? " typing..." : isOnline ? "online" : ""}
-                </p>
+                {user?.role === "ADMIN" && (
+                  <div className="flex gap-2">
+                    <p className="text-gray-300 text-[0.7rem]">
+                      {member?.name}
+                    </p>
+                    <p className="text-[0.7rem] text-green-200">
+                      {isTyping ? " typing..." : isOnline ? "online" : ""}
+                    </p>
+                  </div>
+                )}
+
+                {user?.role !== "ADMIN" && (
+                  <p className="text-[0.7rem] text-green-200">
+                    {isTyping ? " typing..." : isOnline ? "online" : ""}
+                  </p>
+                )}
               </div>
             );
           })}
