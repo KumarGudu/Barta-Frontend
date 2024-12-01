@@ -36,6 +36,7 @@ function useInfiniteScroll<T>({
   const fetchData = (page: number = pageNumber) => {
     setLoading(true);
     const token = JSON.parse(localStorage.getItem("token"));
+    console.log("URL", `${BASE_URL}${url}`);
     axios({
       method: "GET",
       url: `${BASE_URL}${url}`,

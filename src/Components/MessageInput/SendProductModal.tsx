@@ -7,6 +7,9 @@ import useObserver from "@/hooks/useObserver";
 import { FiSend } from "react-icons/fi";
 import { ProductType } from "@/types";
 import ProductCard from "./ProductCard";
+import useCurrentPrivateChatRoomStore from "@/stores/CurrentPvtChat.store";
+import { usePostData } from "@/hooks/Api_Hooks";
+import { BASE_URL } from "@/utils";
 
 interface Props {
   isSendProductModalOpen: boolean;
@@ -14,7 +17,6 @@ interface Props {
 }
 type SelectProductType = {
   _id: string;
-  link: string;
   image: string;
 };
 export default function SendProductModal({
@@ -24,20 +26,19 @@ export default function SendProductModal({
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [searchQuery, setSearchQuery] = useState<any>(null);
   const [text, setText] = useState<string>("");
-  const [selectedProducts, setSelectedProducts] = useState<SelectProductType[]>(
-    []
-  );
+  const [selectedProducts, setSelectedProducts] = useState<any[]>([]);
 
-  const token = JSON.stringify("token") || "";
+  const { currentRoom } = useCurrentPrivateChatRoomStore();
+
   const { loading, resData, hasMore, isError } = useInfiniteScroll<
     Partial<ProductType>
   >({
     pageNumber: pageNumber,
-    url: "products",
+    url: `product?status=ACTIVE`,
     isOpen: isSendProductModalOpen,
     query: searchQuery,
-    token: token,
   });
+
   const toggleDrawer = (newOpen: boolean) => () => {
     setIsSendProductModalOpen(newOpen);
   };
@@ -47,6 +48,29 @@ export default function SendProductModal({
     hasMore,
     setPageNumber,
   });
+
+  const { data, error, isLoading, postData } = usePostData<any>();
+
+  const handleSendProduct = async () => {
+    for (const product of selectedProducts) {
+      await postData(
+        "chat/send-product-in-chat",
+        {
+          productLink: `${BASE_URL}/product/details/${product?.id}`,
+          productImage: product?.image,
+          groupId: currentRoom?.roomId,
+          type: "HOUSE",
+        },
+        {
+          withCredentials: true,
+        },
+        true
+      );
+    }
+
+    setIsSendProductModalOpen(false);
+    setSelectedProducts([]);
+  };
 
   return (
     <div>
@@ -59,7 +83,7 @@ export default function SendProductModal({
           <div className="sticky top-0 h-[3.5rem] z-10 flex items-center justify-center">
             <p className="text-lg font-medium">Product List</p>
           </div>
-          <div className="w-[27.9rem] max-h-[calc(100%-7rem)] overflow-y-auto p-3 flex flex-col gap-2 ">
+          <div className="w-[27.9rem] h-[calc(100%-7rem)] max-h-[calc(100%-7rem)] overflow-y-auto p-3 flex flex-col gap-2">
             {resData &&
               resData.map((product: ProductType, index: number) => {
                 if (resData?.length === index + 1) {
@@ -68,6 +92,7 @@ export default function SendProductModal({
                       <ProductCard
                         product={product}
                         setIsSendProductModalOpen={setIsSendProductModalOpen}
+                        setSelectedProducts={setSelectedProducts}
                       />
                     </div>
                   );
@@ -77,6 +102,7 @@ export default function SendProductModal({
                       product={product}
                       key={product?._id}
                       setIsSendProductModalOpen={setIsSendProductModalOpen}
+                      setSelectedProducts={setSelectedProducts}
                     />
                   );
                 }
@@ -95,7 +121,10 @@ export default function SendProductModal({
             )}
           </div>
           <div className="sticky bottom-0 h-[3.5rem] z-10 flex items-center justify-end mr-10">
-            <button className="p-2 bg-indigo-500 text-white text-xs rounded-md hover:bg-indigo-600 transition">
+            <button
+              className="p-2 bg-indigo-500 text-white text-xs rounded-md hover:bg-indigo-600 transition"
+              onClick={handleSendProduct}
+            >
               <FiSend size={16} />
             </button>
           </div>

@@ -1,14 +1,39 @@
 import { ProductType } from "@/types";
-import React from "react";
+import React, { useState } from "react";
 import { FiSend } from "react-icons/fi";
 
 const ProductCard = ({
   product,
   setIsSendProductModalOpen,
+  setSelectedProducts,
 }: {
   product: ProductType;
   setIsSendProductModalOpen: (val: boolean) => void;
+  setSelectedProducts: (val: any) => void;
 }) => {
+  const [isChecked, setIsChecked] = useState(false); // Local state for checkbox
+
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { checked } = event.target;
+    setIsChecked(checked);
+
+    setSelectedProducts((prev: any) => {
+      if (checked) {
+        // Add product object { id, image }
+        return [
+          ...prev,
+          {
+            id: product._id,
+            image: product.productImages?.[0]?.imageUrl || "",
+          },
+        ];
+      } else {
+        // Remove product object by ID
+        return prev.filter((item) => item.id !== product._id);
+      }
+    });
+  };
+
   return (
     <div className="flex items-center p-3 bg-white shadow-md rounded-md border border-gray-200">
       {/* Checkbox */}
@@ -16,6 +41,8 @@ const ProductCard = ({
         <input
           type="checkbox"
           className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+          checked={isChecked}
+          onChange={handleCheckboxChange}
         />
       </div>
 
@@ -42,13 +69,6 @@ const ProductCard = ({
           ${product?.price || "0.00"}
         </p>
       </div>
-
-      {/* Send Button */}
-      {/* <div className="ml-3">
-        <button className="p-2 bg-indigo-500 text-white text-xs rounded-md hover:bg-indigo-600 transition">
-          <FiSend size={16} />
-        </button>
-      </div> */}
     </div>
   );
 };

@@ -130,6 +130,31 @@ const Message_Cont = () => {
         const msgContent =
           msg?.type === "TEXT" ? (
             <p className="text-[0.9rem]">{msg?.content}</p>
+          ) : msg?.type === "HOUSE" ? (
+            <div className="flex flex-col items-start gap-2 p-4 rounded-lg border shadow-sm max-w-sm">
+              {msg?.attachments?.[0]?.mediaUrl && (
+                <img
+                  src={msg.attachments[0].mediaUrl}
+                  alt="media"
+                  className="w-full h-auto max-w-xs rounded-md object-contain"
+                />
+              )}
+              {msg?.link && (
+                <a
+                  href={msg.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-blue-500 hover:text-blue-700 underline truncate max-w-full line-clamp-1"
+                  style={{
+                    display: "-webkit-box",
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                  }}
+                >
+                  {msg.link}
+                </a>
+              )}
+            </div>
           ) : (
             <img
               src={msg?.attachments[0]?.mediaUrl}

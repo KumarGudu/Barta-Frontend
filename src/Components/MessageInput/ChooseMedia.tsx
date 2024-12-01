@@ -99,7 +99,7 @@ const ChooseMedia = ({ position = "bottom" }) => {
         onClick={handleOpenModal}
         className="cursor-pointer"
       >
-        <FiPlus size={24} />
+        <FiPlus size={35} />
       </div>
 
       {isOpen && (

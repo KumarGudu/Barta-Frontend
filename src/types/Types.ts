@@ -68,6 +68,7 @@ export type LiveMsg = {
   _id: string;
   chatGroup: string;
   content?: string;
+  link?: string;
   attachments?: MediaType[];
   type: string;
   sender: {

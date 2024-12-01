@@ -1,0 +1,100 @@
+{
+  "success": true,
+  "message": "Getting all product successfully...",
+  "data": [
+    {
+      "_id": "66c4bd917afb6e1c31785890",
+      "title": "2 bhk house near Nandan Vihar",
+      "status": "ACTIVE",
+      "isSoldOut": false,
+      "description": "This is description",
+      "ownerName": "Shivaram Ghosh",
+      "totalFloor": 3,
+      "floorNumber": 3,
+      "price": 9000,
+      "productImages": [],
+      "createdAt": "2024-08-20T16:00:17.294Z",
+      "updatedAt": "2024-08-21T17:59:38.069Z",
+      "locationData": {
+        "_id": "66c4b0d9aaff99603f12e514",
+        "cityName": "Bhubaneswar",
+        "name": "Patia"
+      },
+      "bhkData": {
+        "_id": "66c4b1f49a7dc608eeda45d8",
+        "name": "2 BHK"
+      },
+      "categoryData": {
+        "_id": "66c4b3c67afb6e1c31785751",
+        "name": "Apartment"
+      },
+      "tenantsData": [
+        {
+          "_id": "66c4bd347afb6e1c31785878",
+          "name": "Both Family & Bachelor",
+          "createdAt": "2024-08-20T15:58:44.507Z",
+          "updatedAt": "2024-08-20T15:58:44.507Z",
+          "__v": 0
+        }
+      ],
+      "ownerMobileNumber": null,
+      "ownerWhatsAppNumber": null,
+      "ProductSoldOutInfo": {
+        "_id": "66c6185e9aa5eee9aa950329",
+        "product": "66c4bd917afb6e1c31785890",
+        "soldOutOrUnsoldReason": "Other reason",
+        "description": "fghjkl;",
+        "createdAt": "2024-08-21T16:39:58.596Z",
+        "updatedAt": "2024-08-21T16:39:58.596Z",
+        "__v": 0
+      },
+      "sortingScore": "2024-08-21T17:59:38.069Z"
+    },
+    {
+      "_id": "66c0f47897d074eb5ab772cb",
+      "title": "House_09",
+      "status": "ACTIVE",
+      "isSoldOut": false,
+      "description": "lkjgujkl;lkj",
+      "ownerName": "Shivaram Ghosh",
+      "totalFloor": 3,
+      "floorNumber": 3,
+      "price": 9000,
+      "productImages": [],
+      "createdAt": "2024-08-17T19:05:28.647Z",
+      "updatedAt": "2024-08-21T17:59:34.824Z",
+      "locationData": {
+        "_id": "66c60b60ba475c9a974fc353",
+        "cityName": "Bhubaneswar",
+        "name": "Nandan Vihar"
+      },
+      "bhkData": {
+        "_id": "66c4b1f49a7dc608eeda45d8",
+        "name": "2 BHK"
+      },
+      "categoryData": {
+        "_id": "66c4b3c67afb6e1c31785751",
+        "name": "Apartment"
+      },
+      "tenantsData": [],
+      "ownerMobileNumber": null,
+      "ownerWhatsAppNumber": null,
+      "ProductSoldOutInfo": {
+        "_id": "66c6227190a313672b5d6cc4",
+        "product": "66c0f47897d074eb5ab772cb",
+        "soldOutOrUnsoldReason": "Other reason",
+        "description": "fghjkl",
+        "createdAt": "2024-08-21T17:22:57.842Z",
+        "updatedAt": "2024-08-21T17:22:57.842Z",
+        "__v": 0
+      },
+      "sortingScore": "2024-08-21T17:59:34.824Z"
+    }
+  ],
+  "pagination": {
+    "isLastChunk": true,
+    "totalCount": 2,
+    "perPage": 15,
+    "pageNo": 1
+  }
+}

@@ -67,7 +67,12 @@ const ChooseMedia_01 = () => {
   const id = open ? "simple-popover" : undefined;
   return (
     <div>
-      <FiPlus aria-describedby={id} onClick={handleClick} />
+      <FiPlus
+        aria-describedby={id}
+        onClick={handleClick}
+        size={23}
+        className="cursor-pointer"
+      />
       <Popover
         id={id}
         open={open}
