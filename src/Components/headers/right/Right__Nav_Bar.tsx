@@ -18,7 +18,7 @@ type TYPE_USER = {
   name: string;
 };
 const Right__Nav_Bar = () => {
-  const { currentRoom } = useCurrentPrivateChatRoomStore();
+  const { currentRoom, setCurrentRoom } = useCurrentPrivateChatRoomStore();
   const { socket } = useSocketStore();
   const { user } = useAuthStore();
   const [groupMembers, setGroupMembers] = useState<MEMBER[]>([]);
@@ -35,8 +35,6 @@ const Right__Nav_Bar = () => {
     `chat/get-private-group-info/${currentRoom?.roomId}`,
     options
   );
-
-  console.log("DATA", data);
 
   useEffect(() => {
     if (data) {
@@ -108,6 +106,23 @@ const Right__Nav_Bar = () => {
             // Determine member status (typing, online, or offline)
             const isTyping = typeUsers.includes(member._id);
             const isOnline = onlineUsers.includes(member._id);
+
+            console.log("KLKL", groupMembers, member?.role);
+            if (
+              user?.role === "EMPLOYEE" &&
+              groupMembers.length <= 2 &&
+              member?.role === "ADMIN"
+            ) {
+              console.log("COMING...");
+              return (
+                <div key={member?._id}>
+                  <p className="text-gray-300 text-sm">{member?.name}</p>
+                  <p className="text-[0.7rem] text-green-200">
+                    {isTyping ? " typing..." : isOnline ? "online" : ""}
+                  </p>
+                </div>
+              );
+            }
 
             return (
               <div

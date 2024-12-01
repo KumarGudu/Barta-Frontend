@@ -23,7 +23,7 @@ const All_Users = ({
     Partial<AuthUser>
   >({
     pageNumber: pageNumber,
-    url: "users",
+    url: "users?isShomes=true",
     data: users,
     setData: setUsers,
     isOpen: open,

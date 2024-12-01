@@ -1,6 +1,7 @@
 import { usePostData } from "@/hooks/Api_Hooks";
 import useAuthStore from "@/stores/Auth.store";
 import useCurrentPrivateChatRoomStore from "@/stores/CurrentPvtChat.store";
+import useLiveMessageStore from "@/stores/LiveMassageStore";
 import useSocketStore from "@/stores/Socket.store";
 import React, { useEffect } from "react";
 
@@ -19,6 +20,7 @@ const User_Card = ({
 }) => {
   const { data, error, isLoading, postData } = usePostData<any>();
   const { setCurrentRoom, currentRoom } = useCurrentPrivateChatRoomStore();
+  const { setLiveMessages } = useLiveMessageStore();
 
   const createPrivateGroupChat = async () => {
     await postData(
@@ -31,6 +33,8 @@ const User_Card = ({
       },
       false
     );
+
+    setLiveMessages([]);
   };
 
   useEffect(() => {

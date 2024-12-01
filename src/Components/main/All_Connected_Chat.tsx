@@ -2,6 +2,7 @@ import { useSwrInfiniteScroll } from "@/hooks/useSwrInfiniteScroll";
 import useConnectedChatStore from "@/stores/AllConnectedChat.store";
 import useAuthStore from "@/stores/Auth.store";
 import useCurrentPrivateChatRoomStore from "@/stores/CurrentPvtChat.store";
+import useLiveMessageStore from "@/stores/LiveMassageStore";
 import useOnlineUsersStore from "@/stores/onlineUsers.store";
 import useSocketStore from "@/stores/Socket.store";
 import { ConnectedChat, Member_Type } from "@/types";
@@ -15,6 +16,7 @@ const All_Connected_Chat = () => {
   const { socket } = useSocketStore();
   const { connectedChatMutate } = useConnectedChatStore();
   const { setOnlineUsers } = useOnlineUsersStore();
+  const { setLiveMessages } = useLiveMessageStore();
 
   const {
     convertedData: connectedChats,
@@ -57,6 +59,8 @@ const All_Connected_Chat = () => {
       members: chat?.memberDetails?.map((member: Member_Type) => member._id),
       lastMessage: chat?.lastMessage,
     });
+
+    setLiveMessages([]);
   };
 
   useEffect(() => {
@@ -99,7 +103,11 @@ const All_Connected_Chat = () => {
       >
         {connectedChats?.map((chat: ConnectedChat, index: number) => {
           let receiver: Member_Type = chat?.memberDetails?.find((member) => {
-            return member?.role !== "ADMIN" && member?._id !== user?._id;
+            return user &&
+              user?.role === "EMPLOYEE" &&
+              chat?.memberDetails?.length <= 2
+              ? member?._id !== user?._id
+              : member?.role !== "ADMIN" && member?._id !== user?._id;
           });
 
           if (chat?.isGroupChat) {

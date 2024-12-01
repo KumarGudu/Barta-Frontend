@@ -9,7 +9,7 @@ import { ProductType } from "@/types";
 import ProductCard from "./ProductCard";
 import useCurrentPrivateChatRoomStore from "@/stores/CurrentPvtChat.store";
 import { usePostData } from "@/hooks/Api_Hooks";
-import { BASE_URL } from "@/utils";
+import { BASE_FRONT_URL, BASE_URL } from "@/utils";
 
 interface Props {
   isSendProductModalOpen: boolean;
@@ -56,7 +56,7 @@ export default function SendProductModal({
       await postData(
         "chat/send-product-in-chat",
         {
-          productLink: `${BASE_URL}/product/details/${product?.id}`,
+          productLink: `${BASE_FRONT_URL}product/details/${product?.id}`,
           productImage: product?.image,
           groupId: currentRoom?.roomId,
           type: "HOUSE",
