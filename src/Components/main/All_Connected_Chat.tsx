@@ -10,7 +10,7 @@ import { formatLastMessageTime } from "@/utils/functions";
 import React, { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-const All_Connected_Chat = () => {
+const All_Connected_Chat = ({ onSelectChat }: { onSelectChat: () => void }) => {
   const { SetConnectedChatMutate } = useConnectedChatStore();
   const { user } = useAuthStore();
   const { socket } = useSocketStore();
@@ -46,6 +46,7 @@ const All_Connected_Chat = () => {
     chat: ConnectedChat;
     receiver: Member_Type;
   }) => {
+    onSelectChat();
     if (currentRoom?.roomId === chat?._id) {
       return;
     }

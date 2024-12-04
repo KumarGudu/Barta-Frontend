@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import useSocketStore from "@/stores/Socket.store";
 import { useSocket } from "@/hooks/Socket";
 import useCurrentPrivateChatRoomStore from "@/stores/CurrentPvtChat.store";
@@ -16,52 +16,96 @@ const Chat = () => {
   const { currentRoom } = useCurrentPrivateChatRoomStore();
   const socketToConnect = useSocket();
 
+  const [screen, setScreen] = useState<"userList" | "chatScreen">("userList"); // Manage the visible screen for mobile
+  const [isLargeScreen, setIsLargeScreen] = useState(false); // Detect large screens
+
   useEffect(() => {
     connect(socketToConnect);
-
     return () => {
       disConnect();
     };
   }, [connect, disConnect]);
 
-  // bg - [#dcf8c6];
+  // Handle screen size changes
+  const handleResize = () => {
+    setIsLargeScreen(window.innerWidth >= 1024);
+    if (window.innerWidth >= 1024) setScreen("userList"); // Show both on desktop
+  };
+
+  useEffect(() => {
+    handleResize(); // Set on mount
+    window.addEventListener("resize", handleResize); // Listen to resize
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Select a chat room and switch screens for mobile
+  const handleSelectChatRoom = () => {
+    setScreen("chatScreen");
+  };
+
+  // Back button handler to return to user list
+  const handleBackToUserList = () => {
+    setScreen("userList");
+  };
+
   return (
     <Auth_Layout>
       <main className="flex h-screen relative">
-        <div className="w-[28rem]">
-          <div>
-            <Left_Nav_Bar />
-            <div className="h-[3rem] flex items-center justify-center  p-1 border-r-2 border-[#25d366] ">
-              <div className="h-full w-full flex items-center p-2 gap-3 bg-gray-200 rounded-md">
-                <div className="flex flex-1 ">
-                  <input
-                    type="text"
-                    className="h-full px-2 py-2 outline-none border-none w-full text-sm bg-transparent"
-                  />
-                </div>
-                <div className="w-[2rem]">
-                  <BiSearch size={22} className="text-gray-500" />
+        {/* Sidebar (User List) */}
+        {(screen === "userList" || isLargeScreen) && (
+          <div className="w-full lg:w-[28rem]">
+            <div>
+              <Left_Nav_Bar />
+              {/* Search Bar */}
+              <div className="h-[3rem] flex items-center justify-center p-1 border-r-2 border-[#25d366]">
+                <div className="h-full w-full flex items-center p-2 gap-3 bg-gray-200 rounded-md">
+                  <div className="flex flex-1">
+                    <input
+                      type="text"
+                      className="h-full px-2 py-2 outline-none border-none w-full text-sm bg-transparent"
+                    />
+                  </div>
+                  <div className="w-[2rem]">
+                    <BiSearch size={22} className="text-gray-500" />
+                  </div>
                 </div>
               </div>
             </div>
+            <All_Connected_Chat onSelectChat={handleSelectChatRoom} />
           </div>
-          <All_Connected_Chat />
-        </div>
-        {/* bg-[#dcf8c6] */}
-        {currentRoom ? (
-          <div className="w-[calc(100%-28rem)] relative">
-            <div className="h-[4rem] bg-pink-300">
-              <Right__Nav_Bar />
-            </div>
-            <div className="h-[calc(100%-8rem)]">
-              <Message_Cont />
-            </div>
-            <Send_Message_Input />
-          </div>
-        ) : (
-          <div className="bg-yellow-300 w-[calc(100%-25rem)] relative">
-            <DefaultLeftSide />
-          </div>
+        )}
+
+        {/* Chat Screen */}
+        {(screen === "chatScreen" || isLargeScreen) && (
+          <>
+            {currentRoom ? (
+              <div className="w-full lg:w-[calc(100%-28rem)] relative">
+                {/* Chat Header */}
+                <div className="h-[4rem] flex items-center bg-[#075E54]">
+                  {/* Back Button for Mobile */}
+                  {!isLargeScreen && (
+                    <button
+                      className="text-blue-500 px-4 py-2"
+                      onClick={handleBackToUserList}
+                    >
+                      ← Back
+                    </button>
+                  )}
+                  <Right__Nav_Bar />
+                </div>
+                {/* Chat Messages */}
+                <div className="h-[calc(100%-8rem)]">
+                  <Message_Cont />
+                </div>
+                {/* Message Input */}
+                <Send_Message_Input />
+              </div>
+            ) : (
+              <div className="bg-yellow-300 w-full lg:w-[calc(100%-28rem)] relative">
+                <DefaultLeftSide />
+              </div>
+            )}
+          </>
         )}
       </main>
     </Auth_Layout>

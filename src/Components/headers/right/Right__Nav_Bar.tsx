@@ -80,7 +80,7 @@ const Right__Nav_Bar = () => {
   }, [socket]);
 
   return (
-    <div className="flex items-center gap-4 h-full px-7 bg-[#075E54]">
+    <div className="flex items-center gap-4 h-full px-7">
       {/* Profile Image */}
       <div>
         <img
