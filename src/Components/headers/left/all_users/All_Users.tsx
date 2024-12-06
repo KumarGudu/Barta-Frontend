@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { AddBox } from "@mui/icons-material";
 import { Drawer } from "@mui/material";
 import useUserStore from "@/stores/User.store";
 import useInfiniteScroll from "@/hooks/useInfiniteScroll";
 import { AuthUser } from "@/types";
 import useObserver from "@/hooks/useObserver";
-import { BiSearch } from "react-icons/bi";
+import { BiSearch, BiX } from "react-icons/bi";
 import User_Card from "./User_Card";
 
 const All_Users = ({
@@ -19,6 +18,7 @@ const All_Users = ({
   const [searchQuery, setSearchQuery] = useState<any>(null);
   const [text, setText] = useState<string>("");
   const { users, setUsers } = useUserStore();
+
   const { loading, resData, hasMore, isError } = useInfiniteScroll<
     Partial<AuthUser>
   >({
@@ -51,28 +51,42 @@ const All_Users = ({
   };
 
   return (
-    <Drawer open={open} onClose={() => setOpen(false)}>
+    <Drawer
+      open={open}
+      onClose={() => setOpen(false)}
+      classes={{
+        paper: "w-full h-full sm:w-[28rem] sm:max-h-[100%]",
+      }}
+    >
       <div className="relative h-full">
-        <div className="sticky top-0 h-[4rem] z-10 flex items-center">
-          <div className="h-[70%] w-full px-2 py-1 flex justify-center items-center border-2 rounded-lg mx-3 my-2 border-gray-400">
-            <div className="w-[90%] bg-green-300">
-              <input
-                type="text"
-                value={text}
-                placeholder="Search for user"
-                className="h-full px-2 py-2 outline-none border-none w-full text-sm"
-                onChange={handleChange}
-              />
-            </div>
-            <div
-              className="w-[10%] h-full flex justify-center items-center"
+        {/* Search Header */}
+        <div className="sticky top-0 h-[4rem] z-10 flex items-center bg-white px-2">
+          <div className="flex items-center w-full border-2 rounded-lg border-gray-400 px-1 py-1 sm:py-2 sm:px-2">
+            <input
+              type="text"
+              value={text}
+              placeholder="Search for user"
+              className="flex-grow h-full px-2 py-1 text-sm sm:text-base outline-none border-none"
+              onChange={handleChange}
+            />
+            <button
+              className="flex justify-center items-center text-gray-500 hover:text-gray-700"
               onClick={() => handleSearch(text)}
             >
               <BiSearch size={23} />
-            </div>
+            </button>
           </div>
+          {/* Close Button for Small Screens */}
+          <button
+            className="ml-2 sm:hidden flex justify-center items-center text-gray-500 hover:text-gray-700"
+            onClick={() => setOpen(false)}
+          >
+            <BiX size={23} />
+          </button>
         </div>
-        <div className="w-[27.9rem] max-h-[calc(100%-4rem)] overflow-y-auto px-1 flex flex-col gap-2">
+
+        {/* Users List */}
+        <div className="w-full max-h-[calc(100%-4rem)] overflow-y-auto px-1 flex flex-col gap-2">
           {resData &&
             resData.map((user: Partial<AuthUser>, index: number) => {
               if (resData?.length === index + 1) {

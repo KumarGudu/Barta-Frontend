@@ -10,14 +10,15 @@ import Message_Cont from "@/Components/main/Message_Cont";
 import Send_Message_Input from "@/Components/main/Send_Message_Input";
 import DefaultLeftSide from "@/Components/main/DefaultLeftSide";
 import { BiSearch } from "react-icons/bi";
+import useLayoutStore from "@/stores/Layout.store";
 
 const Chat = () => {
   const { connect, disConnect } = useSocketStore();
   const { currentRoom } = useCurrentPrivateChatRoomStore();
   const socketToConnect = useSocket();
 
-  const [screen, setScreen] = useState<"userList" | "chatScreen">("userList"); // Manage the visible screen for mobile
-  const [isLargeScreen, setIsLargeScreen] = useState(false); // Detect large screens
+  const { screen, isLargeScreen, setScreen, setIsLargeScreen } =
+    useLayoutStore();
 
   useEffect(() => {
     connect(socketToConnect);

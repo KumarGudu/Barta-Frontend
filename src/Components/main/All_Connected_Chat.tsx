@@ -123,7 +123,7 @@ const All_Connected_Chat = ({ onSelectChat }: { onSelectChat: () => void }) => {
           return user?.role === "ADMIN" ? (
             <div
               key={chat?._id}
-              className="w-full px-3 flex items-center gap-4 py-[0.6rem] cursor-pointer border-b-[1px]  border-[#075e54] rounded-sm"
+              className="w-full px-3 flex items-center gap-4 py-[0.6rem] cursor-pointer border-b-[1px] border-[#075e54] rounded-sm"
               onClick={() =>
                 setCurrentPrivateRoomInfoForNormalUser({ chat, receiver })
               }
@@ -133,23 +133,21 @@ const All_Connected_Chat = ({ onSelectChat }: { onSelectChat: () => void }) => {
                   receiver?.profileUrl ? receiver?.profileUrl : `/profile.png`
                 }
                 alt="receiver_img"
-                width={50}
-                height={50}
-                className="rounded-full"
+                className="rounded-full flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12"
               />
 
-              <div className="w-full">
+              <div className="w-full overflow-hidden">
                 <div className="w-full flex justify-between items-center">
-                  <p className="text-[0.9rem] font-normal tracking-wide">
+                  <p className="text-sm sm:text-[0.9rem] font-normal tracking-wide truncate">
                     {receiver?.name && receiver?.name?.length > 30
                       ? receiver?.name.slice(0, 30) + "..."
                       : receiver?.name}
                   </p>
-                  <p className="text-[0.7rem] font-medium text-gray-600">
+                  <p className="text-[0.65rem] sm:text-[0.7rem] font-medium text-gray-600">
                     {formatLastMessageTime(chat?.lastMessage?.createdAt)}
                   </p>
                 </div>
-                <p className="text-[0.75rem]">
+                <p className="text-[0.7rem] sm:text-[0.75rem] mt-1 truncate">
                   {chat?.lastMessage?.content &&
                   chat?.lastMessage?.content?.length > 50
                     ? chat.lastMessage.content.slice(0, 50) + "..."
@@ -160,7 +158,7 @@ const All_Connected_Chat = ({ onSelectChat }: { onSelectChat: () => void }) => {
           ) : (
             <div
               key={chat?._id}
-              className="w-full px-3 flex items-center gap-4 py-[0.6rem] cursor-pointer border-b-[1px]  border-[#075e54] rounded-sm"
+              className="w-full px-3 flex items-center gap-4 py-[0.6rem] cursor-pointer border-b-[1px] border-[#075e54] rounded-sm"
               onClick={() =>
                 setCurrentPrivateRoomInfoForNormalUser({ chat, receiver })
               }
@@ -170,23 +168,21 @@ const All_Connected_Chat = ({ onSelectChat }: { onSelectChat: () => void }) => {
                   receiver?.profileUrl ? receiver?.profileUrl : `/profile.png`
                 }
                 alt="receiver_img"
-                width={50}
-                height={50}
-                className="rounded-full"
+                className="rounded-full flex-shrink-0 w-10 h-10 sm:w-10 sm:h-10 md:w-12 md:h-12"
               />
 
-              <div className="w-full">
+              <div className="w-full overflow-hidden">
                 <div className="w-full flex justify-between items-center">
-                  <p className="text-[0.9rem] font-normal tracking-wide">
+                  <p className="text-sm sm:text-[0.9rem] font-normal tracking-wide truncate">
                     {receiver?.name && receiver?.name?.length > 30
                       ? receiver?.name.slice(0, 30) + "..."
                       : receiver?.name}
                   </p>
-                  <p className="text-[0.7rem] font-medium text-gray-600">
+                  <p className="text-[0.65rem] sm:text-[0.7rem] font-medium text-gray-600">
                     {formatLastMessageTime(chat?.lastMessage?.createdAt)}
                   </p>
                 </div>
-                <p className="text-[0.75rem]">
+                <p className="text-[0.7rem] sm:text-[0.75rem] mt-1 truncate">
                   {chat?.lastMessage?.content &&
                   chat?.lastMessage?.content?.length > 50
                     ? chat.lastMessage.content.slice(0, 50) + "..."
