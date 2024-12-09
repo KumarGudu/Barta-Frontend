@@ -133,6 +133,69 @@ const Send_Message_Input = () => {
     }
   };
 
+  const sendMessageByBtnClick = async () => {
+    const isCreatedAtToday = isToday(
+      new Date(currentRoom?.lastMessage?.createdAt)
+    );
+
+    let isFirstMessageOfTheDay = false;
+    if (currentRoom?.lastMessage?.createdAt && isCreatedAtToday === false) {
+      setCurrentRoom(currentRoom);
+      isFirstMessageOfTheDay = true;
+    }
+
+    if (replyMessage && replyMessage !== null) {
+      await postData(
+        "chat/reply-to-message",
+        {
+          parentMsgId: replyMessage?.parentMsgId,
+          groupId: replyMessage?.groupId,
+          content: message,
+          parentMsgContent: replyMessage?.parentMsgContent,
+          isFirstMessageOfTheDay,
+        },
+        {
+          withCredentials: true,
+        },
+        false
+      );
+
+      setReplyMessage(null);
+      setMessage("");
+
+      return;
+    }
+
+    if (currentRoom?.isMessaged === false) {
+      const messageToSend = {
+        groupId: currentRoom?.roomId,
+        type: "TEXT",
+        message: message,
+        isFirstTime: true,
+        members: currentRoom?.members,
+        isFirstMessageOfTheDay: true,
+      };
+
+      socket.emit("NEW_MESSAGE", messageToSend);
+      // update the current chat room that is messaged is become true
+      setCurrentRoom({
+        ...currentRoom,
+        isMessaged: true,
+      });
+    } else {
+      const messageToSend = {
+        groupId: currentRoom?.roomId,
+        type: "TEXT",
+        message: message,
+        isFirstMessageOfTheDay,
+      };
+      socket.emit("NEW_MESSAGE", messageToSend);
+    }
+
+    setMessage("");
+    setIsLiveMessageAdded(true);
+  };
+
   if (error) {
     console.log({ error });
   }
@@ -166,41 +229,56 @@ const Send_Message_Input = () => {
     <div className="bg-[#dcf8c6] w-full absolute left-0 bottom-0">
       {replyMessage && (
         <div className="w-full flex items-center justify-center px-2 mt-2">
-          <div className="bg-slate-300 py-4 px-4 w-[calc(100%-11rem)] relative rounded-md">
+          <div className="bg-slate-300 py-3 px-3 sm:py-4 sm:px-4 w-full sm:w-[calc(100%-11rem)] relative rounded-md">
             <div
-              className="absolute top-1 right-3 cursor-pointer p-1"
+              className="absolute top-2 right-2 cursor-pointer p-1"
               onClick={handleDeleteReplyMessage}
             >
-              <FiX size={20} />
+              <FiX className="text-gray-600 hover:text-gray-800" size={20} />
             </div>
-            <p>{replyMessage?.parentMsgContent}</p>
+            <p className="text-sm sm:text-base text-gray-700">
+              {replyMessage?.parentMsgContent}
+            </p>
           </div>
         </div>
       )}
-      <div className="flex items-end min-h-[4rem]  max-h-[10rem] py-2 px-2 gap-3">
-        <div className="h-[3.5rem] w-[6rem]  flex items-center justify-center">
-          <div className="flex gap-4 items-center  px-1 py-1">
+      <div className="flex items-end min-h-[3.5rem] sm:min-h-[4rem] max-h-[12rem] py-2 px-2 gap-2 sm:gap-3">
+        {/* Left Actions */}
+        <div className="h-[3rem] sm:h-[3.5rem] w-[5rem] sm:w-[6rem] flex items-center justify-center">
+          <div className="flex gap-3 sm:gap-4 items-center px-1 py-1">
             <div className="cursor-pointer">
-              <BsEmojiSmile size={22} />
+              <BsEmojiSmile
+                className="text-gray-600 hover:text-gray-800"
+                size={20}
+              />
             </div>
             <ChooseMedia_01 />
           </div>
         </div>
+
+        {/* Text Input Area */}
         <div className="flex-grow">
           <textarea
-            className="text-sm font-semibold text-input w-full max-h-[9rem] overflow-y-auto resize-none place-content-center px-5 py-1 outline-none rounded-lg"
+            className="text-xs sm:text-sm md:text-base font-medium text-gray-800 w-full max-h-[10rem] overflow-y-auto resize-none px-4 py-2 outline-none rounded-lg placeholder-gray-400"
             ref={textareaRef}
             style={{ height: height }}
             value={message}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
-            // onKeyUp={handleKeyUp}
             placeholder="Type a message..."
           />
         </div>
-        <div className="h-[3.5rem] w-[5rem] flex items-center">
-          <div className="cursor-pointer ml-3 px-2 py-1">
-            <LuSendHorizonal size={25} />
+
+        {/* Send Button */}
+        <div className="h-[3rem] sm:h-[3.5rem] w-[4rem] sm:w-[5rem] flex items-center justify-center">
+          <div
+            className="cursor-pointer px-2 py-1"
+            onClick={sendMessageByBtnClick}
+          >
+            <LuSendHorizonal
+              className="text-blue-600 hover:text-blue-800"
+              size={22}
+            />
           </div>
         </div>
       </div>
