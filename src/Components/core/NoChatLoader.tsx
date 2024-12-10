@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import { UPLOAD } from "@/assets/animation";
+import { StartChatLoader } from "@/assets/animation";
 import { Options } from "react-lottie";
 
 const Lottie = dynamic(() => import("react-lottie"), { ssr: false }) as React.FC<{
@@ -15,45 +15,31 @@ interface Props {
   animeHight?: number;
   animeWidth?: number;
   text?: string;
-  textColor?: string;
 }
 
-const UploadAnime = ({
-  image,
-  animeHight,
-  textColor,
-  animeWidth,
-  text,
-}: Props) => {
+const NoChatLoader = ({ image, animeHight, animeWidth, text }: Props) => {
   const defaultOptions: Options = {
     loop: true,
     autoplay: true,
-    animationData: image || UPLOAD,
+    animationData: image || StartChatLoader,
     rendererSettings: {
       preserveAspectRatio: "xMidYMid slice",
     },
   };
 
   return (
-    <div className="w-full flex flex-col justify-center items-center">
+    <div className="w-full">
       <div>
         <Lottie
           options={defaultOptions}
           isPaused={false}
           isClickToPauseDisabled={true}
-          height={animeHight || 200}
-          width={animeWidth || 200}
+          height={animeHight || 450}
+          width={animeWidth || 650}
         />
       </div>
-      <span
-        className={`text-xl capitalize pb-2 tracking-wide ${
-          textColor || "text-black"
-        }`}
-      >
-        {text || "Upload Image"}
-      </span>
     </div>
   );
 };
 
-export default UploadAnime;
+export default NoChatLoader;

@@ -1,3 +1,5 @@
+import { usePostData } from "@/hooks/Api_Hooks";
+import useCurrentPrivateChatRoomStore from "@/stores/CurrentPvtChat.store";
 import { Check, Close, Delete } from "@mui/icons-material";
 import {
   Button,
@@ -9,13 +11,9 @@ import {
   Tooltip,
 } from "@mui/material";
 import { Form, Formik, FormikValues } from "formik";
-import { useRouter } from "next/router";
 import { ChangeEvent, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import { UploadAnime } from "../core";
-import useCurrentPrivateChatRoomStore from "@/stores/CurrentPvtChat.store";
-import { usePostData } from "@/hooks/Api_Hooks";
-import FileUpload from "../testing/FileUpload";
 
 interface Props {
   open: boolean;
@@ -35,19 +33,18 @@ const SendImagePreview = ({ open, handleClose, setAnchorEl }: Props) => {
   const [loading, setLoading] = useState(false);
   const { currentRoom } = useCurrentPrivateChatRoomStore();
   const imageRef = useRef<HTMLInputElement | null>(null);
-  // const router = useRouter();
   const { data, error, isLoading, postData } = usePostData<any>();
 
   const handleSubmit = async (values: FormikValues) => {
     try {
+      console.log(values.files, "values.files")
       const formData = new FormData();
       formData.append("groupId", currentRoom?.roomId);
       formData.append("groupName", currentRoom?.name);
       formData.append("type", "IMAGE");
-      // formData.append("files", values.files);
       await Promise.all(
         values.files.map(async (image: any) => {
-          formData.append("files", image);
+          formData.append("files", image?.file);
         })
       );
 
@@ -100,7 +97,7 @@ const SendImagePreview = ({ open, handleClose, setAnchorEl }: Props) => {
         </IconButton>
       </DialogTitle>
       <DialogContent className="app-scrollbar" sx={{ p: 2 }}>
-        {/* <div className="md:w-[40rem] w-[72vw] md:px-4 px-2 tracking-wide">
+        <div className="md:w-[40rem] w-[72vw] md:px-4 px-2 tracking-wide">
           <Formik
             initialValues={initialValues}
             enableReinitialize={true}
@@ -169,17 +166,17 @@ const SendImagePreview = ({ open, handleClose, setAnchorEl }: Props) => {
                                   const fileObjects = files.map((file) => {
                                     return {
                                       file,
-                                      previewURL: URL.createObjectURL(file), 
+                                      previewURL: URL.createObjectURL(file),
                                     };
                                   });
 
                                   setFieldValue("files", [
-                                    ...(values.files || []), 
+                                    ...(values.files || []),
                                     ...fileObjects,
                                   ]);
                                 }}
                               />
-                             
+
                               <UploadAnime
                                 text="Upload Image"
                                 textColor="text-block md:text-xl text-sm font-semibold"
@@ -194,7 +191,7 @@ const SendImagePreview = ({ open, handleClose, setAnchorEl }: Props) => {
                 <div className="flex justify-center lg:py-4 py-2">
                   <Button
                     type="submit"
-                    className="!bg-green-700"
+                    className={`${isLoading ? "!bg-gray-100 !text-black": "!bg-green-700"}`}
                     variant="contained"
                     disabled={isLoading}
                     startIcon={
@@ -207,8 +204,7 @@ const SendImagePreview = ({ open, handleClose, setAnchorEl }: Props) => {
               </Form>
             )}
           </Formik>
-        </div> */}
-        <FileUpload handleClose={handleClose} setAnchorEl={setAnchorEl} />
+        </div>
       </DialogContent>
     </Dialog>
   );
