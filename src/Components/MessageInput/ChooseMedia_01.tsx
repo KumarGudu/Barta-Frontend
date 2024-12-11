@@ -29,21 +29,21 @@ const ChooseMedia_01 = () => {
       title: "Send Product",
       icon: <MdOutlineProductionQuantityLimits />,
     },
-    {
-      id: 2,
-      title: "Audio",
-      icon: <MdAudioFile />,
-    },
-    {
-      id: 3,
-      title: "Document",
-      icon: <IoDocument />,
-    },
-    {
-      id: 4,
-      title: "Video",
-      icon: <FaVideo />,
-    },
+    // {
+    //   id: 2,
+    //   title: "Audio",
+    //   icon: <MdAudioFile />,
+    // },
+    // {
+    //   id: 3,
+    //   title: "Document",
+    //   icon: <IoDocument />,
+    // },
+    // {
+    //   id: 4,
+    //   title: "Video",
+    //   icon: <FaVideo />,
+    // },
   ];
 
   const handleClick = (event: any) => {
@@ -98,7 +98,7 @@ const ChooseMedia_01 = () => {
           {mediaContent.map((item) => (
             <div
               key={item.id}
-              className="flex items-center gap-4 px-2 py-2  cursor-pointer"
+              className="flex items-center gap-4 px-2 py-2  cursor-pointer hover:bg-cyan-600 hover:text-white"
               onClick={() => {
                 handleMediaModal(item);
                 setAnchorEl(null);

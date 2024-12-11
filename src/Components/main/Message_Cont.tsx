@@ -119,7 +119,7 @@ const Message_Cont = () => {
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
   }, [messages]);
-
+console.log(allMessages,"allMessages")
   return (
     <div
       className="flex flex-col-reverse overflow-y-auto h-full px-4 sm:px-8 md:px-12 py-4 sm:py-6 lg:py-7 overflow-x-hidden gap-2 sm:gap-3"
@@ -132,14 +132,14 @@ const Message_Cont = () => {
             <p className="text-[0.75rem] sm:text-[0.9rem]">{msg?.content}</p>
           ) : msg?.type === "HOUSE" ? (
             <div className="flex flex-col items-start gap-2 p-3 sm:p-4 rounded-lg border shadow-sm w-full max-w-xs sm:max-w-sm">
-              {msg?.attachments?.[0]?.mediaUrl && (
+              {msg?.attachments?.[0]?.imageUrl && (
                 <img
-                  src={msg.attachments[0].mediaUrl}
+                  src={msg.attachments[0].imageUrl}
                   alt="media"
                   className="w-full h-auto rounded-md object-contain"
                 />
               )}
-              {msg?.link && (
+              {/* {msg?.link && (
                 <a
                   href={msg.link}
                   target="_blank"
@@ -153,7 +153,7 @@ const Message_Cont = () => {
                 >
                   {msg.link}
                 </a>
-              )}
+              )} */}
             </div>
           ) : (
             <img

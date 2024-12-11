@@ -27,20 +27,20 @@ const Left_Nav_Bar = () => {
       </div>
 
       {/* Icon Section */}
-      <div className="flex justify-evenly items-center basis-2/3 md:basis-3/4 gap-2">
+      <div className="flex justify-end items-center basis-2/3 md:basis-3/4 gap-2">
         {/* Individual Icon Buttons */}
-        <div className="p-2 flex justify-center items-center">
+        {/* <div className="p-2 flex justify-center items-center">
           <BiDisc
             size={22}
             className="cursor-pointer text-gray-300 hover:text-white"
           />
-        </div>
-        <div className="p-2 flex justify-center items-center">
+        </div> */}
+        {/* <div className="p-2 flex justify-center items-center">
           <BiGroup
             size={22}
             className="cursor-pointer text-gray-300 hover:text-white"
           />
-        </div>
+        </div> */}
         <div className="p-2 flex justify-center items-center">
           <BiMessageSquareAdd
             size={22}

@@ -1,19 +1,15 @@
+import { usePostData } from "@/hooks/Api_Hooks";
 import useConnectedChatStore from "@/stores/AllConnectedChat.store";
+import useAuthStore from "@/stores/Auth.store";
 import useCurrentPrivateChatRoomStore from "@/stores/CurrentPvtChat.store";
 import useLiveMessageStore from "@/stores/LiveMassageStore";
-import useSocketStore from "@/stores/Socket.store";
-import { ConnectedChat, LiveMsg } from "@/types";
-import React, { ChangeEvent, useEffect, useRef, useState } from "react";
-import { FiPlus } from "react-icons/fi";
-import { BsEmojiSmile } from "react-icons/bs";
-import { LuSendHorizonal } from "react-icons/lu";
-import ChooseMedia from "../MessageInput/ChooseMedia";
-import useAuthStore from "@/stores/Auth.store";
 import useReplyMessageStore from "@/stores/ReplyMessage.store";
-import { FiX } from "react-icons/fi";
-import { usePostData } from "@/hooks/Api_Hooks";
-import EmojiPickerModel from "../dialogs/EmojiPicker";
+import useSocketStore from "@/stores/Socket.store";
+import { LiveMsg } from "@/types";
 import { isToday } from "date-fns";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
+import { FiX } from "react-icons/fi";
+import { LuSendHorizonal } from "react-icons/lu";
 import ChooseMedia_01 from "../MessageInput/ChooseMedia_01";
 
 const Send_Message_Input = () => {
@@ -68,8 +64,9 @@ const Send_Message_Input = () => {
   ) => {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
+      if (!message.trim()) return;
 
-      // check is it first message of the day or not;
+
       const isCreatedAtToday = isToday(
         new Date(currentRoom?.lastMessage?.createdAt)
       );
@@ -86,7 +83,7 @@ const Send_Message_Input = () => {
           {
             parentMsgId: replyMessage?.parentMsgId,
             groupId: replyMessage?.groupId,
-            content: message,
+            content: message.trim(),
             parentMsgContent: replyMessage?.parentMsgContent,
             isFirstMessageOfTheDay,
           },
@@ -95,62 +92,58 @@ const Send_Message_Input = () => {
           },
           false
         );
-
+  
         setReplyMessage(null);
         setMessage("");
-
         return;
       }
-
-      if (currentRoom?.isMessaged === false) {
-        const messageToSend = {
-          groupId: currentRoom?.roomId,
-          type: "TEXT",
-          message: message,
+  
+      const messageToSend = {
+        groupId: currentRoom?.roomId,
+        type: "TEXT",
+        message: message.trim(),
+        isFirstMessageOfTheDay,
+        ...(currentRoom?.isMessaged === false && {
           isFirstTime: true,
           members: currentRoom?.members,
-          isFirstMessageOfTheDay: true,
-        };
-
-        socket.emit("NEW_MESSAGE", messageToSend);
-        // update the current chat room that is messaged is become true
+        }),
+      };
+  
+      socket.emit("NEW_MESSAGE", messageToSend);
+  
+      if (currentRoom?.isMessaged === false) {
         setCurrentRoom({
           ...currentRoom,
           isMessaged: true,
         });
-      } else {
-        const messageToSend = {
-          groupId: currentRoom?.roomId,
-          type: "TEXT",
-          message: message,
-          isFirstMessageOfTheDay,
-        };
-        socket.emit("NEW_MESSAGE", messageToSend);
       }
-
+  
       setMessage("");
       setIsLiveMessageAdded(true);
     }
   };
 
   const sendMessageByBtnClick = async () => {
+    // Prevent sending empty or whitespace-only messages
+    if (!message.trim()) return;
+  
     const isCreatedAtToday = isToday(
       new Date(currentRoom?.lastMessage?.createdAt)
     );
-
+  
     let isFirstMessageOfTheDay = false;
     if (currentRoom?.lastMessage?.createdAt && isCreatedAtToday === false) {
       setCurrentRoom(currentRoom);
       isFirstMessageOfTheDay = true;
     }
-
+  
     if (replyMessage && replyMessage !== null) {
       await postData(
         "chat/reply-to-message",
         {
           parentMsgId: replyMessage?.parentMsgId,
           groupId: replyMessage?.groupId,
-          content: message,
+          content: message.trim(),
           parentMsgContent: replyMessage?.parentMsgContent,
           isFirstMessageOfTheDay,
         },
@@ -159,39 +152,32 @@ const Send_Message_Input = () => {
         },
         false
       );
-
+  
       setReplyMessage(null);
       setMessage("");
-
       return;
     }
-
-    if (currentRoom?.isMessaged === false) {
-      const messageToSend = {
-        groupId: currentRoom?.roomId,
-        type: "TEXT",
-        message: message,
+  
+    const messageToSend = {
+      groupId: currentRoom?.roomId,
+      type: "TEXT",
+      message: message.trim(),
+      isFirstMessageOfTheDay,
+      ...(currentRoom?.isMessaged === false && {
         isFirstTime: true,
         members: currentRoom?.members,
-        isFirstMessageOfTheDay: true,
-      };
-
-      socket.emit("NEW_MESSAGE", messageToSend);
-      // update the current chat room that is messaged is become true
+      }),
+    };
+  
+    socket.emit("NEW_MESSAGE", messageToSend);
+  
+    if (currentRoom?.isMessaged === false) {
       setCurrentRoom({
         ...currentRoom,
         isMessaged: true,
       });
-    } else {
-      const messageToSend = {
-        groupId: currentRoom?.roomId,
-        type: "TEXT",
-        message: message,
-        isFirstMessageOfTheDay,
-      };
-      socket.emit("NEW_MESSAGE", messageToSend);
     }
-
+  
     setMessage("");
     setIsLiveMessageAdded(true);
   };
@@ -246,12 +232,6 @@ const Send_Message_Input = () => {
         {/* Left Actions */}
         <div className="h-[3rem] sm:h-[3.5rem] w-[5rem] sm:w-[6rem] flex items-center justify-center">
           <div className="flex gap-3 sm:gap-4 items-center px-1 py-1">
-            <div className="cursor-pointer">
-              <BsEmojiSmile
-                className="text-gray-600 hover:text-gray-800"
-                size={20}
-              />
-            </div>
             <ChooseMedia_01 />
           </div>
         </div>
@@ -259,8 +239,9 @@ const Send_Message_Input = () => {
         {/* Text Input Area */}
         <div className="flex-grow">
           <textarea
-            className="text-xs sm:text-sm md:text-base font-medium text-gray-800 w-full max-h-[10rem] overflow-y-auto resize-none px-4 py-2 outline-none rounded-lg placeholder-gray-400"
+            className="text-xs sm:text-sm md:text-base font-medium text-gray-800 w-full max-h-[5rem] overflow-y-auto resize-none px-4 py-2 outline-none rounded-lg placeholder-gray-400"
             ref={textareaRef}
+            rows={1}
             style={{ height: height }}
             value={message}
             onChange={handleChange}

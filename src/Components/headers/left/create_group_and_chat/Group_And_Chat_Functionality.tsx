@@ -40,9 +40,9 @@ const Group_And_Chat_Functionality = () => {
         onClick={() => setIsLogoutDropDown(!isLogoutDropDown)}
       />
       {isLogoutDropDown && (
-        <div className="absolute w-[15rem] h-[20rem] right-5  bg-gray-200 flex flex-col items-center py-2">
+        <div className="absolute w-[15rem] h-[3rem] right-5  bg-white border border-gray-300 shadow-md flex flex-col items-center py-2">
           <button onClick={handleLogOut} disabled={isLoading}>
-            logout
+            Logout
           </button>
         </div>
       )}
