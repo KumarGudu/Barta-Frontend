@@ -119,7 +119,6 @@ const Message_Cont = () => {
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
   }, [messages]);
-console.log(allMessages,"allMessages")
   return (
     <div
       className="flex flex-col-reverse overflow-y-auto h-full px-4 sm:px-8 md:px-12 py-4 sm:py-6 lg:py-7 overflow-x-hidden gap-2 sm:gap-3"
