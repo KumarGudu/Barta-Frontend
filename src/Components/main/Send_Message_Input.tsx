@@ -66,7 +66,6 @@ const Send_Message_Input = () => {
       event.preventDefault();
       if (!message.trim()) return;
 
-
       const isCreatedAtToday = isToday(
         new Date(currentRoom?.lastMessage?.createdAt)
       );
@@ -92,12 +91,12 @@ const Send_Message_Input = () => {
           },
           false
         );
-  
+
         setReplyMessage(null);
         setMessage("");
         return;
       }
-  
+
       const messageToSend = {
         groupId: currentRoom?.roomId,
         type: "TEXT",
@@ -108,16 +107,16 @@ const Send_Message_Input = () => {
           members: currentRoom?.members,
         }),
       };
-  
+
       socket.emit("NEW_MESSAGE", messageToSend);
-  
+
       if (currentRoom?.isMessaged === false) {
         setCurrentRoom({
           ...currentRoom,
           isMessaged: true,
         });
       }
-  
+
       setMessage("");
       setIsLiveMessageAdded(true);
     }
@@ -126,17 +125,17 @@ const Send_Message_Input = () => {
   const sendMessageByBtnClick = async () => {
     // Prevent sending empty or whitespace-only messages
     if (!message.trim()) return;
-  
+
     const isCreatedAtToday = isToday(
       new Date(currentRoom?.lastMessage?.createdAt)
     );
-  
+
     let isFirstMessageOfTheDay = false;
     if (currentRoom?.lastMessage?.createdAt && isCreatedAtToday === false) {
       setCurrentRoom(currentRoom);
       isFirstMessageOfTheDay = true;
     }
-  
+
     if (replyMessage && replyMessage !== null) {
       await postData(
         "chat/reply-to-message",
@@ -152,12 +151,12 @@ const Send_Message_Input = () => {
         },
         false
       );
-  
+
       setReplyMessage(null);
       setMessage("");
       return;
     }
-  
+
     const messageToSend = {
       groupId: currentRoom?.roomId,
       type: "TEXT",
@@ -168,16 +167,16 @@ const Send_Message_Input = () => {
         members: currentRoom?.members,
       }),
     };
-  
+
     socket.emit("NEW_MESSAGE", messageToSend);
-  
+
     if (currentRoom?.isMessaged === false) {
       setCurrentRoom({
         ...currentRoom,
         isMessaged: true,
       });
     }
-  
+
     setMessage("");
     setIsLiveMessageAdded(true);
   };
@@ -241,7 +240,7 @@ const Send_Message_Input = () => {
           <textarea
             className="text-xs sm:text-sm md:text-base font-medium text-gray-800 w-full max-h-[5rem] overflow-y-auto resize-none px-4 py-2 outline-none rounded-lg placeholder-gray-400"
             ref={textareaRef}
-            rows={1}
+            rows={2}
             style={{ height: height }}
             value={message}
             onChange={handleChange}

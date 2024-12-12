@@ -79,6 +79,8 @@ const Right__Nav_Bar = () => {
     };
   }, [socket]);
 
+  console.log("GROUP_MEMBERS", groupMembers, user);
+
   return (
     <div className="flex items-center gap-4 h-full px-7">
       {/* Profile Image */}
@@ -101,21 +103,23 @@ const Right__Nav_Bar = () => {
           ?.filter((member: MEMBER) => member?._id !== user?._id)
           .map((member: MEMBER) => {
             // Check if member should be rendered for ADMIN role or not
-            if (user?.role !== "ADMIN" && member?.role === "ADMIN") return null;
+            if (
+              user?.role !== "ADMIN" &&
+              member?.role === "ADMIN" &&
+              groupMembers.length > 2
+            )
+              return null;
 
             // Determine member status (typing, online, or offline)
             const isTyping = typeUsers.includes(member._id);
             const isOnline = onlineUsers.includes(member._id);
 
-            console.log("KLKL", groupMembers, member?.role);
-            if (
-              user?.role === "EMPLOYEE" &&
-              groupMembers.length <= 2 &&
-              member?.role === "ADMIN"
-            ) {
-              console.log("COMING...");
+            if (user?.role === "EMPLOYEE" && member?.role === "ADMIN") {
               return (
-                <div key={member?._id}>
+                <div
+                  key={member?._id}
+                  className={`flex flex-col justify-center mt-1`}
+                >
                   <p className="text-gray-300 text-sm">{member?.name}</p>
                   <p className="text-[0.7rem] text-green-200">
                     {isTyping ? " typing..." : isOnline ? "online" : ""}
