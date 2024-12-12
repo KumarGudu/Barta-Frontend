@@ -19,22 +19,23 @@ interface Props {
   open: boolean;
   handleClose: any;
   setAnchorEl: (value: any) => void;
+  uploadedFiles: any;
 }
 type IMAGE_TYPE = {
   file: File;
   uniId: string;
   previewURL: string;
 };
-const initialValues = {
-  files: [] as any,
-  // title: "",
-};
-const SendImagePreview = ({ open, handleClose, setAnchorEl }: Props) => {
+
+const SendImagePreview = ({ open, handleClose, setAnchorEl, uploadedFiles }: Props) => {
   const [loading, setLoading] = useState(false);
   const { currentRoom } = useCurrentPrivateChatRoomStore();
   const imageRef = useRef<HTMLInputElement | null>(null);
   const { data, error, isLoading, postData } = usePostData<any>();
-
+  const initialValues = {
+    files: uploadedFiles?.length ? uploadedFiles : [] as any,
+    // title: "",
+  };
   const handleSubmit = async (values: FormikValues) => {
     try {
       console.log(values.files, "values.files")
@@ -118,10 +119,11 @@ const SendImagePreview = ({ open, handleClose, setAnchorEl }: Props) => {
                       <p className="py-1 font-semibold">
                         Upload Image <span className="text-red-500">*</span>
                       </p>
-                      <div className="h-[16rem] w-full border border-gray-300 rounded-xl ">
-                        <div className="h-full flex justify-center items-center rounded-xl  gap-2 flex-wrap">
-                          {values?.files && values?.files?.length > 0 ? (
-                            <div className="flex items-center h-full py-4 gap-3 flex-wrap overflow-y-auto">
+                      <div className="h-[26rem] w-full border border-gray-300 rounded-xl overflow-hidden flex flex-col">
+                        {/* Image Previews */}
+                        <div className={`flex justify-start items-center gap-3 flex-wrap p-2 ${values?.files?.length > 0 ? 'min-h-[10rem] overflow-y-auto' : ''}`}>
+                          {values?.files && values?.files?.length > 0 && (
+                            <div className="flex items-center gap-3 flex-wrap">
                               {values.files.map((image, index) => (
                                 <div key={index} className="relative">
                                   <img
@@ -130,7 +132,7 @@ const SendImagePreview = ({ open, handleClose, setAnchorEl }: Props) => {
                                     alt={`Image ${index + 1}`}
                                   />
                                   <span
-                                    className="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full"
+                                    className="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full cursor-pointer"
                                     onClick={() => {
                                       const updatedImages = values.files.filter(
                                         (_, i) => i !== index
@@ -143,64 +145,60 @@ const SendImagePreview = ({ open, handleClose, setAnchorEl }: Props) => {
                                 </div>
                               ))}
                             </div>
-                          ) : (
-                            <div
-                              onClick={() => imageRef?.current?.click()}
-                              className="cursor-pointer flex flex-col items-center justify-center text-sm"
-                            >
-                              <input
-                                className="hidden"
-                                ref={imageRef}
-                                type="file"
-                                accept="image/*"
-                                multiple
-                                onChange={(
-                                  event: ChangeEvent<HTMLInputElement>
-                                ) => {
-                                  const filesList = event.target.files;
-                                  if (!filesList) return; // Ensure files exist
-
-                                  const files: File[] = Array.from(
-                                    filesList
-                                  ).filter((file) => file instanceof File);
-                                  const fileObjects = files.map((file) => {
-                                    return {
-                                      file,
-                                      previewURL: URL.createObjectURL(file),
-                                    };
-                                  });
-
-                                  setFieldValue("files", [
-                                    ...(values.files || []),
-                                    ...fileObjects,
-                                  ]);
-                                }}
-                              />
-
-                              <UploadAnime
-                                text="Upload Image"
-                                textColor="text-block md:text-xl text-sm font-semibold"
-                              />
-                            </div>
                           )}
                         </div>
+                        {/* Upload Button */}
+                        <div
+                          onClick={() => imageRef?.current?.click()}
+                          className="cursor-pointer flex flex-col items-center justify-center text-sm p-2"
+                        >
+                          <input
+                            className="hidden"
+                            ref={imageRef}
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                              const filesList = event.target.files;
+                              if (!filesList) return;
+
+                              const files: File[] = Array.from(filesList).filter(
+                                (file) => file instanceof File
+                              );
+                              const fileObjects = files.map((file) => ({
+                                file,
+                                previewURL: URL.createObjectURL(file),
+                              }));
+
+                              setFieldValue("files", [...(values.files || []), ...fileObjects]);
+                            }}
+                          />
+                          <UploadAnime
+                            text="Upload Image"
+                            textColor="text-block md:text-md text-sm font-semibold"
+                            animeHight={100}
+                            animeWidth={100}
+                          />
+                        </div>
                       </div>
+                      <div className="flex justify-center lg:py-4 py-2">
+                        <Button
+                          type="submit"
+                          className={`${isLoading ? "!bg-gray-100 !text-black" : "!bg-green-700"}`}
+                          variant="contained"
+                          disabled={isLoading}
+                          startIcon={
+                            isLoading ? <CircularProgress size={20} /> : <Check />
+                          }
+                        >
+                          SUBMIT
+                        </Button>
+                      </div>
+
                     </div>
                   </div>
                 </div>
-                <div className="flex justify-center lg:py-4 py-2">
-                  <Button
-                    type="submit"
-                    className={`${isLoading ? "!bg-gray-100 !text-black": "!bg-green-700"}`}
-                    variant="contained"
-                    disabled={isLoading}
-                    startIcon={
-                      isLoading ? <CircularProgress size={20} /> : <Check />
-                    }
-                  >
-                    SUBMIT
-                  </Button>
-                </div>
+
               </Form>
             )}
           </Formik>

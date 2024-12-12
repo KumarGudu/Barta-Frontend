@@ -1,13 +1,7 @@
-import React, { useState } from "react";
-import { IoIosArrowDown } from "react-icons/io";
 import Popover from "@mui/material/Popover";
-import { CgMailReply } from "react-icons/cg";
-import { MdDeleteOutline } from "react-icons/md";
-import { FiPlus } from "react-icons/fi";
+import React, { ChangeEvent, useRef, useState } from "react";
 import { FaImage } from "react-icons/fa6";
-import { IoDocument } from "react-icons/io5";
-import { FaVideo } from "react-icons/fa6";
-import { MdAudioFile } from "react-icons/md";
+import { FiPlus } from "react-icons/fi";
 import { MdOutlineProductionQuantityLimits } from "react-icons/md";
 import SendImagePreview from "./SendImagePreview";
 import SendProductModal from "./SendProductModal";
@@ -15,9 +9,10 @@ import SendProductModal from "./SendProductModal";
 const ChooseMedia_01 = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [isImageModalOpen, setIsImageModalOpen] = useState<boolean>(false);
+  const [uploadedFiles, setUploadedFiles] = useState<any[]>([]);
   const [isSendProductModalOpen, setIsSendProductModalOpen] =
     useState<boolean>(false);
-
+  const imageRef = useRef<HTMLInputElement | null>(null);
   const mediaContent = [
     {
       id: 1,
@@ -29,21 +24,6 @@ const ChooseMedia_01 = () => {
       title: "Send Product",
       icon: <MdOutlineProductionQuantityLimits />,
     },
-    // {
-    //   id: 2,
-    //   title: "Audio",
-    //   icon: <MdAudioFile />,
-    // },
-    // {
-    //   id: 3,
-    //   title: "Document",
-    //   icon: <IoDocument />,
-    // },
-    // {
-    //   id: 4,
-    //   title: "Video",
-    //   icon: <FaVideo />,
-    // },
   ];
 
   const handleClick = (event: any) => {
@@ -56,13 +36,30 @@ const ChooseMedia_01 = () => {
 
   const handleMediaModal = (item: any) => {
     if (item.id === 1) {
-      setIsImageModalOpen(true);
+      if (imageRef.current) {
+        imageRef.current.click();
+      }
     }
     if (item.id === 2) {
       setIsSendProductModalOpen(true);
     }
   };
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const filesList = event.target.files;
+    if (!filesList) return; // Ensure files exist
 
+    const files: File[] = Array.from(filesList).filter(
+      (file) => file instanceof File
+    );
+
+    const fileObjects = files.map((file) => ({
+      file,
+      previewURL: URL.createObjectURL(file),
+    }));
+
+    setUploadedFiles((prevFiles) => [...prevFiles, ...fileObjects]);
+    setIsImageModalOpen(true);
+  };
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
   return (
@@ -110,11 +107,19 @@ const ChooseMedia_01 = () => {
           ))}
         </div>
       </Popover>
-
+      <input
+        className="hidden"
+        ref={imageRef}
+        type="file"
+        accept="image/*"
+        multiple
+        onChange={handleFileChange}
+      />
       <SendImagePreview
         open={isImageModalOpen}
         handleClose={() => setIsImageModalOpen(false)}
         setAnchorEl={setAnchorEl}
+        uploadedFiles={uploadedFiles}
       />
       <SendProductModal
         isSendProductModalOpen={isSendProductModalOpen}
