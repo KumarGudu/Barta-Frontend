@@ -158,9 +158,10 @@ const Message_Cont = () => {
             <>
               {msg?.attachments?.length &&
                 <div className={`grid ${msg?.attachments?.length > 1 ? "grid-cols-2" : "grid-cols-1"} gap-2`}>
-                  {msg?.attachments?.map((item) =>
+                  {msg?.attachments?.map((item, i) =>
                     <img
                       src={item?.mediaUrl}
+                      key={i}
                       alt="media"
                       className="w-full max-w-[150px] h-[15rem] rounded-md object-contain"
                     />)}
