@@ -63,7 +63,7 @@ const ProductCard = ({
           {product?.title || "Product Title"}
         </h2>
         <p className="text-xs text-gray-600 truncate">
-          {product?.description || "Brief product description."}
+          {product?.description?.length > 30 ? product?.description?.slice(0, 30) + "..." : product?.description || "Brief product description."}
         </p>
         <p className="text-sm font-semibold text-indigo-600 mt-1">
           ${product?.price || "0.00"}

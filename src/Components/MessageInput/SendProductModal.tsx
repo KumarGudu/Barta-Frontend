@@ -83,7 +83,7 @@ export default function SendProductModal({
           <div className="sticky top-0 h-[3.5rem] z-10 flex items-center justify-center">
             <p className="text-lg font-medium">Product List</p>
           </div>
-          <div className="w-[27.9rem] h-[calc(100%-7rem)] max-h-[calc(100%-7rem)] overflow-y-auto p-3 flex flex-col gap-2">
+          <div className="md:w-[27.9rem] w-full h-[calc(100%-7rem)] max-h-[calc(100%-7rem)] overflow-y-auto p-3 flex flex-col gap-2">
             {resData &&
               resData.map((product: ProductType, index: number) => {
                 if (resData?.length === index + 1) {
