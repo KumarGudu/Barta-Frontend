@@ -107,6 +107,7 @@ type Lst_Message_Type = {
   _id: string;
   content: string;
   type: MSG_TYPE;
+  link: string;
   createdAt: Date;
 };
 export type ConnectedChat = {
