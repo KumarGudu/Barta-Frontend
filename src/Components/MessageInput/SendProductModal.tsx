@@ -56,7 +56,7 @@ export default function SendProductModal({
       await postData(
         "chat/send-product-in-chat",
         {
-          productLink: `${BASE_FRONT_URL}product/details/${product?.id}`,
+          productLink: `${BASE_FRONT_URL}/product/details/${product?.id}`,
           productImage: product?.image,
           groupId: currentRoom?.roomId,
           type: "HOUSE",

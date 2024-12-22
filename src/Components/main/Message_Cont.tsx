@@ -138,35 +138,37 @@ const Message_Cont = () => {
                   className="w-full h-auto rounded-md object-contain"
                 />
               )}
-              {/* {msg?.link && (
-                <a
-                  href={msg.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[0.7rem] sm:text-sm text-blue-500 hover:text-blue-700 underline truncate line-clamp-1"
-                  style={{
-                    display: "-webkit-box",
-                    WebkitBoxOrient: "vertical",
-                    overflow: "hidden",
-                  }}
-                >
-                  {msg.link}
-                </a>
-              )} */}
+              {msg?.link && (
+                <div className="w-full">
+                  <a
+                    href={msg.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[0.7rem] sm:text-sm text-blue-500 hover:text-blue-700 underline truncate line-clamp-1"
+                  >
+                    {msg.link}
+                  </a>
+                </div>
+              )}
             </div>
           ) : (
             <>
-              {msg?.attachments?.length &&
-                <div className={`grid ${msg?.attachments?.length > 1 ? "grid-cols-2" : "grid-cols-1"} gap-2`}>
-                  {msg?.attachments?.map((item, i) =>
+              {msg?.attachments?.length && (
+                <div
+                  className={`grid ${
+                    msg?.attachments?.length > 1 ? "grid-cols-2" : "grid-cols-1"
+                  } gap-2`}
+                >
+                  {msg?.attachments?.map((item, i) => (
                     <img
                       src={item?.mediaUrl}
                       key={i}
                       alt="media"
                       className="w-full max-w-[150px] h-[15rem] rounded-md object-contain"
-                    />)}
+                    />
+                  ))}
                 </div>
-              }
+              )}
             </>
           );
 
@@ -176,8 +178,9 @@ const Message_Cont = () => {
             className={`${getMsgContCls(
               user?._id,
               msg?.sender?._id
-            )} shadow-md bg-gray-100 sm:bg-gray-200 flex flex-col relative cursor-pointer gap-[0.1rem] sm:gap-[0.12rem] ${msg?.type === "IMAGE" ? "px-2 py-1" : "py-1 px-2 sm:px-3"
-              }`}
+            )} shadow-md bg-gray-100 sm:bg-gray-200 flex flex-col relative cursor-pointer gap-[0.1rem] sm:gap-[0.12rem] ${
+              msg?.type === "IMAGE" ? "px-2 py-1" : "py-1 px-2 sm:px-3"
+            }`}
             ref={isLastMessage ? lastBookElementRef : null}
             onMouseEnter={() => setHoverIdx(index)}
             onMouseLeave={() => setHoverIdx(null)}
