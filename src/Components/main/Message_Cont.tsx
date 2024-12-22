@@ -132,9 +132,9 @@ const Message_Cont = () => {
             <p className="text-[0.75rem] sm:text-[0.9rem]">{msg?.content}</p>
           ) : msg?.type === "HOUSE" ? (
             <div className="flex flex-col items-start gap-2 p-3 sm:p-4 rounded-lg border shadow-sm w-full max-w-xs sm:max-w-sm">
-              {msg?.attachments?.[0]?.imageUrl && (
+              {msg?.attachments?.[0]?.mediaUrl && (
                 <img
-                  src={msg.attachments[0].imageUrl}
+                  src={msg.attachments[0].mediaUrl}
                   alt="media"
                   className="w-full h-auto rounded-md object-contain"
                 />
