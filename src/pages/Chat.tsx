@@ -58,19 +58,6 @@ const Chat = () => {
             <div>
               <Left_Nav_Bar />
               {/* Search Bar */}
-              <div className="h-[3rem] flex items-center justify-center p-1 border-r-2 border-[#25d366]">
-                <div className="h-full w-full flex items-center p-2 gap-3 bg-gray-200 rounded-md">
-                  <div className="flex flex-1">
-                    <input
-                      type="text"
-                      className="h-full px-2 py-2 outline-none border-none w-full text-sm bg-transparent"
-                    />
-                  </div>
-                  <div className="w-[2rem]">
-                    <BiSearch size={22} className="text-gray-500" />
-                  </div>
-                </div>
-              </div>
             </div>
             <All_Connected_Chat onSelectChat={handleSelectChatRoom} />
           </div>

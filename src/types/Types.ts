@@ -62,7 +62,6 @@ export type PrivateChatRoom = {
 export type MediaType = {
   mediaUrl: string;
   mediaPath: string;
-  imageUrl?: string;
 };
 
 export type LiveMsg = {

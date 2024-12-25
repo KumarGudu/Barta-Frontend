@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Drawer } from "@mui/material";
 import useUserStore from "@/stores/User.store";
 import useInfiniteScroll from "@/hooks/useInfiniteScroll";
@@ -6,6 +6,7 @@ import { AuthUser } from "@/types";
 import useObserver from "@/hooks/useObserver";
 import { BiSearch, BiX } from "react-icons/bi";
 import User_Card from "./User_Card";
+import { debounce, throttle } from "@/utils/functions";
 
 const All_Users = ({
   open,
@@ -36,18 +37,32 @@ const All_Users = ({
     }
   }, [resData]);
 
+  useEffect(() => {
+    setPageNumber(1);
+  }, [searchQuery]);
+
   const { lastBookElementRef } = useObserver({
     loading,
     hasMore,
     setPageNumber,
   });
 
+  // const handleSearch = (query: string) => {
+  //   setSearchQuery(query);
+  // };
+
+  // searching users
+  const debounceSearch = useCallback(
+    debounce((value: string) => {
+      console.log("Throttled Search:", value);
+      setSearchQuery(value);
+    }, 500),
+    []
+  );
+
   const handleChange = (e: any) => {
     setText(e?.target?.value);
-  };
-
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
+    debounceSearch(e?.target?.value);
   };
 
   return (
@@ -71,7 +86,7 @@ const All_Users = ({
             />
             <button
               className="flex justify-center items-center text-gray-500 hover:text-gray-700"
-              onClick={() => handleSearch(text)}
+              // onClick={() => handleSearch(text)}
             >
               <BiSearch size={23} />
             </button>

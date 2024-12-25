@@ -6,6 +6,7 @@ import useSWRInfinite from "swr/infinite";
 interface UseSwrInfiniteScrollProps<T> {
   url: string;
   perPage: number;
+  searchStr: string;
   options?: any; // You can further type this based on SWR options if needed
 }
 
@@ -13,6 +14,7 @@ export const useSwrInfiniteScroll = <T,>({
   url,
   perPage,
   options,
+  searchStr,
 }: UseSwrInfiniteScrollProps<T>) => {
   const axiosInstance = axios.create({
     withCredentials: true,
@@ -30,11 +32,14 @@ export const useSwrInfiniteScroll = <T,>({
   };
 
   const getKey = (pageIndex: number, previousPageData: T[] | null) => {
-    if (pageIndex === 0) return `${BASE_URL}${url}?pageNo=1&perPage=${perPage}`;
+    if (pageIndex === 0)
+      return `${BASE_URL}${url}?pageNo=1&perPage=${perPage}&searchStr=${searchStr}`;
     if (previousPageData && previousPageData.length === 0) {
       return null;
     }
-    return `${BASE_URL}${url}?pageNo=${pageIndex + 1}&perPage=${perPage}`;
+    return `${BASE_URL}${url}?pageNo=${
+      pageIndex + 1
+    }&perPage=${perPage}&searchStr=${searchStr}`;
   };
 
   const { data, size, setSize, isValidating, error, mutate } = useSWRInfinite<

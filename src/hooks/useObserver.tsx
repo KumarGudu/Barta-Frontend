@@ -9,6 +9,7 @@ type UseObserverProps = {
 };
 
 function useObserver({ loading, hasMore, setPageNumber }: UseObserverProps) {
+  console.log("HAS_MORE", hasMore);
   const observer = useRef<IntersectionObserver | null>(null);
   const lastBookElementRef = useCallback(
     (node: HTMLElement | null) => {
@@ -18,6 +19,7 @@ function useObserver({ loading, hasMore, setPageNumber }: UseObserverProps) {
       }
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && hasMore) {
+          console.log("CMOJNKGJKJ..........");
           setPageNumber((prevPageNumber: number) => prevPageNumber + 1);
         }
       });
