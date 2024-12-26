@@ -32,7 +32,7 @@ const All_Connected_Chat = ({ onSelectChat }: { onSelectChat: () => void }) => {
     loadingMore,
   } = useSwrInfiniteScroll<ConnectedChat>({
     url: "chat/get-all-connected",
-    perPage: 5,
+    perPage: 20,
     searchStr: searchStr,
   });
 
