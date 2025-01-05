@@ -1,10 +1,10 @@
-import { usePostData } from "@/hooks/Api_Hooks";
+import ProfileDetails from "@/Components/drawer/ProfileDetails";
 import { useFetchData } from "@/hooks/fetchData";
 import useAuthStore from "@/stores/Auth.store";
 import useCurrentPrivateChatRoomStore from "@/stores/CurrentPvtChat.store";
 import useOnlineUsersStore from "@/stores/onlineUsers.store";
 import useSocketStore from "@/stores/Socket.store";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 type MEMBER = {
   _id: string;
@@ -25,7 +25,10 @@ const Right__Nav_Bar = () => {
   const { onlineUsers, setOnlineUsers } = useOnlineUsersStore();
   const [typeUsers, setTypeUsers] = useState<string[]>([]);
 
-  //get member info of a group
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [selectedMember, setSelectedMember] = useState<MEMBER | null>(null);
+
+  // Fetch group member info
   const options = {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
@@ -79,12 +82,24 @@ const Right__Nav_Bar = () => {
     };
   }, [socket]);
 
-  console.log("GROUP_MEMBERS", groupMembers, user);
+  const handleOpenDrawer = (currentRoom: any) => {
+    setSelectedMember(currentRoom);
+    setDrawerOpen(true);
+  };
+
+  const handleCloseDrawer = () => {
+    setDrawerOpen(false);
+    setSelectedMember(null);
+  };
+
+  console.log("currentRoom", currentRoom);
 
   return (
     <div className="flex items-center gap-4 h-full px-7">
       {/* Profile Image */}
-      <div>
+      <div
+        onClick={() => handleOpenDrawer(currentRoom)}
+      >
         <img
           src={
             currentRoom?.profileUrl ||
@@ -118,9 +133,10 @@ const Right__Nav_Bar = () => {
               return (
                 <div
                   key={member?._id}
-                  className={`flex flex-col justify-center mt-1`}
+                  className={`flex flex-col justify-center mt-1 cursor-pointer`}
+                  onClick={() => handleOpenDrawer(currentRoom)}
                 >
-                  <p className="text-gray-300 text-sm">{member?.name}</p>
+                  <p className="text-gray-300 text-lg">{member?.name}</p>
                   <p className="text-[0.7rem] text-green-200">
                     {isTyping ? " typing..." : isOnline ? "online" : ""}
                   </p>
@@ -131,17 +147,17 @@ const Right__Nav_Bar = () => {
             return (
               <div
                 key={member?._id}
-                className={`flex ${
-                  user?.role === "ADMIN" ? "flex" : "flex-col"
-                } justify-center mt-1`}
+                className={`flex ${user?.role === "ADMIN" ? "flex" : "flex-col"
+                  } justify-center mt-1 cursor-pointer`}
+                onClick={() => handleOpenDrawer(currentRoom)}
               >
                 {member?.role !== "ADMIN" && user?.role !== "ADMIN" && (
-                  <p className="text-gray-300 text-sm">{member?.name}</p>
+                  <p className="text-gray-300 text-lg">{member?.name}</p>
                 )}
 
                 {user?.role === "ADMIN" && (
                   <div className="flex gap-2">
-                    <p className="text-gray-300 text-[0.7rem]">
+                    <p className="text-gray-300 text-lg">
                       {member?.name}
                     </p>
                     <p className="text-[0.7rem] text-green-200">
@@ -159,6 +175,12 @@ const Right__Nav_Bar = () => {
             );
           })}
       </div>
+      {/* Drawer */}
+     <ProfileDetails
+        drawerOpen={drawerOpen}
+        handleCloseDrawer={handleCloseDrawer}
+        selectedMember={selectedMember}
+        />
     </div>
   );
 };
