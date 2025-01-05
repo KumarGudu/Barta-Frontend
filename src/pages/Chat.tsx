@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from "react";
-import useSocketStore from "@/stores/Socket.store";
-import { useSocket } from "@/hooks/Socket";
-import useCurrentPrivateChatRoomStore from "@/stores/CurrentPvtChat.store";
-import Auth_Layout from "@/Components/main/Auth_Layout";
 import Left_Nav_Bar from "@/Components/headers/left/Left_Nav_Bar";
-import All_Connected_Chat from "@/Components/main/All_Connected_Chat";
 import Right__Nav_Bar from "@/Components/headers/right/Right__Nav_Bar";
+import All_Connected_Chat from "@/Components/main/All_Connected_Chat";
+import Auth_Layout from "@/Components/main/Auth_Layout";
+import DefaultLeftSide from "@/Components/main/DefaultLeftSide";
 import Message_Cont from "@/Components/main/Message_Cont";
 import Send_Message_Input from "@/Components/main/Send_Message_Input";
-import DefaultLeftSide from "@/Components/main/DefaultLeftSide";
-import { BiSearch } from "react-icons/bi";
+import { useSocket } from "@/hooks/Socket";
+import useCurrentPrivateChatRoomStore from "@/stores/CurrentPvtChat.store";
 import useLayoutStore from "@/stores/Layout.store";
+import useSocketStore from "@/stores/Socket.store";
+import { useEffect } from "react";
 
 const Chat = () => {
   const { connect, disConnect } = useSocketStore();
@@ -73,7 +72,7 @@ const Chat = () => {
                   {/* Back Button for Mobile */}
                   {!isLargeScreen && (
                     <button
-                      className="text-blue-500 px-4 py-2"
+                      className="text-white px-4 py-2"
                       onClick={handleBackToUserList}
                     >
                       ← Back
