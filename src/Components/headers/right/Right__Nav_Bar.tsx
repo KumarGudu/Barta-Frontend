@@ -28,6 +28,20 @@ const Right__Nav_Bar = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState<MEMBER | null>(null);
 
+  const [open, setOpen] = useState<boolean>(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    boxShadow: 24,
+    p: 4,
+  };
+
   // Fetch group member info
   const options = {
     revalidateOnFocus: false,
@@ -92,14 +106,12 @@ const Right__Nav_Bar = () => {
     setSelectedMember(null);
   };
 
-  console.log("currentRoom", currentRoom);
+  console.log("currentRoom", groupMembers);
 
   return (
     <div className="flex items-center gap-4 h-full px-7">
       {/* Profile Image */}
-      <div
-        onClick={() => handleOpenDrawer(currentRoom)}
-      >
+      <div onClick={() => handleOpenDrawer(currentRoom)}>
         <img
           src={
             currentRoom?.profileUrl ||
@@ -147,8 +159,9 @@ const Right__Nav_Bar = () => {
             return (
               <div
                 key={member?._id}
-                className={`flex ${user?.role === "ADMIN" ? "flex" : "flex-col"
-                  } justify-center mt-1 cursor-pointer`}
+                className={`flex ${
+                  user?.role === "ADMIN" ? "flex" : "flex-col"
+                } justify-center mt-1 cursor-pointer`}
                 onClick={() => handleOpenDrawer(currentRoom)}
               >
                 {member?.role !== "ADMIN" && user?.role !== "ADMIN" && (
@@ -157,9 +170,7 @@ const Right__Nav_Bar = () => {
 
                 {user?.role === "ADMIN" && (
                   <div className="flex gap-2">
-                    <p className="text-gray-300 text-lg">
-                      {member?.name}
-                    </p>
+                    <p className="text-gray-300 text-lg">{member?.name}</p>
                     <p className="text-[0.7rem] text-green-200">
                       {isTyping ? " typing..." : isOnline ? "online" : ""}
                     </p>
@@ -176,11 +187,11 @@ const Right__Nav_Bar = () => {
           })}
       </div>
       {/* Drawer */}
-     <ProfileDetails
+      <ProfileDetails
         drawerOpen={drawerOpen}
         handleCloseDrawer={handleCloseDrawer}
         selectedMember={selectedMember}
-        />
+      />
     </div>
   );
 };
