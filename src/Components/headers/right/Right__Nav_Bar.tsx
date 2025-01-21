@@ -5,6 +5,7 @@ import useCurrentPrivateChatRoomStore from "@/stores/CurrentPvtChat.store";
 import useOnlineUsersStore from "@/stores/onlineUsers.store";
 import useSocketStore from "@/stores/Socket.store";
 import { useEffect, useState } from "react";
+import { CgLayoutGrid } from "react-icons/cg";
 
 type MEMBER = {
   _id: string;
@@ -106,7 +107,10 @@ const Right__Nav_Bar = () => {
     setSelectedMember(null);
   };
 
-  console.log("currentRoom", groupMembers);
+  console.log(
+    "OPOPOP",
+    groupMembers.filter((member) => member.role !== "ADMIN")
+  );
 
   return (
     <div className="flex items-center gap-4 h-full px-7">
@@ -123,6 +127,8 @@ const Right__Nav_Bar = () => {
           className="rounded-full mt-1"
         />
       </div>
+
+      {/* modal */}
 
       {/* Group Members */}
       <div>
@@ -190,7 +196,9 @@ const Right__Nav_Bar = () => {
       <ProfileDetails
         drawerOpen={drawerOpen}
         handleCloseDrawer={handleCloseDrawer}
-        selectedMember={selectedMember}
+        selectedMember={groupMembers.filter(
+          (member) => member.role !== "ADMIN"
+        )}
       />
     </div>
   );

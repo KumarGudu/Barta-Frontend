@@ -19,7 +19,7 @@ const All_Users = dynamic(() => import("./all_users/All_Users"), {
 
 const Left_Nav_Bar = () => {
   const [open, setOpen] = useState<boolean>(false);
-  const [open_1, setOpen_1] = useState<boolean>(true);
+  const [open_1, setOpen_1] = useState<boolean>(false);
 
   const handleOpen = () => setOpen_1(true);
   const handleClose = () => setOpen_1(false);
