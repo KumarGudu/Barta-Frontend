@@ -145,8 +145,6 @@ const All_Connected_Chat = ({ onSelectChat }: { onSelectChat: () => void }) => {
                 : member?.role !== "ADMIN" && member?._id !== user?._id;
             });
 
-            console.log("LAST_MSG", chat.lastMessage);
-
             if (chat?.isGroupChat) {
               return (
                 <div key={chat?._id} className="w-full bg-white px-3">

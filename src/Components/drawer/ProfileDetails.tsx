@@ -3,7 +3,6 @@ import { Drawer, Typography, IconButton, Divider } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 
 const ProfileDetails = ({ drawerOpen, handleCloseDrawer, selectedMember }) => {
-  console.log("SELECTED_MEMBERS", selectedMember);
   return (
     <Drawer anchor="right" open={drawerOpen} onClose={handleCloseDrawer}>
       <div className="p-4 bg-slate-100 h-full" style={{ width: 400 }}>

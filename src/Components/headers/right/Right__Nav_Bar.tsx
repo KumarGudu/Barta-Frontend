@@ -107,11 +107,6 @@ const Right__Nav_Bar = () => {
     setSelectedMember(null);
   };
 
-  console.log(
-    "OPOPOP",
-    groupMembers.filter((member) => member.role !== "ADMIN")
-  );
-
   return (
     <div className="flex items-center gap-4 h-full px-7">
       {/* Profile Image */}

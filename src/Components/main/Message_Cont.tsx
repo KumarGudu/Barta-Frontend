@@ -84,10 +84,24 @@ const Message_Cont = () => {
     };
   }, [socket, currentRoom]);
 
-  let allMessages = useMemo(
-    () => (resData?.length ? [...messages, ...resData] : [...messages]),
-    [messages, resData]
-  );
+  // let allMessages = useMemo(
+  //   () => (resData?.length ? [...messages, ...resData] : [...messages]),
+  //   [messages, resData]
+  // );
+
+  const allMessages = useMemo(() => {
+    const uniqueMessages = new Map();
+
+    messages.forEach((message) => {
+      uniqueMessages.set(message._id, message);
+    });
+
+    resData?.forEach((data) => {
+      uniqueMessages.set(data.tempId, data);
+    });
+
+    return Array.from(uniqueMessages.values());
+  }, [messages, resData]);
 
   const { lastBookElementRef } = useObserver({
     loading,
