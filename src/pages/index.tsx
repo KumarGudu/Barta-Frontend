@@ -2,18 +2,56 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import useAuthStore from "@/stores/Auth.store";
 import { Inter } from "next/font/google";
+import { usePostData } from "@/hooks/Api_Hooks";
+import useCurrentPrivateChatRoomStore from "@/stores/CurrentPvtChat.store";
+import { useFetchData } from "@/hooks/fetchData";
+import axios from "axios";
+import { BASE_FRONT_URL, BASE_URL } from "@/utils";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   const { isLogin, user, setAuthUser, validateAuthUser } = useAuthStore();
+
+  const { setCurrentRoom, currentRoom } = useCurrentPrivateChatRoomStore();
+
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
+  const { data, error, postData } = usePostData<any>();
+  const createPrivateGroupChat = async (id: any) => {
+    await postData(
+      "chat/create-private-group-shomes",
+      { receiver: id },
+      { withCredentials: true },
+      false
+    );
+  };
 
+  const [listedByData, setListedByData] = useState<any>(null);
+  const [sendProduct, setSendProduct] = useState<any>(null);
+
+  const handleSendProduct = async (productId: string) => {
+    await postData(
+      "chat/send-product-in-chat",
+      {
+        productLink: `${BASE_FRONT_URL}/product/details/${productId}`,
+        productImage: sendProduct?.productImages[0]?.imageUrl,
+        groupId: data?._id,
+        type: "HOUSE",
+      },
+      {
+        withCredentials: true,
+      },
+      true
+    );
+  };
   useEffect(() => {
     (async () => {
       const params = new URLSearchParams(window.location.search);
       const token = params.get("token");
+      const productId = params.get("productId");
+      const listedById = params.get("listedById");
+
       if (token) {
         localStorage.setItem("token", token);
         const currentUser = await validateAuthUser(token);
@@ -25,8 +63,56 @@ export default function Home() {
         );
         if (!currentUser) return router.push("/");
       }
+
+      if (productId && listedById && token) {
+        //logic to send product
+        try {
+          await createPrivateGroupChat(listedById);
+          const response = await axios.get(`${BASE_URL}users/${listedById}`, {
+            withCredentials: true,
+            headers: {
+              "x-access-token": JSON.parse(token),
+            },
+          });
+
+          setListedByData(response?.data?.data);
+
+          const productRes = await axios.get(
+            `${BASE_URL}product/${productId}`,
+            {
+              withCredentials: true,
+              headers: {
+                "x-access-token": JSON.parse(token),
+              },
+            }
+          );
+
+          console.log("PRODUCT_DATA", productRes?.data?.data);
+          setSendProduct(productRes?.data?.data);
+        } catch (error) {
+          console.log(error);
+        }
+      }
     })();
   }, []);
+
+  useEffect(() => {
+    if (data && !error && currentRoom?.roomId !== data?._id) {
+      setCurrentRoom({
+        name: listedByData?.name,
+        slugName: listedByData?.slugName,
+        profileUrl: listedByData?.profile,
+        roomId: data?._id,
+        isMessaged: data?.isMessaged,
+        userId: listedByData?._id,
+        members: data?.members,
+      });
+    }
+
+    if (sendProduct) {
+      handleSendProduct(sendProduct?._id);
+    }
+  }, [data, error, sendProduct]);
 
   const redirectToMain = async () => {
     const token = localStorage.getItem("token");
