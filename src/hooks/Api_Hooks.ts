@@ -31,6 +31,8 @@ export const usePostData = <T>(): UsePostDataResult<T> => {
     setError(null);
     try {
       const token = JSON.parse(localStorage.getItem("token"));
+      console.log("URLLLLLLLLLLLLLLLL", BASE_URL + url);
+      console.log("TOKEN------------------>>>>>>>>>>>>>>>>", token);
       const response: AxiosResponse<{ data: T }> = await axios.post(
         BASE_URL + url,
         payload,
@@ -43,6 +45,8 @@ export const usePostData = <T>(): UsePostDataResult<T> => {
           },
         }
       );
+
+      console.log("RESPOPOPOPOPO", response);
 
       setData(response.data.data);
       if (isModal) {

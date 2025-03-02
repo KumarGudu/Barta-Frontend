@@ -31,6 +31,7 @@ export default function Home() {
   const [sendProduct, setSendProduct] = useState<any>(null);
 
   const handleSendProduct = async (productId: string) => {
+    console.log("COMING...............>>>>>>####");
     await postData(
       "chat/send-product-in-chat",
       {
