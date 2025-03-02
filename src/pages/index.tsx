@@ -48,6 +48,7 @@ export default function Home() {
 
     console.log("COMING............!!!!!!!!!!!!>");
   };
+
   useEffect(() => {
     (async () => {
       const params = new URLSearchParams(window.location.search);
@@ -106,21 +107,23 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (data && !error && currentRoom?.roomId !== data?._id) {
-      setCurrentRoom({
-        name: listedByData?.name,
-        slugName: listedByData?.slugName,
-        profileUrl: listedByData?.profile,
-        roomId: data?._id,
-        isMessaged: data?.isMessaged,
-        userId: listedByData?._id,
-        members: data?.members,
-      });
-    }
+    (async () => {
+      if (data && !error && currentRoom?.roomId !== data?._id) {
+        setCurrentRoom({
+          name: listedByData?.name,
+          slugName: listedByData?.slugName,
+          profileUrl: listedByData?.profile,
+          roomId: data?._id,
+          isMessaged: data?.isMessaged,
+          userId: listedByData?._id,
+          members: data?.members,
+        });
+      }
 
-    if (sendProduct) {
-      handleSendProduct(sendProduct?._id);
-    }
+      if (sendProduct) {
+        await handleSendProduct(sendProduct?._id);
+      }
+    })();
   }, [data, error, sendProduct]);
 
   const redirectToMain = async () => {
