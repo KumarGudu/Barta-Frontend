@@ -44,6 +44,8 @@ export default function Home() {
       },
       true
     );
+
+    console.log("COMING............!!!!!!!!!!!!>");
   };
   useEffect(() => {
     (async () => {
@@ -51,6 +53,12 @@ export default function Home() {
       const token = params.get("token");
       const productId = params.get("productId");
       const listedById = params.get("listedById");
+
+      console.log({
+        token,
+        productId,
+        listedById,
+      });
 
       if (token) {
         localStorage.setItem("token", token);
