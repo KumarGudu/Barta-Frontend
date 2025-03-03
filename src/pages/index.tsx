@@ -30,23 +30,54 @@ export default function Home() {
   const [listedByData, setListedByData] = useState<any>(null);
   const [sendProduct, setSendProduct] = useState<any>(null);
 
-  const handleSendProduct = async (productId: string) => {
-    console.log("COMING...............>>>>>>####");
-    await postData(
-      "chat/send-product-in-chat",
-      {
-        productLink: `${BASE_FRONT_URL}/product/details/${productId}`,
-        productImage: sendProduct?.productImages[0]?.imageUrl,
-        groupId: data?._id,
-        type: "HOUSE",
-      },
-      {
-        withCredentials: true,
-      },
-      true
-    );
+  // const handleSendProduct = async (productId: string) => {
+  //   console.log("COMING...............>>>>>>####");
+  //   await postData(
+  //     "chat/send-product-in-chat",
+  //     {
+  //       productLink: `${BASE_FRONT_URL}/product/details/${productId}`,
+  //       productImage: sendProduct?.productImages[0]?.imageUrl,
+  //       groupId: data?._id,
+  //       type: "HOUSE",
+  //     },
+  //     {
+  //       withCredentials: true,
+  //     },
+  //     true
+  //   );
 
-    console.log("COMING............!!!!!!!!!!!!>");
+  //   console.log("COMING............!!!!!!!!!!!!>");
+  // };
+
+  const [accessToken, setAccessToken] = useState<any>(null);
+  const handleSendProduct = async (productId: string, accessToken: string) => {
+    try {
+      console.log({
+        productId,
+        accessToken,
+      });
+      console.log("COMING...............>>>>>>####");
+
+      const response = await axios.post(
+        `${BASE_URL}chat/send-product-in-chat`,
+        {
+          productLink: `${BASE_FRONT_URL}/product/details/${productId}`,
+          productImage: sendProduct?.productImages[0]?.imageUrl,
+          groupId: data?._id,
+          type: "HOUSE",
+        },
+        {
+          withCredentials: true,
+          headers: {
+            "x-access-token": JSON.parse(accessToken),
+          },
+        }
+      );
+
+      console.log("COMING............!!!!!!!!!!!!>", response);
+    } catch (error) {
+      console.error("Error sending product:", error);
+    }
   };
 
   useEffect(() => {
@@ -63,6 +94,7 @@ export default function Home() {
       });
 
       if (token) {
+        setAccessToken(token);
         localStorage.setItem("token", token);
         const currentUser = await validateAuthUser(token);
         setAuthUser(currentUser);
@@ -107,23 +139,21 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    (async () => {
-      if (data && !error && currentRoom?.roomId !== data?._id) {
-        setCurrentRoom({
-          name: listedByData?.name,
-          slugName: listedByData?.slugName,
-          profileUrl: listedByData?.profile,
-          roomId: data?._id,
-          isMessaged: data?.isMessaged,
-          userId: listedByData?._id,
-          members: data?.members,
-        });
-      }
+    if (data && !error && currentRoom?.roomId !== data?._id) {
+      setCurrentRoom({
+        name: listedByData?.name,
+        slugName: listedByData?.slugName,
+        profileUrl: listedByData?.profile,
+        roomId: data?._id,
+        isMessaged: data?.isMessaged,
+        userId: listedByData?._id,
+        members: data?.members,
+      });
+    }
 
-      if (sendProduct) {
-        await handleSendProduct(sendProduct?._id);
-      }
-    })();
+    if (sendProduct && accessToken) {
+      handleSendProduct(sendProduct?._id, accessToken);
+    }
   }, [data, error, sendProduct]);
 
   const redirectToMain = async () => {
