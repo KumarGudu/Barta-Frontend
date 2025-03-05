@@ -50,7 +50,7 @@ const Chat = () => {
 
   return (
     <Auth_Layout>
-      <main className="flex h-screen relative">
+      <main className="flex h-screen relative overflow-hidden">
         {/* Sidebar (User List) */}
         {(screen === "userList" || isLargeScreen) && (
           <div className="w-full lg:w-[28rem]">

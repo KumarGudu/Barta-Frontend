@@ -102,7 +102,7 @@ const All_Connected_Chat = ({ onSelectChat }: { onSelectChat: () => void }) => {
   // #dcf8c6	(220,248,198)
   // #ece5dd	(236,229,221)
   return (
-    <div>
+    <div className="h-screen">
       <div className="h-[3rem] flex items-center justify-center p-1 border-r-2 border-[#25d366]">
         <div className="h-full w-full flex items-center p-2 gap-3 bg-gray-200 rounded-md">
           <div className="flex flex-1">

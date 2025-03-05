@@ -13,6 +13,7 @@ import { IoIosArrowDown } from "react-icons/io";
 import { format } from "date-fns";
 import { formatTimeOfFirstMessage } from "@/utils/functions";
 import MessageAction from "../MessageInput/MessageAction";
+import { usePostData } from "@/hooks/Api_Hooks";
 
 const getMsgContCls = (userId: string, senderId: string) => {
   return userId !== senderId
@@ -29,6 +30,7 @@ const Message_Cont = () => {
   const [pageNumber, setPageNumber] = useState(1);
   const [reset, setReset] = useState(false);
   const router = useRouter();
+  const { isMessageDeleted, setIsMessageDeleted } = useReplyMessageStore();
 
   const { loading, resData, hasMore, isError } = useInfiniteScroll<
     Partial<LiveMsg>
@@ -41,7 +43,7 @@ const Message_Cont = () => {
   useEffect(() => {
     setReset(true);
     setPageNumber(1);
-  }, [currentRoom, setCurrentRoom]);
+  }, [currentRoom, setCurrentRoom, isMessageDeleted, setIsMessageDeleted]);
 
   useEffect(() => {
     if (reset) setReset(false);
@@ -133,6 +135,7 @@ const Message_Cont = () => {
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
   }, [messages]);
+
   //demo
   return (
     <div
@@ -212,6 +215,8 @@ const Message_Cont = () => {
                     parentMsgId: msg?._id,
                   })
                 }
+                msgId={msg?._id}
+                roomId={currentRoom?.roomId}
               />
             )}
             <div className="place-items-start">

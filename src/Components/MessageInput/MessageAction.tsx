@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import Popover from "@mui/material/Popover";
 import { CgMailReply } from "react-icons/cg";
 import { MdDeleteOutline } from "react-icons/md";
+import { usePostData } from "@/hooks/Api_Hooks";
+import useInfiniteScroll from "@/hooks/useInfiniteScroll";
+import { LiveMsg } from "@/types";
+import useReplyMessageStore from "@/stores/ReplyMessage.store";
 
-const MessageAction = ({ handleReplyMsg }) => {
+const MessageAction = ({ handleReplyMsg, msgId, roomId }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   const handleClick = (event: any) => {
@@ -14,6 +18,22 @@ const MessageAction = ({ handleReplyMsg }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const { data, error, isLoading, postData } = usePostData();
+  const { isMessageDeleted, setIsMessageDeleted } = useReplyMessageStore();
+
+  const handleDeleteMsg = async () => {
+    if (msgId) {
+      await postData(`chat/delete-message/${msgId}`, {
+        withCredentials: true,
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (data) {
+      setIsMessageDeleted(!isMessageDeleted);
+    }
+  }, [data]);
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
@@ -52,9 +72,12 @@ const MessageAction = ({ handleReplyMsg }) => {
             <CgMailReply size={17} />
             <p>Reply</p>
           </li>
-          <li className="py-2 px-3 cursor-pointer flex items-center gap-1">
+          <li
+            className="py-2 px-3 cursor-pointer flex items-center gap-1"
+            onClick={handleDeleteMsg}
+          >
             <MdDeleteOutline size={16} />
-            <p>Delete</p>
+            <p>{isLoading ? "Loading..." : "Delete"}</p>
           </li>
           {/* <li className="p-2 hover:bg-gray-700 cursor-pointer">Message info</li>
           <li className="p-2 hover:bg-gray-700 cursor-pointer">React</li>
