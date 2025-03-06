@@ -11,6 +11,8 @@ type InfiniteScrollType<T> = {
   setData?: (users: Partial<T>[]) => void;
   extParams?: any;
   reset?: boolean;
+  isMessageDeleted?: boolean;
+  setIsMessageDeleted?: (isMessageDeleted: boolean) => void;
 };
 
 function useInfiniteScroll<T>({
@@ -21,6 +23,7 @@ function useInfiniteScroll<T>({
   setData,
   extParams,
   reset,
+  isMessageDeleted,
 }: InfiniteScrollType<T>) {
   const [loading, setLoading] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
@@ -71,7 +74,7 @@ function useInfiniteScroll<T>({
 
   useEffect(() => {
     fetchData();
-  }, [query, pageNumber, url]);
+  }, [query, pageNumber, url, isMessageDeleted]);
 
   return { loading, isError, resData, hasMore };
 }

@@ -31,7 +31,7 @@ const MessageAction = ({ handleReplyMsg, msgId, roomId }) => {
 
   useEffect(() => {
     if (data) {
-      setIsMessageDeleted(!isMessageDeleted);
+      setIsMessageDeleted(true);
     }
   }, [data]);
 

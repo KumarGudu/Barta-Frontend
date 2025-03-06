@@ -38,11 +38,13 @@ const Message_Cont = () => {
     pageNumber,
     url: `chat/get-all-chats/${currentRoom?.roomId}`,
     reset,
+    isMessageDeleted,
   });
 
   useEffect(() => {
     setReset(true);
     setPageNumber(1);
+    setIsMessageDeleted(false);
   }, [currentRoom, setCurrentRoom, isMessageDeleted, setIsMessageDeleted]);
 
   useEffect(() => {
