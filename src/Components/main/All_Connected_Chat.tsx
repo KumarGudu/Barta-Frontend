@@ -137,12 +137,17 @@ const All_Connected_Chat = ({ onSelectChat }: { onSelectChat: () => void }) => {
           scrollableTarget="scrollableDiv"
         >
           {connectedChats?.map((chat: ConnectedChat, index: number) => {
+            console.log("chat ----------->", chat);
+
             let receiver: Member_Type = chat?.memberDetails?.find((member) => {
-              return user &&
-                user?.role === "EMPLOYEE" &&
-                chat?.memberDetails?.length <= 2
-                ? member?._id !== user?._id
-                : member?.role !== "ADMIN" && member?._id !== user?._id;
+              // return user &&
+              //   user?.role === "EMPLOYEE" &&
+              //   chat?.memberDetails?.length <= 2
+              //   ? member?._id !== user?._id
+              //   : member?.role !== "ADMIN" && member?._id !== user?._id;
+              return chat?.memberDetails?.length > 2
+                ? member?.role === "CUSTOMER"
+                : member && member?._id !== user?._id;
             });
 
             if (chat?.isGroupChat) {

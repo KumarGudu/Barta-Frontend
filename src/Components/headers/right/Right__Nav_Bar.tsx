@@ -149,7 +149,7 @@ const Right__Nav_Bar = () => {
                   className={`flex flex-col justify-center mt-1 cursor-pointer`}
                   onClick={() => handleOpenDrawer(currentRoom)}
                 >
-                  <p className="text-gray-300 text-lg">{member?.name}</p>
+                  <p className="text-gray-300 text-sm">{member?.name}</p>
                   <p className="text-[0.7rem] text-green-200">
                     {isTyping ? " typing..." : isOnline ? "online" : ""}
                   </p>
@@ -166,12 +166,14 @@ const Right__Nav_Bar = () => {
                 onClick={() => handleOpenDrawer(currentRoom)}
               >
                 {member?.role !== "ADMIN" && user?.role !== "ADMIN" && (
-                  <p className="text-gray-300 text-lg">{member?.name}</p>
+                  <p className="text-gray-300 text-sm">{member?.name}</p>
                 )}
 
                 {user?.role === "ADMIN" && (
-                  <div className="flex gap-2">
-                    <p className="text-gray-300 text-lg">{member?.name}</p>
+                  <div className="flex gap-2 items-center justify-items-start">
+                    {member?.role !== "ADMIN" && (
+                      <p className="text-gray-300 text-sm">{member?.name}</p>
+                    )}
                     <p className="text-[0.7rem] text-green-200">
                       {isTyping ? " typing..." : isOnline ? "online" : ""}
                     </p>
