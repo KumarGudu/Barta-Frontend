@@ -52,12 +52,6 @@ export default function Home() {
   const [accessToken, setAccessToken] = useState<any>(null);
   const handleSendProduct = async (productId: string, accessToken: string) => {
     try {
-      console.log({
-        productId,
-        accessToken,
-      });
-      console.log("COMING...............>>>>>>####");
-
       const response = await axios.post(
         `${BASE_URL}chat/send-product-in-chat`,
         {
@@ -73,8 +67,6 @@ export default function Home() {
           },
         }
       );
-
-      console.log("COMING............!!!!!!!!!!!!>", response);
     } catch (error) {
       console.error("Error sending product:", error);
     }
@@ -86,13 +78,6 @@ export default function Home() {
       const token = params.get("token");
       const productId = params.get("productId");
       const listedById = params.get("listedById");
-
-      console.log({
-        token,
-        productId,
-        listedById,
-      });
-
       if (token) {
         setAccessToken(token);
         localStorage.setItem("token", token);
@@ -118,19 +103,6 @@ export default function Home() {
           });
 
           setListedByData(response?.data?.data);
-
-          const productRes = await axios.get(
-            `${BASE_URL}product/${productId}`,
-            {
-              withCredentials: true,
-              headers: {
-                "x-access-token": JSON.parse(token),
-              },
-            }
-          );
-
-          console.log("PRODUCT_DATA", productRes?.data?.data);
-          setSendProduct(productRes?.data?.data);
         } catch (error) {
           console.log(error);
         }
@@ -150,11 +122,7 @@ export default function Home() {
         members: data?.members,
       });
     }
-
-    if (sendProduct && accessToken) {
-      handleSendProduct(sendProduct?._id, accessToken);
-    }
-  }, [data, error, sendProduct]);
+  }, [data, error]);
 
   const redirectToMain = async () => {
     const token = localStorage.getItem("token");
