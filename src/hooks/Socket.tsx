@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import { io, Socket } from "socket.io-client";
 
-const BASE_SOCKET_URL = "http://localhost:3300";
-// const BASE_SOCKET_URL = "https://api.shomes.in";
+// const BASE_SOCKET_URL = "http://localhost:3300";
+const BASE_SOCKET_URL = "https://api.shomes.in";
 
 export const useSocket = () => {
   const socket = useMemo<Socket | null>(() => {
