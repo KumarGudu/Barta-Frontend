@@ -9,7 +9,7 @@ import { LiveMsg } from "@/types";
 import { isToday } from "date-fns";
 import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import { FiX } from "react-icons/fi";
-import { LuSendHorizonal } from "react-icons/lu";
+import { LuSendHorizontal } from "react-icons/lu";
 import ChooseMedia_01 from "../MessageInput/ChooseMedia_01";
 
 const Send_Message_Input = () => {
@@ -255,7 +255,7 @@ const Send_Message_Input = () => {
             className="cursor-pointer px-2 py-1"
             onClick={sendMessageByBtnClick}
           >
-            <LuSendHorizonal
+            <LuSendHorizontal
               className="text-blue-600 hover:text-blue-800"
               size={22}
             />
